@@ -53,8 +53,8 @@ BioIndex <- function(ta, tb, tc, sspp,rec_threshold, spaw_threshold,
         spaw_threshold=210
         haul_threshold=30
         sexes <- "all"
-        depth <- c(10,200)
-        GSA <- 18
+        depth <- c(10,800)
+        GSA <- 20
         country <- "all"
         map_lim <- c(15.5,20.0,39.8,42.5)
         depth_lines <- c(200,500,800)
