@@ -1,7 +1,7 @@
 Package: BioIndex
 Type: Package
 Title: collection of functions used to perform analyses on data in MEDITS format
-Version: 0.5.01
+Version: 0.5.02
 Author: Walter Zupa
 Maintainer: Walter Zupa <zupa@fondazionecoispa.org>, <walter@zupa.it>
 Description: The package is a collection of functions used by BioIndex software.

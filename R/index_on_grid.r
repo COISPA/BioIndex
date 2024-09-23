@@ -336,10 +336,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
    ylab("latitude")
 
  print(p1)
- jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
- print(p1)
- dev.off()
 
+ if (save){
+   jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
+   print(p1)
+   dev.off()
+ }
   #----------------------------------------
   # Saving maps of the inverse of CV of ABUNDANCE index
   #----------------------------------------
@@ -442,10 +444,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
     ylab("latitude")
 
   print(p2)
-  jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-  print(p2)
-  dev.off()
 
+  if(save){
+    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
+    print(p2)
+    dev.off()
+  }
 
 
   ###################
@@ -566,10 +570,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
     ylab("latitude")
 
   print(p3)
-  jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-  print(p3)
-  dev.off()
 
+  if(save){
+    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
+    print(p3)
+    dev.off()
+  }
 
 
 
@@ -692,10 +698,11 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
 
   print(p4)
 
-  jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-  print(p4)
-  dev.off()
-
+  if(save){
+    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
+    print(p4)
+    dev.off()
+  }
 
 
   return(list(abundance_grid, biomass_grid, meanWEIGHT_grid))

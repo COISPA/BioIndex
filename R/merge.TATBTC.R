@@ -33,7 +33,7 @@ merge_TATBTC <- function(ta, tb, tc, species, country="all", strata=BioIndex::st
     # load("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\- Pacchetto R BioIndex -\\BioIndex\\data\\TA_cols.rda")
     # load("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\- Pacchetto R BioIndex -\\BioIndex\\data\\TB_cols.rda")
     # load("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\- Pacchetto R BioIndex -\\BioIndex\\data\\TC_cols.rda")
-    species <- "MERLMER"
+    species <- "ARISFOL"
 
 
 
@@ -105,13 +105,17 @@ merge_TATBTC <- function(ta, tb, tc, species, country="all", strata=BioIndex::st
     }
   } # close -->if  length(l_country)==1
 
-  id_TA <- data.frame(id = paste(TA$AREA,TA$COUNTRY,TA$YEAR,"_", TA$VESSEL, TA$MONTH, TA$DAY,"_", TA$HAUL_NUMBER, sep = ""))
-  id_TB <- data.frame(id = paste(TB$AREA,TB$COUNTRY,TB$YEAR,"_", TB$VESSEL, TB$MONTH, TB$DAY,"_", TB$HAUL_NUMBER, sep = ""))
-  id_TC <- data.frame(id = paste(TC$AREA,TC$COUNTRY,TC$YEAR,"_", TC$VESSEL, TC$MONTH, TC$DAY,"_", TC$HAUL_NUMBER, sep = ""))
 
   TA <- TA[TA$COUNTRY %in% country_analysis , ] #  & TA$VALIDITY=="V"
   TB <- TB[TB$COUNTRY %in% country_analysis , ]
   TC <- TC[TC$COUNTRY %in% country_analysis , ]
+
+
+  id_TA <- data.frame(id = paste(TA$AREA,TA$COUNTRY,TA$YEAR,"_", TA$VESSEL, TA$MONTH, TA$DAY,"_", TA$HAUL_NUMBER, sep = ""))
+  id_TB <- data.frame(id = paste(TB$AREA,TB$COUNTRY,TB$YEAR,"_", TB$VESSEL, TB$MONTH, TB$DAY,"_", TB$HAUL_NUMBER, sep = ""))
+  id_TC <- data.frame(id = paste(TC$AREA,TC$COUNTRY,TC$YEAR,"_", TC$VESSEL, TC$MONTH, TC$DAY,"_", TC$HAUL_NUMBER, sep = ""))
+
+
 
   id_invalid <- id_TA$id[which(TA$VALIDITY == "I")]
 

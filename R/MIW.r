@@ -15,6 +15,7 @@
 #' @importFrom stringr str_split
 #' @import grDevices
 #' @import graphics
+#' @import magrittr
 #' @export
 #'
 #'
@@ -24,13 +25,15 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
         GSA <- 18
         country <- "all"
         depthr <- c(10,800)
-        strata=BioIndex::strata_scheme
-        stratification_tab = BioIndex::stratification
-        wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
-        save=TRUE
+        # strata=BioIndex::strata_scheme
+        # stratification_tab = BioIndex::stratification
+        strata_scheme=BioIndex::strata_scheme
+        stratification = BioIndex::stratification
+        # wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
+        save=FALSE
         verbose=TRUE
 
-        MIW(mTATB, GSA, country="all", depth_range=depthr, strata_scheme=strata, stratification=stratification_tab, wd, save,verbose)
+        # MIW(mTATB, GSA, country="all", depth_range=depthr, strata_scheme=strata, stratification=stratification_tab, wd, save,verbose)
     }
 
 #-----------------------
@@ -71,7 +74,7 @@ colnames(depth) <- c("strata", "min", "max", "bul")
 depth$strata <- strata_scheme$CODE # c(1,2,3,4,5)
 depth$min <-strata_scheme$MIN_DEPTH  # c(10,50,100,200,500)
 depth$max <-strata_scheme$MAX_DEPTH  # c(50,100,200,500,800)
-print("Select the depth range for the analysis")
+# print("Select the depth range for the analysis")
 # depth_range <- dlgInput("Depth range for the analysis: ", default="5,35",Sys.info()[""])$res
 # depth_range <- data.frame(range = strsplit(depth_range, ",")); depth_range <- as.numeric(as.character(depth_range[,1]))
 if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
@@ -274,7 +277,7 @@ timeseries$invCV <- 1/timeseries$CV
 colnames(res_table_cala2) <- c("year", "stratum 1","stratum 2", "stratum 3", "stratum 4", "stratum 5", "stratum 6", "Indices")
 
 
-{
+
     cols.strata <- (depth[!is.na(depth$strata), 'strata'] + 1)
     n.col.strata <- length(cols.strata)
     cv_strata <- sd_strata
@@ -298,6 +301,10 @@ colnames(res_table_cala2) <- c("year", "stratum 1","stratum 2", "stratum 3", "st
     colnames(tab.strata.MIW) <- c("year", paste("MIW", depth[!is.na(depth$strata), 'strata'],sep="_"), paste("SD", depth[!is.na(depth$strata), 'strata'],sep="_"), paste("CV", depth[!is.na(depth$strata), 'strata'],sep="_"))
     title.MIW.haul <- paste(sspp,"_GSA",GSA,"_(",dependent,"_by_stratum)-RSS_",depth_range[1],"-",depth_range[2], " m", sep="")
 
+
+    is.nan.data.frame <- function(x){do.call(cbind, lapply(x, is.nan))}
+    tab.strata.MIW[is.nan.data.frame(tab.strata.MIW)] <- NA
+
     if(save){
     write.table(tab.strata.MIW, paste(wd,"/output/",title.MIW.haul,".csv", sep=""), sep=";", row.names = F)
     }
@@ -318,47 +325,45 @@ colnames(res_table_cala2) <- c("year", "stratum 1","stratum 2", "stratum 3", "st
 
     years <- sort(unique(df.plot1$year))
     if(length(years)>1){
-        pm1 <- ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
-            geom_line() +
-            geom_point() +
+         pm1 <- ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
+            geom_line(na.rm=TRUE) +
+            geom_point(na.rm=TRUE) +
             xlab("year") +
             ylab(dep_text) +
             ggtitle(main.lab) +
             theme_bw()
-        print(pm1)
-        if (save){
-        ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)
-            }
     } else {
-        pm1 <- ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
-            geom_point() +
+         pm1 <- ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
+            geom_point(na.rm=TRUE) +
             xlab("year") +
             ylab(dep_text) +
             ggtitle(main.lab) +
             theme_bw()
-        print(pm1)
-        if(save){
-        ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5) #
-            }
     }
-}
 
+    print(pm1)
+
+    if (save){
+        ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)
+    }
 
 
 # plot timeseries of mean indices
 main <- paste(sspp,"_GSA",GSA,"_(",dependent,")-Random_Stratified_Sampling_",depth_range[1],"-",depth_range[2], " m", sep="")
 main.lab <- paste(sspp," GSA",GSA," (",dependent,")-RSS ",depth_range[1],"-",depth_range[2], " m", sep="")
 max_index <- max(timeseries[,"MIW"]) + max(timeseries[!is.na(timeseries$sd),"sd"])*1.2
+if (save){
 write.table(timeseries, paste(wd,"/output/",main,"_Timeseries.csv", sep=""), sep=";", row.names = F)
+}
 
 if (save){
-jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
-par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
-plot(timeseries[,"year"],  timeseries[,"MIW"], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab) # ylim=c(0,max_index*1.2)
-lines(timeseries[,"year"], (timeseries[,"MIW"]-1.96*timeseries[,"sd"]), type="l",lty=2, col="red" )
-lines(timeseries[,"year"], (timeseries[,"MIW"]+1.96*timeseries[,"sd"]), type="l",lty=2, col="red" )
-legend("topright", c("time series", "CI"), lty=c(1,2), pch=c(16, NA), col=c("black","red"))
-dev.off()
+    jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
+    par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
+    plot(timeseries[,"year"],  timeseries[,"MIW"], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab) # ylim=c(0,max_index*1.2)
+    lines(timeseries[,"year"], (timeseries[,"MIW"]-1.96*timeseries[,"sd"]), type="l",lty=2, col="red" )
+    lines(timeseries[,"year"], (timeseries[,"MIW"]+1.96*timeseries[,"sd"]), type="l",lty=2, col="red" )
+    legend("topright", c("time series", "CI"), lty=c(1,2), pch=c(16, NA), col=c("black","red"))
+    dev.off()
 } else {
     par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
     plot(timeseries[,"year"],  timeseries[,"MIW"], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab) # ylim=c(0,max_index*1.2)
@@ -367,4 +372,6 @@ dev.off()
     legend("topright", c("time series", "CI"), lty=c(1,2), pch=c(16, NA), col=c("black","red"))
 }
 cat("\n Estimation of MIW completed \n")
+results <- list(timeseries,tab.strata.MIW)
+return(results)
 }

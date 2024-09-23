@@ -223,6 +223,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
         ss <- do.call(rbind,ss)[,2]
         m2s$STRATUM <- ss
 
+     if (save) {
         if (sex=="all"){
         write.table(m2s,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(Combined_by_stratum).csv", sep=""),sep=";",row.names=F)
         write.table(m2all,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(Combined).csv", sep=""),sep=";",row.names=F)
@@ -230,13 +231,14 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
         write.table(m2s,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(",sex,"_by_stratum).csv", sep=""),sep=";",row.names=F)
         write.table(m2all,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(",sex,").csv", sep=""),sep=";",row.names=F)
             }
+     }
 
         m <- melt(m, id.vars=c("id","LC","YEAR"),variable.name = "STRATUM",value.name = "Abundance")
         m$YEAR <- as.factor(m$YEAR)
 
 # PLOT by year
         if (sex=="all"){
-            main <- paste(sspp,"_GSA",GSA,"_(LDF_by_year_Combained)_",depth_range[1],"-",depth_range[2], " m", sep="")
+            main <- paste(sspp,"_GSA",GSA,"_(LFD_by_year_Combained)_",depth_range[1],"-",depth_range[2], " m", sep="")
             main.lab <- paste(sspp," GSA",GSA," (LFD by year, Combained) ",depth_range[1],"-",depth_range[2], " m", sep="")
             dep_text <-expression(paste("LFD", sep=" "))
             min_lc <- min(m[m$STRATUM == "ALL.STRATA", "LC"])
@@ -251,9 +253,11 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 ylim(0,max_freq) +
                 theme_bw()
             print(p)
-            ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+            if(save){
+                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+                }
         } else {
-            main <- paste(sspp,"_GSA",GSA,"_(LDF_by_year_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
+            main <- paste(sspp,"_GSA",GSA,"_(LFD_by_year_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
             main.lab <- paste(sspp," GSA",GSA," (LFD by year, ",toupper(sex),") ",depth_range[1],"-",depth_range[2], " m", sep="")
             dep_text <-expression(paste("LFD", sep=" "))
             min_lc <- min(m[m$STRATUM == "ALL.STRATA", "LC"])
@@ -268,7 +272,9 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 ylim(0,max_freq) +
                 theme_bw()
             print(p)
-            ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+            if (save){
+                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+                }
         }
 
 
@@ -276,7 +282,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
         # plot by strata
 
         if (sex=="all"){
-            main <- paste(sspp,"_GSA",GSA,"_(LDF_by_stratum_Combained)_",depth_range[1],"-",depth_range[2], " m", sep="")
+            main <- paste(sspp,"_GSA",GSA,"_(LFD_by_stratum_Combained)_",depth_range[1],"-",depth_range[2], " m", sep="")
             main.lab <- paste(sspp," GSA",GSA," (LFD by stratum, Combained) ",depth_range[1],"-",depth_range[2], " m", sep="")
             dep_text <-expression(paste("LFD", sep=" "))
             min_lc <- min(m[m$STRATUM != "ALL.STRATA", "LC"])
@@ -292,9 +298,11 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 theme_bw()+
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
             print(p2)
-            ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+            if (save) {
+                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+            }
         } else {
-            main <- paste(sspp,"_GSA",GSA,"_(LDF_by_stratum_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
+            main <- paste(sspp,"_GSA",GSA,"_(LFD_by_stratum_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
             main.lab <- paste(sspp," GSA",GSA," (LFD by stratum, ",toupper(sex),") ",depth_range[1],"-",depth_range[2], " m", sep="")
             dep_text <-expression(paste("LFD", sep=" "))
             min_lc <- min(m[m$STRATUM != "ALL.STRATA", "LC"])
@@ -310,7 +318,9 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 theme_bw()+
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
             print(p2)
-            ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+            if(save){
+                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+            }
         }
 
 return(list("LFD"=m2all,"LFD by stratum"=m2s))

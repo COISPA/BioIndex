@@ -76,18 +76,6 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     metaDBnew <- mTATBsp
     years <- sort(unique(metaDBnew$YEAR))
     GSA <- unique(metaDBnew$GSA)[1]
@@ -256,9 +244,12 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose
 
 
             print(p1)
-            jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-            print(p1)
-            dev.off()
+
+            if (save){
+                jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
+                print(p1)
+                dev.off()
+            }
 
             return(sex_ratio)
         }
