@@ -7,3 +7,5 @@
   * improved outputs saving in MIW function
   * improved outputs saving in LFD, Lquant functions
   * improved outputs saving in index_on_grid, sex_ratio_on_grid functions
+# BioIndex v0.6.00
+  * Fixes for RBDFIS III

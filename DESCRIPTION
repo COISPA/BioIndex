@@ -1,7 +1,7 @@
 Package: BioIndex
 Type: Package
 Title: collection of functions used to perform analyses on data in MEDITS format
-Version: 0.5.02
+Version: 0.6.00
 Author: Walter Zupa
 Maintainer: Walter Zupa <zupa@fondazionecoispa.org>, <walter@zupa.it>
 Description: The package is a collection of functions used by BioIndex software.
@@ -11,7 +11,6 @@ Imports: hms,marmap,gridExtra,reshape2, dplyr, magrittr,terra,methods,zip
 Encoding: UTF-8
 LazyData: TRUE
 LazyDataCompression: xz
-Packaged: 2024-07-08 13:00:00 UTC; Walter
 RoxygenNote: 7.2.3
 Suggests: 
     rmarkdown,
