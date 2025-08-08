@@ -14,6 +14,7 @@
 #' @param verbose boolean. If TRUE a message is printed
 #' @importFrom marmap getNOAA.bathy as.xyz
 #' @importFrom ggplot2 ggplot coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_text geom_point coord_map ggtitle ggsave theme map_data
+#' @importFrom utils data
 #' @export
 hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, res=NA, wd=NA,save=TRUE, verbose=TRUE){
 

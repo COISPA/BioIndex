@@ -7,15 +7,15 @@
 #' @param tb data frame of the TB table in the MEDITS format
 #' @param tc data frame of the TC table in the MEDITS format
 #' @param sspp reference species for the analysis
-#' @param rec_threshold cutoff threshold for recruits
-#' @param spaw_threshold cutoff threshold for spawners
-#' @param haul_threshold minimum number of individuals to be used in estimation of the spatial indicaticators
+#' @param rec_threshold cutoff threshold for recruits (reported in mm)
+#' @param spaw_threshold cutoff threshold for spawners  (reported in mm)
+#' @param haul_threshold minimum number of individuals to be used in estimation of the spatial indicators
 #' @param sexes reference sex for the analysis
 #' @param depth reference depth range
 #' @param GSA reference GSA for the analysis
 #' @param country reference country
 #' @param map_lim coordinates limits for the maps
-#' @param depth_lines depth contours to be plotted in the maps (3 values allowed)
+#' @param depth_lines depth contours to be plotted in the maps (3 values allowed, e.g c(50,200,800))
 #' @param strata data frame of the reference strata for the study area
 #' @param stratification_tab data frame of the stratification scheme
 #' @param resolution resolution of the depth line
@@ -25,7 +25,12 @@
 #' @param save boolean. If TRUE the results are stored in the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @examples
-#' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200, spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all", map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800), strata=BioIndex::strata_scheme, stratification_tab = BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(), zip=TRUE, save=TRUE, verbose=TRUE)
+#' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
+#' spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
+#' map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),
+#' strata=BioIndex::strata_scheme, stratification_tab =
+#' BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(),
+#' zip=TRUE, save=TRUE, verbose=TRUE)
 #'
 #' @importFrom methods is
 #' @importFrom zip zip
@@ -616,6 +621,7 @@ BioIndex <- function(ta,
     #----------------
     # ZIP FILE
     #----------------
+    # BioIndex_Report_MERLMER_GSA10_depth_10_800
     if (zip) {
         files <- list.files(
             path = file.path(wd, "output"),
@@ -629,8 +635,8 @@ BioIndex <- function(ta,
         }
 
         output <- file.path(wd, "output")
-        zip(paste0(
-            "BioIndex_results_",
+        zip::zip(paste0(
+            "BioIndex_results_" ,sspp,"_GSA",GSA,"_Depth",paste(depth, collapse="-"), "m_",
             paste(
                 as.character(Sys.Date()),
                 format(Sys.time(), "_h%Hm%Ms%OS0"),

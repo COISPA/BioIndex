@@ -21,9 +21,9 @@ IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
 
         verbose=TRUE
         wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex_app\\R_BioIndex_3.3_(in update)"
-        ta <- read.table(paste(wd,"input/TA/TA GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
-        tb <- read.table(paste(wd,"input/TB/TB GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
-        tc <- read.table(paste(wd,"input/TC/TC GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
+        ta <- read.table(paste(wd,"input/TA/TA GSA18 2017-2020.csv", sep="/"), sep=";", header=TRUE)
+        tb <- read.table(paste(wd,"input/TB/TB GSA18 2017-2020.csv", sep="/"), sep=";", header=TRUE)
+        tc <- read.table(paste(wd,"input/TC/TC GSA18 2017-2020.csv", sep="/"), sep=";", header=TRUE)
         country="all"
 
         species <- "MERLMER"
@@ -91,7 +91,7 @@ IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
 
 
     if(save){
-        write.table(Res,paste(wd,"/output/",system,"IUtest",lastn,"_RSS.csv",sep=""),sep=";",quote=F,row.names=F,app=F)
+        write.table(Res,paste(wd,"/output/",system,"IUtest",lastn,"_RSS.csv",sep=""),sep=";",quote=FALSE,row.names=FALSE,append=FALSE)
 
        if(hasdata==1)dev.copy(jpeg,paste(wd,"/output/",sspp,"_",system,"_SmoothedIndicators_RSS.jpg",sep=""),height=5,width=10, units='in', res=300)
         dev.off()
@@ -131,7 +131,7 @@ IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
     }
 
     if (save){
-        write.table(table,paste(wd, "/output/",sspp,"_GSA",GSA,"_IUT_results_",lastn,"years_RSS.csv",sep=""),sep=";",col.names=T,row.names=F,quote=F)
+        write.table(table,paste(wd, "/output/",sspp,"_GSA",GSA,"_IUT_results_",lastn,"years_RSS.csv",sep=""),sep=";",col.names=TRUE,row.names=FALSE,quote=FALSE)
 }
 return(table)
 }

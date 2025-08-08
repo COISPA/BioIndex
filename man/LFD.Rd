@@ -37,9 +37,6 @@ LFD(
 \item{save}{Logical. If `TRUE` (default), the function saves output tables and plots to `wd/output/`. If `FALSE`, no files are saved.}
 
 \item{verbose}{Logical. If `TRUE` (default), informative messages are printed to the console to trace the function steps.}
-
-\item{Description}{Input parameters include biological and haul data, stratification schemes,
-reference filters (e.g., sex, GSA, country, depth), and output control options (working directory, saving, verbosity).}
 }
 \value{
 A named list with two elements:
@@ -49,12 +46,16 @@ A named list with two elements:
 }
 }
 \description{
+Input parameters include biological and haul data, stratification schemes,
+reference filters (e.g., sex, GSA, country, depth), and output control options (working directory, saving, verbosity).
+}
+\details{
 This function estimates and plots the length frequency distribution (LFD) by year and by stratum,
 based on merged biological and haul data from MEDITS surveys. It computes raised numbers,
 applies stratification weights, and generates publication-ready plots and CSV outputs.
 Stratification weighting is based on swept area and surface area of the strata.
-}
-\details{
+
+
 The function:
 \itemize{
   \item Filters hauls by depth and country.

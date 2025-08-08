@@ -1,4 +1,6 @@
-
+#' @importFrom stats predict AIC nls
+#' @importFrom stats pnorm cor.test rnorm dchisq deviance df.residual na.exclude sd time
+#' @importFrom mgcv gam
 .ChangeYears.func<-function(Year, Indic ,Sd=NULL,alpha=0.05,species,B=199,ytext,CV=0.01,lastn=5,write=FALSE,speciesname,lastligne=FALSE) {
 
   if (FALSE) {
@@ -17,6 +19,9 @@
 
     }
 
+    utils::globalVariables(c("lab_y", "AGE", "LENGTH", "LENGTH_CLASS", "med_bathy", "strata"))
+
+
 #searches for change in second derivative of index
 # Year input data = year vector
 # Indic input data = indicator time series estimates as vector
@@ -27,7 +32,7 @@
 # ytext : label of indicator name for plot
 # lastn : number of recent years (time horizon) for diagnosis of change
 
-library("mgcv")
+
 
 ####AUXILIARY FUNCTIONS###########
 .Ggam.func<-function(G,annee,first=2,df=1){
@@ -39,7 +44,7 @@ library("mgcv")
       else fit<-gam(G~s(annee,bs="tp",k=length(annee)-1))
       pchisq<-dchisq(deviance(fit),df.residual(fit))
  }
- else fit<-gam(G~s(annee,k=df+1,fx=T,bs="tp"))
+ else fit<-gam(G~s(annee,k=df+1,fx=TRUE,bs="tp"))
  ifelse(first==1,return(list(df=summary(fit)$edf,pchisq=pchisq)),return(fit$fitted))
 }
 
@@ -50,7 +55,7 @@ library("mgcv")
 #and  second derivative
  delta <- 1e-7
  data<-data.frame(G=G,annee=annee)
- fit<-gam(G~s(annee,k=df+1,fx=T,bs="tp"),data=data)
+ fit<-gam(G~s(annee,k=df+1,fx=TRUE,bs="tp"),data=data)
 
  #predict years-delta and years on scale of linear predictor
  data.pred<-data.frame(annee=c(annee-delta,annee))
@@ -156,13 +161,13 @@ for(i in 1:lastn){
  testdec<-pnorm((rev(as.numeric(D$G2))[i]/rev(as.numeric(D$G2sd))[i]),lower.tail=TRUE)
  t3dec[i]=sum(testdec<=alpha) #=1 if H0 not true
 }
-T3Dec<-ifelse(sum(t3dec,na.rm=T)<lastn,1,0) # =0 if H0 rejected, =1 if H0 accepted
+T3Dec<-ifelse(sum(t3dec,na.rm=TRUE)<lastn,1,0) # =0 if H0 rejected, =1 if H0 accepted
 
 for(i in 1:lastn){
  testinc<-pnorm((rev(as.numeric(D$G2))[i]/rev(as.numeric(D$G2sd))[i]),lower.tail=FALSE)
  t3inc[i]=sum(testinc<=alpha) #=1 if H0 not true
 }
-T3Inc<-ifelse(sum(t3inc,na.rm=T)<lastn,1,0) #H0 not true only if ALL tests are significant!
+T3Inc<-ifelse(sum(t3inc,na.rm=TRUE)<lastn,1,0) #H0 not true only if ALL tests are significant!
 
 #######linear model test#####################
 #linear slope over nlastmin years
@@ -219,7 +224,7 @@ id<-!is.na(Indic);Indic<-Indic[id];Year<-Year[id];Sd<-Sd[id]
 #create vector of standar deviations if not provided using given CV
 #same if all standard deviations are NA
 if(is.null(Sd)|sum(Sd)==0|is.na(sum(Sd)))Sd<-Indic*CV
-ind <- scale(1:length(Year), scale = F)
+ind <- scale(1:length(Year), scale = FALSE)
 
 resmax<-res2nd<-matrix(0,1,length(Year))
 reslow<-matrix(0,1,4);reshigh<-matrix(0,1,2)
@@ -244,7 +249,7 @@ dfG<-ceiling(fit$df)
 pchisq<-fit$pchisq
 if(dfG==1) dfG<-2
 #linear model whole time series
-indsp <- scale(1:length(anneesp), scale = F)
+indsp <- scale(1:length(anneesp), scale = FALSE)
 Gfit<-lm(G ~ indsp, na.action = na.exclude)
 Gpvalue <- summary(Gfit)$coefficients[8]
 
@@ -269,9 +274,9 @@ for(j in 2:B) {
 		  Gderiv1[j,ida]<-Derivs$deriv1
 		  Gderiv2[j,ida]<-Derivs$deriv2
 }
-G1sd<-apply(Gderiv1,2,sd,na.rm=T)
-G2sd<-apply(Gderiv2,2,sd,na.rm=T)
-Ggamsd<-apply(Ggam,2,sd,na.rm=T)
+G1sd<-apply(Gderiv1,2,sd,na.rm=TRUE)
+G2sd<-apply(Gderiv2,2,sd,na.rm=TRUE)
+Ggamsd<-apply(Ggam,2,sd,na.rm=TRUE)
 
 #create results matrix:
 yr=length(anneesp)
@@ -305,18 +310,18 @@ if(Diagnos$RecentInc>0) textregle="increase"
 #if(Diagnos$ChangePointInc==0) textregle=paste(textregle,"*",sep="")
 
 #par(mar=c(2,2,2,0.5))
-.error.bar(as.integer(anneesp), G, lower = apply(Gboot[,ida],2,quantile,0.025,na.rm=T),
-		upper = apply(Gboot[,ida],2,quantile,0.975,na.rm=T), incr = F,
-main = speciesname,xlab ="year", ylab =lab_y,cex.main=1.5,axes=T,bty="o")
-axis(2,labels=T)
-ifelse(lastligne,axis(1,labels=T),axis(1,labels=T))
+.error.bar(as.integer(anneesp), G, lower = apply(Gboot[,ida],2,quantile,0.025,na.rm=TRUE),
+		upper = apply(Gboot[,ida],2,quantile,0.975,na.rm=TRUE), incr = FALSE,
+main = speciesname,xlab ="year", ylab =lab_y,cex.main=1.5,axes=TRUE,bty="o")
+axis(2,labels=TRUE)
+ifelse(lastligne,axis(1,labels=TRUE),axis(1,labels=TRUE))
 box()
 #main = paste(species,"\n","Changes in last", lastn,"years", "linear:",textdiaglin,
 #"; rule:",textregle),xlab ="Year", ylab = ytext,cex.main=0.7)
 #add smooth lines from gam + 2.5 and 97.5 percentiles
 lines(anneesp,Ggam[1,ida],lty=1)
-lines(anneesp,apply(Ggam[,ida],2,quantile,0.025,na.rm=T),lty=2)
-lines(anneesp,apply(Ggam[,ida],2,quantile,0.975,na.rm=T),lty=2)
+lines(anneesp,apply(Ggam[,ida],2,quantile,0.025,na.rm=TRUE),lty=2)
+lines(anneesp,apply(Ggam[,ida],2,quantile,0.975,na.rm=TRUE),lty=2)
 #savePlot(paste(ytext,species),type="wmf")
 #
 return(c(species,ytext,pchisq,Diagnos))
@@ -325,7 +330,7 @@ return(c(species,ytext,pchisq,Diagnos))
 
 
 
-.error.bar<-function(x, y = NULL, lower, upper, incr = T, bar.ends = F, gap = F, add = F, horizontal = F, ..., xlab = deparse(substitute(x)), xlim, ylim) {
+.error.bar<-function(x, y = NULL, lower, upper, incr = TRUE, bar.ends = FALSE, gap = FALSE, add = FALSE, horizontal = FALSE, ..., xlab = deparse(substitute(x)), xlim, ylim) {
 	draw.null.warn <- function(draw, gap)
 	{
 		if(!any(draw)) {
@@ -376,22 +381,22 @@ return(c(species,ytext,pchisq,Diagnos))
 		if(horizontal) {
 			if(missing(ylim))
 				plot(x, y, xlim = if(missing(xlim)) range(
-						c(lower, upper), na.rm = T
+						c(lower, upper), na.rm = TRUE
 						) else xlim, xlab = xlab,
 					...)
 			else plot(x, y, xlim = if(missing(xlim)) range(
-						c(lower, upper), na.rm = T
+						c(lower, upper), na.rm = TRUE
 						) else xlim, ylim = ylim,
 					xlab = xlab, ...)
 		}
 		else {
 			if(missing(xlim))
 				plot(x, y, ylim = if(missing(ylim)) range(
-						c(lower, upper), na.rm = T
+						c(lower, upper), na.rm = TRUE
 						) else ylim, xlab = xlab,
 					...)
 			else plot(x, y, ylim = if(missing(ylim)) range(
-						c(lower, upper), na.rm = T
+						c(lower, upper), na.rm = TRUE
 						) else ylim, xlim = xlim,
 					xlab = xlab, ...)
 		}

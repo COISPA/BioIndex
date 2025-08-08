@@ -12,17 +12,16 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-library(BioIndex)
 ```
 
 # Installation
 
 Install the latest BioIndex release from GitHub:
 
-```{r installation}
-library(devtools)
-install_github("COISPA/BioIndex",upgrade = c("never"))
+```{r installation, eval=FALSE}
+# library(BioIndex)
+# library(devtools)
+# install_github("COISPA/BioIndex",upgrade = c("never"))
 
 ## uncomment the following code line to install the package buiding the vignettes
 
@@ -41,10 +40,11 @@ BioIndex package was built to work both on stand-alone (on a local machine) or o
 # Use
 
 ```{r, fig.height=8, fig.width=8}
-BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
-         spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, 
-         country="all", map_lim=c(13.3,15.2,39.9,41.3),
-         depth_lines=c(50,200,800), strata=BioIndex::strata_scheme, 
-         stratification_tab = BioIndex::stratification, resolution=1, 
-         buffer=0.1, wd=tempdir(), zip=TRUE, save=TRUE, verbose=TRUE)
+BioIndex::BioIndex(ta=BioIndex::TA, tb=BioIndex::TB, tc=BioIndex::TC, 
+                   sspp="MERLMER",rec_threshold=200,
+                   spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10,
+                   country="all", map_lim=c(13.3,15.2,39.9,41.3),
+                   depth_lines=c(50,200,800), strata=BioIndex::strata_scheme,
+                   stratification_tab = BioIndex::stratification, resolution=1,
+                   buffer=0.1, wd=tempdir(), zip=TRUE, save=TRUE, verbose=TRUE)
 ```

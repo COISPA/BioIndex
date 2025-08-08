@@ -5,8 +5,8 @@
 #'
 #' @param mTATC mTATC table
 #' @param map_range range of coordinates for the map
-#' @param thresh_rec threshold value to select recruits data from mTATC table
-#' @param thresh_spaw threshold value to select spawners data from mTATC table
+#' @param thresh_rec threshold value to select recruits data from mTATC table (reported in mm)
+#' @param thresh_spaw threshold value to select spawners data from mTATC table (reported in mm)
 #' @param depths three reference bathymetric lines to be plotted in the maps
 #' @param res resolution of the depth lines
 #' @param buffer buffer around the map
@@ -15,6 +15,7 @@
 #' @param verbose boolean. If TRUE messages are prompted in the console
 #' @export
 #' @importFrom marmap getNOAA.bathy as.xyz
+#' @importFrom utils data
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @importFrom stats aggregate
 bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=NA, buffer=0.1,wd, save = FALSE, verbose = FALSE) {

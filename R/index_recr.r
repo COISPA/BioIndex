@@ -5,7 +5,7 @@
 #' @param GSA reference GSA for the analysis
 #' @param country vector of reference countries for the analysis
 #' @param depth_range range of depth strata to perform the analysis (min, max)
-#' @param cutoff cutoff value for splitting recruits portion of population
+#' @param cutoff cutoff value for splitting recruits portion of population (reported in mm)
 #' @param stratification data frame of strata surface area
 #' @param wd working directory
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)

@@ -6,6 +6,7 @@
 #' @param sspp reference species for the analysis
 #' @param wd path of working directory
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
+#' @importFrom utils write.table
 #' @export
 spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE){
 

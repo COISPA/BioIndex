@@ -22,9 +22,9 @@ bubbleplot_RS_by_hauls(
 
 \item{map_range}{range of coordinates for the map}
 
-\item{thresh_rec}{threshold value to select recruits data from mTATC table}
+\item{thresh_rec}{threshold value to select recruits data from mTATC table (reported in mm)}
 
-\item{thresh_spaw}{threshold value to select spawners data from mTATC table}
+\item{thresh_spaw}{threshold value to select spawners data from mTATC table (reported in mm)}
 
 \item{depths}{three reference bathymetric lines to be plotted in the maps}
 

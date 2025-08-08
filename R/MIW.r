@@ -38,10 +38,10 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
 
     vmsg <- function(...) if (isTRUE(verbose)) message(...)
 
-    ## ── validate working directory when save = TRUE ───────────────────────────
+    ## ---- validate working directory when save = TRUE -----------
     if (isTRUE(save)) {
         if (is.na(wd) || !nzchar(wd)) {
-            vmsg("[MIW] `save = TRUE` but `wd` not provided – disabling file output.")
+            vmsg("[MIW] `save = TRUE` but `wd` not provided - disabling file output.")
             save <- FALSE
         } else {
             if (!dir.exists(wd)) dir.create(wd, recursive = TRUE, showWarnings = FALSE)

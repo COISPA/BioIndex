@@ -14,6 +14,9 @@
 #' @importFrom stringr str_split
 #' @import grDevices
 #' @import graphics
+#' @importFrom utils write.table
+#' @importFrom grDevices jpeg dev.off
+#' @importFrom stats sd
 #' @export
 
 indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE) {
@@ -396,7 +399,7 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
 }
 timeseries_abundance <- timeseries
     if (save){
-    jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
+    jpeg(filename =paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
     par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
     plot(timeseries[,1],  timeseries[,2], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab) # ylim=c(0,max_index*1.2)
     lines(timeseries[,1], (timeseries[,2]-1.96*timeseries[,3]), type="l",lty=2, col="red" )
@@ -418,7 +421,7 @@ timeseries_abundance <- timeseries
     max_index <- max(timeseries[!is.na(timeseries$invCV) & timeseries$invCV != Inf,"invCV"])
 
   if (save){
-    jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
+    jpeg(filename =paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
     par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
     plot(timeseries[,1],  timeseries[,5], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab="1/CV", main=main.lab) # ylim=c(0,max_index*1.2)
     legend("topright", c("inverse CV"), lty=c(1), pch=c(16), col=c("black"))
@@ -434,7 +437,7 @@ timeseries_abundance <- timeseries
     main.lab <- paste(sspp," GSA",GSA," (positive hauls %)-RSS ",depth_range[1],"-",depth_range[2], " m", sep="")
     max_index <- max(timeseries[!is.na(timeseries$positive_hauls_perc),"positive_hauls_perc"])
     if (save) {
-        jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
+        jpeg(filename =paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
         par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
         plot(timeseries[,1],  timeseries[,6], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab="number of hauls (%)", main=main.lab) # ylim=c(0,max_index*1.2)
         legend("topright", c("number of positive hauls %"), lty=c(1), pch=c(16), col=c("black"))
@@ -697,7 +700,7 @@ timeseries_abundance <- timeseries
     if (save) {write.table(timeseries, paste(wd,"/output/",main,"_Timeseries.csv", sep=""), sep=";", row.names = F)}
     timeseries_biomass <- timeseries
 if (save){
-    jpeg(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
+    jpeg(filename =paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
     par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
     plot(timeseries[,1],  timeseries[,2], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab) # ylim=c(0,max_index*1.2)
     lines(timeseries[,1], (timeseries[,2]-1.96*timeseries[,3]), type="l",lty=2, col="red" )

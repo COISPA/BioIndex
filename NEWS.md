@@ -29,3 +29,8 @@
     including full RoME QC. Mirrors legacy behaviour but faster on large datasets thanks to vectorization of for loops.
   * Optimized `merge_TATBTC()` vectorising for loops to reduce run-time while keeping identical
     numerical results.
+  * `BioIndex()` function modified to create a report filename that now includes the MEDITS code of the analyzed species, the refernece GSA and the lower and upper depth values (e.g., _BioIndex_results_ARISFOL_GSA18_Depth200-800m_2025-08-08_h09m15s24.zip_). This makes it easier to organize and identify files, especially when running analyses for multiple species or depths (according to outcomes of RDBFIS II second training).
+  * `BioIndex()` documentation modified to specify the *mm units* required for both recruits and spawners cutoff thresholds (according to outcomes of RDBFIS II second training).
+  * `bubbleplot_RS_by_hauls()` documentation modified to specify the mm units required for both recruits and spawners cutoff thresholds (according to outcomes of RDBFIS II second training).
+  * `index_recr()` documentation modified to specify the mm units required for recruits cutoff threshold (according to outcomes of RDBFIS II second training).
+  * `index_spawn()` documentation modified to specify the mm units required for spawners cutoff threshold (according to outcomes of RDBFIS II second training).

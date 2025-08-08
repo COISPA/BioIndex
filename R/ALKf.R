@@ -6,6 +6,7 @@
 #' @param GSA reference GSA for the analysis
 #' @param country reference country
 #' @param years number of years to be considered in the analysis
+#' @importFrom stats predict AIC nls
 #' @export
 
 ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {

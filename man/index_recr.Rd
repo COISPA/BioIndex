@@ -27,7 +27,7 @@ index_recr(
 
 \item{depth_range}{range of depth strata to perform the analysis (min, max)}
 
-\item{cutoff}{cutoff value for splitting recruits portion of population}
+\item{cutoff}{cutoff value for splitting recruits portion of population (reported in mm)}
 
 \item{stratification}{data frame of strata surface area}
 

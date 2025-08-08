@@ -12,6 +12,7 @@
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @param verbose boolean. If TRUE a message is printed
 #' @importFrom marmap getNOAA.bathy as.xyz
+#' @importFrom utils data
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @export
 

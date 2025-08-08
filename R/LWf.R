@@ -6,6 +6,8 @@
 #' @param GSA reference GSA for the analysis
 #' @param country reference country
 #' @param n_records minimum number of records to perform the analysis
+#' @importFrom stats lm predict coef coefficients nls
+#' @importFrom grDevices jpeg dev.off
 #' @export
 LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
     if (FALSE) {
@@ -123,7 +125,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                                 prediction$X <- lc_list
                                 prediction$pred <- predict(mod, newdata = prediction)
 
-                                jpeg(file = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Brut_weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                                jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Brut_weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
                                 plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
                                 lines(prediction$X, prediction$pred, col = "red", lwd = 2)
                                 legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
@@ -250,7 +252,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                                 prediction$X <- lc_list
                                 prediction$pred <- predict(mod, newdata = prediction)
 
-                                jpeg(file = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Clean_Weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                                jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Clean_Weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
                                 plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
                                 lines(prediction$X, prediction$pred, col = "red", lwd = 2)
                                 legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
@@ -373,7 +375,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                             prediction$X <- lc_list
                             prediction$pred <- predict(mod, newdata = prediction)
 
-                            jpeg(file = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                            jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
                             plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
                             lines(prediction$X, prediction$pred, col = "red", lwd = 2)
                             legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
