@@ -15,20 +15,23 @@ sex_ratio_on_grid(
 )
 }
 \arguments{
-\item{mTATBsp}{spatial mTATB}
+\item{mTATBsp}{A spatial version of the merged TA-TB dataset, processed through `overlayGrid()`, containing sex information.}
 
-\item{depth}{reference depth range}
+\item{depth}{Character string specifying the depth range used for filtering (e.g., `"10,800"`). Must correspond to available internal GFCM grid masks.}
 
-\item{wd}{working directory}
+\item{wd}{Working directory. Used to save output files if `save = TRUE`.}
 
-\item{map_range}{range of coordinates for the map}
+\item{map_range}{numeric vector with coordinates defining the map extent (`xmin`, `xmax`, `ymin`, `ymax`).}
 
-\item{threshold}{minimum number of individuals per haul}
+\item{threshold}{Minimum number of individuals required per haul to be included in the sex ratio estimation. Default is 30.}
 
-\item{verbose}{boolean. If TRUE messages are prompted in the console}
+\item{verbose}{Logical. If `TRUE`, informative messages are printed to the console.}
 
-\item{save}{boolean. If TRUE the outputs are saved in the local folder}
+\item{save}{Logical. If `TRUE`, the plot and sex ratio table are saved to the working directory.}
+}
+\value{
+A `data.frame` containing sex ratio (`ratio`), standard deviation (`sd`), and coefficient of variation (`CV`) for each GFCM grid cell.
 }
 \description{
-Plot sex ratio spatial distribution
+This function calculates and plots the spatial distribution of sex ratio (F / (F + M)) over the GFCM grid for a given species. It uses data from merged MEDITS datasets (TA, TB, TC), previously spatialized with `overlayGrid()`. The function filters hauls by total abundance threshold and depth range, calculates sex ratio per grid cell, and plots the output using color-coded categories based on quantiles. The result is a choropleth map of sex ratio patterns, useful to highlight spatial differences in sex structure. Raw sex ratio estimates per grid cell can also be exported.
 }

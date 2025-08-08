@@ -127,3 +127,30 @@
 #' @keywords stratum_200_800
 "stratum_200_800"
 
+#' Mediterranean and Black Sea bathymetry (0–1000 m, bathy object)
+#'
+#' A precomputed \code{bathy} object containing bathymetric data for the Mediterranean Sea
+#' and the Black Sea. Depth values are restricted between 0 and -1000 meters. This dataset
+#' was downloaded using \code{\link[marmap]{getNOAA.bathy}} with a resolution of 1 arc-minute,
+#' and filtered to remove deeper areas.
+#'
+#' The object can be used directly with functions from the \pkg{marmap} package, such as
+#' \code{plot.bathy()} and \code{get.depth()}.
+#'
+#' @format An object of class \code{bathy} (a matrix with longitude and latitude as axes, and depth in meters)
+#'
+#' @details
+#' The spatial extent includes:
+#' \itemize{
+#'   \item Longitude: from -6° to 42°
+#'   \item Latitude: from 30° to 47°
+#'   \item Depth: from 0 to -1000 meters
+#' }
+#' Only marine cells within this depth range are retained. Land and deeper areas are set to \code{NA}.
+#'
+#' @usage data(med_bathy)
+#'
+#' @source NOAA ETOPO1 via \code{marmap::getNOAA.bathy()}
+#' @seealso \code{\link[marmap]{getNOAA.bathy}}, \code{\link[marmap]{plot.bathy}}, \code{\link{bubbleplot_RS_by_hauls}}
+#' @keywords datasets bathymetry mediterranean blacksea
+"med_bathy"

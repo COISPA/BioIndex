@@ -37,10 +37,10 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
 
 
     if (verbose){
-    cat("\n########################\n")
-    cat("spatial metaDB preparation\n")
-    cat("########################\n")
-    cat("\n")
+        cat("\n########################\n")
+        cat("spatial metaDB preparation\n")
+        cat("########################\n")
+        cat("\n")
     }
 
     countries <- unique(mTATB[!is.na(mTATB$COUNTRY),"COUNTRY"])
@@ -85,17 +85,21 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
     centroidi <- terra::unwrap(BioIndex::centroidi)
 
     mTATB_geo <- metaDBnew_georef
-    if (save){
-    write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_catch in GRID.csv",sep=""), sep=";", row.names=F)
-        if(verbose){
-    cat(paste("Catch metaDB saved in the following folder: '",wd, "/output/",sspp," - allGSAs_metaDB_catch in GRID.csv \n",sep=""))
-    cat("\n")
+    if(verbose){
+        message("Catch metaDB successfully created.")
     }
+    if (save){
+
+        write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_catch in GRID.csv",sep=""), sep=";", row.names=F)
+        if(verbose){
+            message(paste("Catch metaDB saved in the output folder"))
+            cat("\n")
+        }
     }
     if (any(is.na(metaDBnew_georef$cgpmgrid_id))) {
         if (verbose) {
-        message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
-        cat("\n")
+            message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
+            cat("\n")
         }
     }
 
@@ -112,18 +116,22 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
     metaDBnew_georef <- data.frame(metaDB, x_center= overlay$gfcm.cen_5,y_center=overlay$gfcm.cen_6 ,cgpmgrid_id=overlay$GFCM_ID)
 
     mTATC_geo <- metaDBnew_georef
-    if(save){
-    write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_biological in GRID.csv",sep=""), sep=";", row.names=F)
     if(verbose){
-    cat(paste("Biological metaDB saved in the following folder: '",wd, "/output/",sspp," - allGSAs_metaDB_biological in GRID.csv \n",sep=""))
-    cat("\n")
+        message("Biological metaDB successfully created.")
     }
+    if(save){
+
+        write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_biological in GRID.csv",sep=""), sep=";", row.names=F)
+        if(verbose){
+            message(paste("Biological metaDB saved in the output folder"))
+            cat("\n")
+        }
     }
     if (any(is.na(metaDBnew_georef$cgpmgrid_id))) {
         if (verbose){
-        message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
-        cat("\n")
+            message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
+            cat("\n")
         }
     }
-return(list(mTATB_geo,mTATC_geo))
+    return(list(mTATB_geo,mTATC_geo))
 }

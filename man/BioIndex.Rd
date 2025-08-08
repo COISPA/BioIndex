@@ -20,7 +20,7 @@ BioIndex(
   depth_lines = c(10, 200, 800),
   strata = BioIndex::strata_scheme,
   stratification_tab = BioIndex::stratification,
-  resolution = 1,
+  resolution = NA,
   buffer = 0.1,
   wd,
   zip = TRUE,

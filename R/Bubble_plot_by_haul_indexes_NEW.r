@@ -1,6 +1,7 @@
 #' Bubble plot of abundance and biomass indices by haul
 #' @description
-#' The function generates bubble plot of abundance and biomass indices by haul
+#' The function generates bubble plot of abundance and biomass indices by haul.
+#' If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 #'
 #' @param mTATB data frame
 #' @param map_lim coordinates limits for the plotted map
@@ -14,15 +15,16 @@
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @export
 
-bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, res=0.1,wd=NA,save=TRUE, verbose=TRUE){
+bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, res = NA, wd=NA,save=TRUE, verbose=TRUE){
 
     if (FALSE) {
         map_lim <- c(15.5,20.0,39.8,42.5)
         # map_lim <- NA
         depth_lines <- c(200,500,800)
         buffer=0.5
-        res=0.1
+        res=NA
         save=TRUE
+        verbose = TRUE
         # ta <- read.table(paste(wd,"input/TA/TA GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
         # tb <- read.table(paste(wd,"input/TB/TB GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
         # tc <- read.table(paste(wd,"input/TC/TC GSA18 2017-2020.csv", sep="/"), sep=";", header=T)
@@ -30,8 +32,12 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
 
         mTATB <- read.table("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)\\output\\mergeTATB_MERLMER.csv",sep=";",header=TRUE)
 
-        bubble_plot_by_haul_indexes(mTATB, c(15.5,20.0,39.8,42.5),  c(200,500,800), buffer=0, res=0.1,wd=wd,save=TRUE, verbose=TRUE)
+        bubble_plot_by_haul_indexes(mTATB, map_lim,  depth_lines, buffer=0, wd=wd,save=TRUE, verbose=TRUE)
     }
+
+  if (!requireNamespace("mapproj", quietly = TRUE)) {
+    stop("Package 'mapproj' needed for coord_map() in ggplot2. Please install it.", call. = FALSE)
+  }
 
   if (is.na(wd) & save) {
     if (verbose){
@@ -90,8 +96,21 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
     yl <- c(y1,y2)
     x_breaks <- c(round(xl[1], 0), round(xl[1], 0) + round((xl[2] - xl[1]) / 2, 0), round(xl[1], 0) + 2 * round((xl[2] - xl[1]) / 2, 0))
     y_breaks <- c(round(yl[1], 0), round(yl[1], 0) + round((yl[2] - yl[1]) / 2, 0), round(yl[1], 0) + 2 * round((yl[2] - yl[1]) / 2, 0))
-    bath <- suppressMessages(getNOAA.bathy (lon1 = min(xl)-1, lon2 = max(xl)+1, lat1 = min(yl)-1-buff,lat2 = max(yl)+1+buff, resolution = res))
-    bat_xyz <- as.xyz(bath)
+
+
+    # bath <- suppressMessages(getNOAA.bathy (lon1 = min(xl)-1, lon2 = max(xl)+1, lat1 = min(yl)-1-buff,lat2 = max(yl)+1+buff, resolution = res))
+    # bat_xyz <- as.xyz(bath)
+
+    if (!is.na(res)){
+      bath <- suppressMessages(getNOAA.bathy(lon1 = min(xl) - 1, lon2 = max(xl) + 1, lat1 = min(yl) - 1 - buff, lat2 = max(yl) + 1 + buff, resolution = res))
+      bat_xyz <- as.xyz(bath)
+    } else {
+      data("med_bathy", package = "BioIndex", envir = environment())
+      bat_xyz <- as.xyz(med_bathy)
+      bat_xyz <- bat_xyz[!is.na(bat_xyz[,3]), ]
+      colnames(bat_xyz) <- c("V1","V2","V3")
+      bat_xyz <- subset(bat_xyz, V1 >= min(xl) & V1 <= max(xl) & V2 >= min(yl) - buff & V2 <= max(yl) + buff)
+    }
 
     if (any(is.na(depth_lines))) {
         depth_lines <- c(-200,-500,-800)
@@ -136,6 +155,7 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
 # ABUNDANCE OUTPUT
     suppressMessages(
         p_n <- ggplot() +
+          # coord_map() requires the mapproj package to be installed.
             coord_map(projection="mercator",xlim = c((xmin-buff),(xmax+buff)), ylim = c((ymin-buff),(ymax+buff))) +
             geom_polygon(data=world, aes(long,lat,group=group), fill="light grey", colour="darkgrey")+
             geom_contour(data = bat_xyz,
@@ -156,12 +176,18 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
     )
 
     print(p_n)
+    if (verbose) {
+      message("Plot of abundance by haul generated successfully.")
+    }
     if (save){
         if (is.na(wd)){
             warning("\nNo working directory defined by the user. The plot was not saved in the local folder\n")
         } else if (!is.na(wd)) {
             ggsave(paste(wd, "/output/",sspp,"_GSA",GSA,"-Abundance_by_haul.jpg", sep=""),
                    width = 20, height = 20, units ="cm", dpi = 300)
+          if (verbose) {
+            message("Plot of abundance by haul saved successfully")
+          }
         }
     }
 
@@ -188,12 +214,18 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
     )
 
     print(p_k)
+    if (verbose) {
+      message("Plot of biomass by haul generated successfully.")
+    }
     if (save){
         if (is.na(wd)){
             warning("\nNo working directory defined by the user. The plot was not saved in the local folder\n")
         } else if (!is.na(wd)) {
             ggsave(paste(wd, "/output/",sspp,"_GSA",GSA,"-Biomass_by_haul.jpg", sep=""),
                    width = 20, height = 20, units ="cm", dpi = 300)
+          if (verbose) {
+            message("Plot of biomass by haul saved successfully")
+          }
         }
     }
 

@@ -10,7 +10,7 @@ hauls_position(
   map_lim,
   depth_lines,
   buffer = 0,
-  res = 0.1,
+  res = NA,
   wd = NA,
   save = TRUE,
   verbose = TRUE
@@ -36,5 +36,6 @@ hauls_position(
 \item{verbose}{boolean. If TRUE a message is printed}
 }
 \description{
-Plot of hauls time series
+This function generates a spatial plot of haul positions over time, displaying haul labels and bathymetric lines over a customizable map extent.
+If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 }

@@ -1,15 +1,48 @@
-#' Length Frequency Distribution
+#' Length Frequency Distribution (LFD) Estimation and Plotting
 #'
-#' @param mTATC data frame of the merged TA and TC
-#' @param sex reference sef for the analysis. Allowed values: F, M, I, N. "all" code for combined sex
-#' @param GSA reference GSA for the analysis
-#' @param country vector of reference countries for the analysis
-#' @param depth_range range of depth strata to perform the analysis (min, max)
-#' @param strata_scheme data frame of the stratification scheme
-#' @param stratification data frame of strata surface area
-#' @param wd working directory
-#' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
-#' @param verbose boolean. If TRUE messages are reported in the console
+#' This function estimates and plots the length frequency distribution (LFD) by year and by stratum,
+#' based on merged biological and haul data from MEDITS surveys. It computes raised numbers,
+#' applies stratification weights, and generates publication-ready plots and CSV outputs.
+#' Stratification weighting is based on swept area and surface area of the strata.
+#'
+#' @description Input parameters include biological and haul data, stratification schemes,
+#' reference filters (e.g., sex, GSA, country, depth), and output control options (working directory, saving, verbosity).
+#'
+#' @param mTATC Data frame resulting from the merge of TA and TC datasets using `merge_TATBTC()`. It must include raised numbers.
+#' @param sex Character. Target sex for the analysis. Allowed values: `"F"`, `"M"`, `"I"`, `"N"`, or `"all"` (default) for combined sexes.
+#' @param GSA Numeric. The GSA (Geographical Sub-Area) code of reference for the analysis.
+#' @param country Character vector. Reference country or countries for the analysis. Use `"all"` (default) to include all countries available in the data.
+#' @param depth_range Numeric vector of length 2, specifying the minimum and maximum depths (in meters) to filter the hauls used in the analysis.
+#' @param strata_scheme Data frame containing the stratification scheme. Must include `CODE`, `MIN_DEPTH`, `MAX_DEPTH`, `GSA`, `COUNTRY`.
+#' @param stratification Data frame with surface areas per stratum. Must include columns: `GSA`, `CODE`, `COUNTRY`, `SURF`.
+#' @param wd Character. Working directory used to save output plots and tables. Required if `save = TRUE`.
+#' @param save Logical. If `TRUE` (default), the function saves output tables and plots to `wd/output/`. If `FALSE`, no files are saved.
+#' @param verbose Logical. If `TRUE` (default), informative messages are printed to the console to trace the function steps.
+#'
+#' @return A named list with two elements:
+#' \describe{
+#'   \item{`LFD`}{A data frame of total LFD by year across all strata.}
+#'   \item{`LFD by stratum`}{A data frame of LFD by year and by stratum.}
+#' }
+#'
+#' @details
+#' The function:
+#' \itemize{
+#'   \item Filters hauls by depth and country.
+#'   \item Computes raised numbers per haul.
+#'   \item Applies stratified weights based on the area per stratum.
+#'   \item Outputs and/or plots the length frequency distribution by year and stratum.
+#'   \item Handles sex-specific or combined-sex analyses.
+#' }
+#'
+#' The plot outputs include:
+#' \itemize{
+#'   \item Combined LFD by year across all strata.
+#'   \item LFD by stratum (faceted), stratified by year.
+#' }
+#'
+#' Output files are saved as CSV and high-resolution JPEGs if `save = TRUE` and `wd` is defined.
+#'
 #' @importFrom dplyr summarise summarize group_by arrange
 #' @importFrom reshape2 melt dcast
 #' @importFrom ggplot2 ggplot geom_line xlab ylab ggtitle xlim ylim theme_bw aes facet_wrap
@@ -223,13 +256,17 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
         ss <- do.call(rbind,ss)[,2]
         m2s$STRATUM <- ss
 
+        if (verbose) message("LFD successfully estimated.")
+
      if (save) {
         if (sex=="all"){
         write.table(m2s,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(Combined_by_stratum).csv", sep=""),sep=";",row.names=F)
         write.table(m2all,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(Combined).csv", sep=""),sep=";",row.names=F)
+        if (verbose) message("LFD tables saved in output folder.")
         } else {
         write.table(m2s,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(",sex,"_by_stratum).csv", sep=""),sep=";",row.names=F)
         write.table(m2all,paste(wd, "/output/",sspp,"_GSA",GSA,"_LFD_(",sex,").csv", sep=""),sep=";",row.names=F)
+        if (verbose) message("LFD tables saved in output folder.")
             }
      }
 
@@ -325,7 +362,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
 
 return(list("LFD"=m2all,"LFD by stratum"=m2s))
     } else {
-        cat("Not enough data for LFD estimation\n")
+        if (verbose) message("Not enough data for LFD estimation.")
     }
 
 }

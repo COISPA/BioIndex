@@ -7,6 +7,8 @@
 #' @param species reference species for the analysis (MEDITS code)
 #' @param lastn number of recent years for diagnosis of change
 #' @param save boolean. If TRUE results are saved in the output folder
+#' @importFrom utils write.table
+#' @importFrom grDevices jpeg dev.copy dev.off
 #' @export
 #' @import mgcv
 

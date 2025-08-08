@@ -1,14 +1,26 @@
 #' Plot sex ratio spatial distribution
 #'
-#' @param mTATBsp spatial mTATB
-#' @param depth reference depth range
-#' @param wd working directory
-#' @param map_range range of coordinates for the map
-#' @param threshold minimum number of individuals per haul
-#' @param save boolean. If TRUE the outputs are saved in the local folder
-#' @param verbose boolean. If TRUE messages are prompted in the console
+#' @description
+#' This function calculates and plots the spatial distribution of sex ratio (F / (F + M)) over the GFCM grid for a given species. It uses data from merged MEDITS datasets (TA, TB, TC), previously spatialized with `overlayGrid()`. The function filters hauls by total abundance threshold and depth range, calculates sex ratio per grid cell, and plots the output using color-coded categories based on quantiles. The result is a choropleth map of sex ratio patterns, useful to highlight spatial differences in sex structure. Raw sex ratio estimates per grid cell can also be exported.
+#'
+#' @param mTATBsp A spatial version of the merged TA-TB dataset, processed through `overlayGrid()`, containing sex information.
+#' @param depth Character string specifying the depth range used for filtering (e.g., `"10,800"`). Must correspond to available internal GFCM grid masks.
+#' @param wd Working directory. Used to save output files if `save = TRUE`.
+#' @param map_range numeric vector with coordinates defining the map extent (`xmin`, `xmax`, `ymin`, `ymax`).
+#' @param threshold Minimum number of individuals required per haul to be included in the sex ratio estimation. Default is 30.
+#' @param save Logical. If `TRUE`, the plot and sex ratio table are saved to the working directory.
+#' @param verbose Logical. If `TRUE`, informative messages are printed to the console.
+#'
+#' @return A `data.frame` containing sex ratio (`ratio`), standard deviation (`sd`), and coefficient of variation (`CV`) for each GFCM grid cell.
+#'
 #' @importFrom terra extract unwrap
 #' @importFrom stats quantile
+#' @importFrom ggplot2 ggplot geom_polygon coord_sf scale_fill_manual labs xlab ylab aes
+#' @importFrom ggplot2 theme_bw
+#' @importFrom tidyterra geom_spatvector
+#' @importFrom ggplot2 ggsave
+#' @importFrom dplyr arrange
+#' @importFrom ggplot2 map_data
 #' @export
 
 sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose=FALSE, save=FALSE) {
@@ -98,14 +110,14 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose
 
     if (nrow(metaDBnew)==0){
         if (verbose){
-        cat("Not enough data for the sex ratio estimation.\nTry again reducing the threshold value.\n")
+        message("Not enough data for the sex ratio estimation.\nTry again reducing the threshold value.\n")
             }
         sexratio_grid_skip <- TRUE
     } else {
 
         if ( all(metaDBnew$NB_OF_FEMALES == 0) & all(metaDBnew$NB_OF_MALES == 0) ) {
             if(verbose){
-            cat("No sex information available in TC for the selected species. Sex-ratio estimation is not possible")
+            message("No sex information available in TC for the selected species. Sex-ratio estimation is not possible")
                 }
             sexratio_grid_skip <- TRUE
         } else {
@@ -131,8 +143,10 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose
                 sex_ratio[i,4] <- sex_ratio[i,3]/sex_ratio[i,2]
             }
 
+            if (verbose) message("CSV of sex ratio by grid cell successfully created.")
             if(save){
             write.table(sex_ratio, paste(wd, "/output/",sspp," - GFCM SEX RATIO.csv", sep=""), sep=";", row.names=FALSE)
+                if (verbose) message("CSV of sex ratio by grid cell successfully saved.")
             }
 
             names(map_range) <- c("xmin","xmax","ymin","ymax")
@@ -244,11 +258,12 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose
 
 
             print(p1)
-
+            if (verbose) message("plot of sex ratio by grid cell successfully created")
             if (save){
                 jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
                 print(p1)
                 dev.off()
+                if (verbose) message("Plot of sex ratio by grid cell successfully saved.")
             }
 
             return(sex_ratio)

@@ -136,12 +136,13 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
 
   abundance_grid <- summary.grid
   abundance_grid$sspp <- sspp
+  if(verbose) message("Abundance indices for statistical squares correctly estimated")
+  if(verbose) message("Inverse of CV of abundance indices for statistical squares correctly estimated \n")
   if (save) {
     write.table(abundance_grid, paste(wd, "/output/", sspp, " - GFCM GRID ABUNDANCE.csv", sep = ""), sep = ";", row.names = FALSE)
 
     if (verbose) {
-      cat("Abundance indices for statistical squares correctly estimated \ninverse of CV of abundance indices for statistical squares correctly estimated \n")
-      cat(paste("file of abundance indices for statistical squares saved in the following folder: '", wd, "/output/", sspp, " - GFCM GRID ABUNDANCE.csv \n", sep = ""))
+      message(paste("CSV file of abundance indices for statistical squares saved in the output folder."))
     }
   }
   #----------------------------------------
@@ -171,11 +172,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
 
   biomass_grid <- summary.grid
   biomass_grid$sspp <- sspp
+
+  if (verbose) message("Biomass indices for statistical squares correctly estimated.")
   if (save) {
     write.table(biomass_grid, paste(wd, "/output/", sspp, " - GFCM GRID BIOMASS.csv", sep = ""), sep = ";", row.names = FALSE)
     if (verbose) {
-      cat("Biomass indices for statistical squares correctly estimated \n")
-      cat(paste("file of Biomass indices for statistical squares saved in the following folder: '", wd, "/output/", sspp, " - GFCM GRID BIOMASS.csv \n", sep = ""))
+      message(paste("CSV file of Biomass indices for statistical squares saved in the output folder."))
     }
   }
   #----------------------------------------
@@ -206,11 +208,11 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
 
   meanWEIGHT_grid <- summary.grid
   meanWEIGHT_grid$sspp <- sspp
+  if (verbose) message("MIW for statistical squares correctly estimated.")
   if (save) {
     write.table(meanWEIGHT_grid, paste(wd, "/output/", sspp, " - GFCM GRID MIW.csv", sep = ""), sep = ";", row.names = FALSE)
     if (verbose) {
-      cat("MIW for statistical squares correctly estimated \ninverse of CV of MIW for statistical squares correctly estimated \n")
-      cat(paste("file of MIW for statistical squares saved in the following folder:\n '", wd, "/output/", sspp, " - GFCM GRID MIW.csv \n", sep = ""))
+      message(paste("CSV file of MIW for statistical squares saved in the output folder."))
     }
   }
 
@@ -336,11 +338,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
    ylab("latitude")
 
  print(p1)
-
+ if(verbose) message("Plot of abundance on grid successfully created.")
  if (save){
    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
    print(p1)
    dev.off()
+   if(verbose) message("Plot of abundance on grid successfully saved")
  }
   #----------------------------------------
   # Saving maps of the inverse of CV of ABUNDANCE index
@@ -444,11 +447,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
     ylab("latitude")
 
   print(p2)
-
+  if(verbose) message("Plot of abundance inverse CV on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
     print(p2)
     dev.off()
+    if(verbose) message("Plot of abundance inverse CV on grid successfully saved.")
   }
 
 
@@ -570,11 +574,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
     ylab("latitude")
 
   print(p3)
-
+  if(verbose) message("Plot of biomass on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
     print(p3)
     dev.off()
+    if(verbose) message("Plot of biomass on grid successfully saved")
   }
 
 
@@ -697,11 +702,12 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
     ylab("latitude")
 
   print(p4)
-
+  if(verbose) message("Plot of MIW on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
     print(p4)
     dev.off()
+    if(verbose) message("Plot of MIW on grid successfully saved.")
   }
 
 

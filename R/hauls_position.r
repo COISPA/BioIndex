@@ -1,5 +1,8 @@
 #' Plot of hauls time series
 #'
+#' @description
+#' This function generates a spatial plot of haul positions over time, displaying haul labels and bathymetric lines over a customizable map extent.
+#' If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 #' @param mTATB data frame
 #' @param country country code as reported in MEDITS format. "all" code to perform the analysis on all the countries of the same GSA
 #' @param map_lim coordinates limits for the plotted map
@@ -10,9 +13,9 @@
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @param verbose boolean. If TRUE a message is printed
 #' @importFrom marmap getNOAA.bathy as.xyz
-#' @importFrom ggplot2 ggplot coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_text geom_point coord_map ggtitle ggsave theme
+#' @importFrom ggplot2 ggplot coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_text geom_point coord_map ggtitle ggsave theme map_data
 #' @export
-hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, res=0.1,wd=NA,save=TRUE, verbose=TRUE){
+hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, res=NA, wd=NA,save=TRUE, verbose=TRUE){
 
   Haul <- V1 <- V2 <- V3 <- Year <- group <- merge_TATB <-  lat <- lon <- long <-NULL #
 
@@ -30,7 +33,11 @@ hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, r
 
     m <- read.table("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)\\output\\mergeTATB_MERLMER.csv",sep=";",header=TRUE)
 
-    hauls_position(mTATB=m,map_lim,depth_lines, buffer=0.1, res=1, wd=wd,save=FALSE, verbose=TRUE)
+    hauls_position(mTATB=m,map_lim,depth_lines, buffer=0.1, wd=wd,save=FALSE, verbose=TRUE)
+  }
+
+  if (!requireNamespace("mapproj", quietly = TRUE)) {
+    stop("Package 'mapproj' needed for this function to work. Please install it.", call. = FALSE)
   }
 
   if (is.na(wd) & save) {
@@ -124,8 +131,25 @@ lon_1 = min(xl)-1-buff
 lon_2 = max(xl)+1+buff
 lat_1 = min(yl)-1-buff
 lat_2 = max(yl)+1+buff
-bath <- suppressMessages(getNOAA.bathy (lon1 = lon_1, lon2 = lon_2, lat1 = lat_1,lat2 = lat_2, resolution = res))
-bat_xyz <- as.xyz(bath)
+
+if (!is.na(res)){
+  bath <- suppressMessages(getNOAA.bathy(lon1 = min(xl) - 1, lon2 = max(xl) + 1, lat1 = min(yl) - 1 - buff, lat2 = max(yl) + 1 + buff, resolution = res))
+  bat_xyz <- as.xyz(bath)
+} else {
+  data("med_bathy", package = "BioIndex", envir = environment())
+  bat_xyz <- as.xyz(med_bathy)
+  bat_xyz <- bat_xyz[!is.na(bat_xyz[,3]), ]
+  colnames(bat_xyz) <- c("V1","V2","V3")
+  bat_xyz <- subset(bat_xyz, V1 >= min(xl) & V1 <= max(xl) & V2 >= min(yl) - buff & V2 <= max(yl) + buff)
+}
+
+
+if (any(is.na(depth_lines))) {
+  depth_lines <- c(-200,-500,-800)
+} else {
+  depth_lines <- -1 * depth_lines
+}
+
 
 if (any(is.na(depth_lines))) {
   depth_lines <- c(-200,-500,-800)
@@ -154,7 +178,9 @@ p <- suppressMessages(
   ggtitle(dep_text) +
   theme_opts)
 print(p)
-
+if (verbose) {
+  message("Plot of Hauls position generated successfully.")
+}
 
 
 if (save){
@@ -162,11 +188,12 @@ if (save){
     warning("\nNo working directory defined by the user. The plot was not saved in the local folder\n")
   } else if (!is.na(wd)) {
     ggsave(paste(wd, "/output/",sspp,"_GSA",GSA," -Hauls position.jpg", sep=""),
-       width = 20, height = 20, units ="cm", dpi = 300)
+           width = 20, height = 20, units ="cm", dpi = 300)
+    if(verbose){
+      message("Bubble plot of Hauls position correctly saved \n")
+    }
   }
-  }
-if(verbose){
-  message("Bubble plot of Hauls position correctly saved \n")
 }
+
 return(p)
 }

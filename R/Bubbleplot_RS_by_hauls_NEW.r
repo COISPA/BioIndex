@@ -1,6 +1,7 @@
 #' Bubbleplot of abundance indices for recruits and spawners
 #' @description
 #' The function generates bubbleplots of abundance indices for recruits and spawners
+#' If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 #'
 #' @param mTATC mTATC table
 #' @param map_range range of coordinates for the map
@@ -16,14 +17,21 @@
 #' @importFrom marmap getNOAA.bathy as.xyz
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @importFrom stats aggregate
-bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=1, buffer=0.1,wd, save = FALSE, verbose = FALSE) {
+bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=NA, buffer=0.1,wd, save = FALSE, verbose = FALSE) {
   if (FALSE) {
-    thresh_rec <- 200
-    thresh_spaw <- 210
+    thresh_rec <- 20
+    thresh_spaw <- 21
     map_range <- c(15.0, 21.0, 39.5, 42.5)
+    depths = c(50, 200, 800)
+    res=1
+    buffer=0.1
     save <- TRUE
     verbose <- TRUE
     bubbleplot_RS_by_hauls(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800))
+  }
+
+  if (!requireNamespace("mapproj", quietly = TRUE)) {
+    stop("Package 'mapproj' needed for this function to work. Please install it.", call. = FALSE)
   }
 
   long <- lat <- group <- V1 <- V2 <- V3 <- lon <- indices <- NULL
@@ -65,8 +73,17 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
   ddd_r <- NA
   ddd_r <- merge_TATC[merge_TATC$LENGTH_CLASS <= threshold & merge_TATC$LENGTH_CLASS != -1, ]
 
-  bath <- suppressMessages(getNOAA.bathy(lon1 = min(xl), lon2 = max(xl), lat1 = min(yl) - buff, lat2 = max(yl) + buff, resolution = res))
-  bat_xyz <- as.xyz(bath)
+  # load("data/med_bathy.rda")
+  if (!is.na(res)){
+    bath <- suppressMessages(suppressWarnings(getNOAA.bathy(lon1 = min(xl) - 1, lon2 = max(xl) + 1, lat1 = min(yl) - 1 - buff, lat2 = max(yl) + 1 + buff, resolution = res)))
+    bat_xyz <- as.xyz(bath)
+  } else {
+  data("med_bathy", package = "BioIndex", envir = environment())
+  bat_xyz <- as.xyz(med_bathy)
+  bat_xyz <- bat_xyz[!is.na(bat_xyz[,3]), ]
+  colnames(bat_xyz) <- c("V1","V2","V3")
+  bat_xyz <- subset(bat_xyz, V1 >= min(xl) & V1 <= max(xl) & V2 >= min(yl) - buff & V2 <= max(yl) + buff)
+  }
 
   if (nrow(ddd_r) != 0) {
     pivot_r <- aggregate(as.numeric(as.character(ddd_r$N_km2)), by = list(ddd_r$id, ddd_r$MEAN_LONGITUDE_DEC, ddd_r$MEAN_LATITUDE_DEC), sum)
@@ -173,7 +190,7 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
 
     dep_text <- expression(paste("Abundance of spawners ", (n / km^2), sep = " "))
 
-    res <- 0.1
+    # res <- 0.1
     world <- map_data("world")
     x_breaks <- c(round(xl[1], 0), round(xl[1], 0) + round((xl[2] - xl[1]) / 2, 0), round(xl[1], 0) + 2 * round((xl[2] - xl[1]) / 2, 0))
     y_breaks <- c(round(yl[1], 0), round(yl[1], 0) + round((yl[2] - yl[1]) / 2, 0), round(yl[1], 0) + 2 * round((yl[2] - yl[1]) / 2, 0))
