@@ -58,44 +58,52 @@ BioIndex <- function(ta,
                      verbose = TRUE) {
     if (FALSE) {
         # library(BioIndex)
-        wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
-        ta <- read.table(
-            file.path(wd, "input", "TA GSA18 2017-2020.csv"),
-            sep = ";",
-            header = TRUE
-        )
-        tb <- read.table(
-            file.path(wd, "input", "TB GSA18 2017-2020.csv"),
-            sep = ";",
-            header = TRUE
-        )
-        tc <- read.table(
-            file.path(wd, "input", "TC GSA18 2017-2020.csv"),
-            sep = ";",
-            header = TRUE
-        )
+        # wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
+        # ta <- read.table(
+        #     file.path(wd, "input", "TA GSA18 2017-2020.csv"),
+        #     sep = ";",
+        #     header = TRUE
+        # )
+        # tb <- read.table(
+        #     file.path(wd, "input", "TB GSA18 2017-2020.csv"),
+        #     sep = ";",
+        #     header = TRUE
+        # )
+        # tc <- read.table(
+        #     file.path(wd, "input", "TC GSA18 2017-2020.csv"),
+        #     sep = ";",
+        #     header = TRUE
+        # )
+        #
+        # ta <- read.table(file.path(wd, "input", "TA.csv"),
+        #                  sep = ";",
+        #                  header = TRUE)
+        # tb <- read.table(file.path(wd, "input", "TB.csv"),
+        #                  sep = ";",
+        #                  header = TRUE)
+        # tc <- read.table(file.path(wd, "input", "TC.csv"),
+        #                  sep = ";",
+        #                  header = TRUE)
 
-        ta <- read.table(file.path(wd, "input", "TA.csv"),
-                         sep = ";",
-                         header = TRUE)
-        tb <- read.table(file.path(wd, "input", "TB.csv"),
-                         sep = ";",
-                         header = TRUE)
-        tc <- read.table(file.path(wd, "input", "TC.csv"),
-                         sep = ";",
-                         header = TRUE)
+        ta <- read.table(file.path(wd,"TA-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
+        tb <- read.table(file.path(wd,"TB-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
+        tc <- read.table(file.path(wd,"TC-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
+        colnames(ta) <- colnames(BioIndex::TA)
+        colnames(tb) <- colnames(BioIndex::TB)
+        colnames(tc) <- colnames(BioIndex::TC)
         sspp <- "MERLMER"
         rec_threshold = 200
         spaw_threshold = 210
         haul_threshold = 30
         sexes <- "all"
-        depth <- c(10, 800)
+        depth <- c(50, 200)
         GSA <- 20
         country <- "all"
-        map_lim <- c(15.5, 20.0, 39.8, 42.5)
-        depth_lines <- c(200, 500, 800)
+        map_lim <- c(19.166,23.23, 35,39.88)
+        depth_lines <- c(50, 100, 200)
         buffer = 0.1
         res = NA
+        resolution <- res
         strata = BioIndex::strata_scheme
         stratification_tab = BioIndex::stratification
         save = TRUE

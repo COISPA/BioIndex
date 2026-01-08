@@ -44,8 +44,50 @@ index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbo
 
   # threshold_to_ind_weight_calc <- 30
 
-  depthstr <- stratum
+  # depthstr <- stratum
   depth_range <- as.numeric(str_split(stratum,",")[[1]])
+
+  #----------------
+
+  resolve_depthstr <- function(depth_range) {
+
+    dr <- sort(as.numeric(depth_range))
+    if (anyNA(dr)) stop("depth_range contains NA.")
+    if (dr[1] >= dr[2]) stop("depth_range must be increasing (min < max).")
+
+    lo <- dr[1]
+    hi <- dr[2]
+
+    # 2) Map to allowed depthstr values, ensuring coverage of [lo, hi]
+
+    # Shallow set (mapped to 0_35 / 0_45 / 0_125 in your code)
+    if (hi <= 35) {
+      return("5,35")      # maps to BioIndex::stratum_0_35
+    }
+    if (hi <= 45) {
+      return("5,45")      # maps to BioIndex::stratum_0_45
+    }
+    if (hi <= 125) {
+      return("0,125")     # canonical, maps to BioIndex::stratum_0_125
+    }
+
+    # Deep set (mapped to 0_200 / 0_800 / 200_800)
+    if (hi <= 200) {
+      return("10,200")    # maps to BioIndex::stratum_0_200
+    }
+    if (hi <= 800) {
+      if (lo >= 200) {
+        return("200,800") # maps to BioIndex::stratum_200_800
+      } else {
+        return("10,800")  # maps to BioIndex::stratum_0_800
+      }
+    }
+  }
+
+  #------------------------------
+
+  depthstr <- resolve_depthstr(depth_range)
+
 
   if (depthstr == "5,45") {
     cgpmgrid <- terra::unwrap(BioIndex::stratum_0_45)

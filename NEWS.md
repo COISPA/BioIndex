@@ -34,3 +34,8 @@
   * `bubbleplot_RS_by_hauls()` documentation modified to specify the mm units required for both recruits and spawners cutoff thresholds (according to outcomes of RDBFIS II second training).
   * `index_recr()` documentation modified to specify the mm units required for recruits cutoff threshold (according to outcomes of RDBFIS II second training).
   * `index_spawn()` documentation modified to specify the mm units required for spawners cutoff threshold (according to outcomes of RDBFIS II second training).
+
+
+# BioIndex v0.6.01
+  __Fixes for RBDFIS III__
+  * `index_on_grid()` modified to auto select the bathymetry controur polygon to be used in the plots.
