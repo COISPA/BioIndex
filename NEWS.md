@@ -38,4 +38,8 @@
 
 # BioIndex v0.6.01
   __Fixes for RBDFIS III__
-  * `index_on_grid()` modified to auto select the bathymetry controur polygon to be used in the plots.
+  * `index_on_grid()` modified to auto select the bathymetry contour polygon to be used in the plots.
+
+# BioIndex v0.6.02
+  __Fixes for RBDFIS III__
+  * The stratification tables relative to the rapa whelk beam trawl survey, conducted in the the Black Sea by Romania and Bulgaria, are included in the library: strata_scheme_rapana and stratification_rapana.

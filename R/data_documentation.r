@@ -28,7 +28,59 @@
 #' @docType data
 #' @author Walter Zupa \email{zupa@fondazionecoispa.it}
 #' @keywords stratification
+#' @description
+#' Stratification scheme adopted in the bottom trawl demersal survey (e.g. MEDITS survey).
+#'
 "strata_scheme"
+
+
+#' stratification
+#'
+#' @name stratification
+#' @docType data
+#' @keywords stratification MEDITS
+#' @description
+#' Data frame containing the surface area relative to the depth strata adopted in the stratification scheme (strata_scheme) of the demersal surveys (e.g. MEDITS survey).
+#'
+"stratification"
+
+#' stratification scheme (rapa whelk)
+#'
+#' @name strata_scheme_rapana
+#' @docType data
+#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @keywords stratification rapa whelk Black Sea
+#' @description
+#' Stratification scheme adopted in the rapa whelk survey (e.g. Black Sea beam trawl survey).
+#'
+"strata_scheme_rapana"
+
+
+#' stratification (rapa whelk)
+#'
+#' @name stratification_rapana
+#' @docType data
+#' @keywords stratification rapa whelk Black Sea
+#' @description
+#' Data frame containing the surface area relative to the depth strata adopted in the stratification scheme (strata_scheme) of the rapa whelk surveys (e.g. Black Sea beam trawl survey).
+#'
+"stratification_rapana"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #' TA table example
 #'
@@ -50,13 +102,6 @@
 #' @docType data
 #' @keywords TC MEDITS
 "TC"
-
-#' stratification
-#'
-#' @name stratification
-#' @docType data
-#' @keywords stratification MEDITS
-"stratification"
 
 
 #' centroidi
