@@ -5,13 +5,13 @@
 \alias{strata_scheme}
 \title{stratification scheme}
 \format{
-An object of class \code{data.frame} with 142 rows and 5 columns.
+An object of class \code{data.frame} with 126 rows and 5 columns.
 }
 \usage{
 strata_scheme
 }
 \description{
-stratification scheme
+Stratification scheme adopted in the bottom trawl demersal survey (e.g. MEDITS survey).
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.it}

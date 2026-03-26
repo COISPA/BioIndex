@@ -321,6 +321,64 @@ BioIndex <- function(ta,
 
 
 
+    # #--------------------------------------------------------------
+    # # Abundance indices of spawners in the time series
+    # #--------------------------------------------------------------
+    # cat("\n############################\n")
+    # cat("Spawners' abundance indices\n")
+    # cat("############################\n")
+    # cat("\n")
+    # #------> check the threshold in the file "~/input/maturity_sizes.csv"
+    # df_cutoff <- spaw_threshold
+    # if (is.na(df_cutoff)) {
+    #     message(
+    #         "The SPAWNERS' threshold value not provided. Please, define a value in the 'spaw_threshold' parameter."
+    #     )
+    # }
+    # skip_spawners <- FALSE
+    # spaw_analysis <- "ok"
+    #
+    # if (spaw_analysis == "ok") {
+    #     source.check <- try(index_spawn(
+    #         mTATB,
+    #         mTATC,
+    #         GSA,
+    #         country,
+    #         depth_range = depth,
+    #         cutoff = spaw_threshold,
+    #         stratification = stratification_tab,
+    #         wd,
+    #         save
+    #     )
+    #     ,
+    #     silent = T)
+    #
+    #     if (!is(source.check, "try-error"))  {
+    #         index_spawn(
+    #             mTATB,
+    #             mTATC,
+    #             GSA,
+    #             country,
+    #             depth_range = depth,
+    #             cutoff = spaw_threshold,
+    #             stratification = stratification_tab,
+    #             wd,
+    #             save
+    #         )
+    #         if (skip_spawners) {
+    #             cat("\nSpawners' indices analysis skipped\n")
+    #         } else {
+    #             cat("\nSpawners' indices analysis - completed\n")
+    #         }
+    #
+    #     } else {
+    #         message("\nSpawners' indices analysis skipped - (Run Error)\n")
+    #     }
+    #
+    # }  else {
+    #     cat("\nSpawners' indices analysis skipped\n")
+    # }
+
     #--------------------------------------------------------------
     # Abundance indices of spawners in the time series
     #--------------------------------------------------------------
@@ -328,32 +386,20 @@ BioIndex <- function(ta,
     cat("Spawners' abundance indices\n")
     cat("############################\n")
     cat("\n")
-    #------> check the threshold in the file "~/input/maturity_sizes.csv"
+
     df_cutoff <- spaw_threshold
     if (is.na(df_cutoff)) {
         message(
             "The SPAWNERS' threshold value not provided. Please, define a value in the 'spaw_threshold' parameter."
         )
     }
+
     skip_spawners <- FALSE
     spaw_analysis <- "ok"
 
     if (spaw_analysis == "ok") {
-        source.check <- try(index_spawn(
-            mTATB,
-            mTATC,
-            GSA,
-            country,
-            depth_range = depth,
-            cutoff = spaw_threshold,
-            stratification = stratification_tab,
-            wd,
-            save
-        )
-        ,
-        silent = T)
 
-        if (!is(source.check, "try-error"))  {
+        source.check <- try(
             index_spawn(
                 mTATB,
                 mTATC,
@@ -364,20 +410,82 @@ BioIndex <- function(ta,
                 stratification = stratification_tab,
                 wd,
                 save
-            )
+            ),
+            silent = TRUE
+        )
+
+        if (!is(source.check, "try-error")) {
             if (skip_spawners) {
                 cat("\nSpawners' indices analysis skipped\n")
             } else {
                 cat("\nSpawners' indices analysis - completed\n")
             }
-
         } else {
             message("\nSpawners' indices analysis skipped - (Run Error)\n")
         }
 
-    }  else {
+    } else {
         cat("\nSpawners' indices analysis skipped\n")
     }
+
+
+    # #--------------------------------------------------------------
+    # # Abundance indices of recruits in the time series
+    # #--------------------------------------------------------------
+    # cat("\n############################\n")
+    # cat("Recruits' abundance indices\n")
+    # cat("############################\n")
+    # cat("\n")
+    # #------> check the threshold in the file "~/input/maturity_sizes.csv"
+    # df_cutoff <- rec_threshold
+    # if (is.na(df_cutoff)) {
+    #     message(
+    #         "The RECRUITS' threshold value not provided. Please, define a value in the 'rec_threshold' parameter."
+    #     )
+    # }
+    # skip_recruits <- FALSE
+    # rec_analysis <- "ok"
+    #
+    # if (rec_analysis == "ok") {
+    #     source.check <- try(index_recr(
+    #         mTATB,
+    #         mTATC,
+    #         GSA,
+    #         country,
+    #         depth_range = depth,
+    #         cutoff = rec_threshold,
+    #         stratification = stratification_tab,
+    #         wd,
+    #         save
+    #     )
+    #     ,
+    #     silent = T)
+    #
+    #     if (!is(source.check, "try-error"))  {
+    #         index_recr(
+    #             mTATB,
+    #             mTATC,
+    #             GSA,
+    #             country,
+    #             depth_range = depth,
+    #             cutoff = rec_threshold,
+    #             stratification = stratification_tab,
+    #             wd,
+    #             save
+    #         )
+    #         if (skip_recruits) {
+    #             cat("\nRecruits' indices analysis skipped\n")
+    #         } else {
+    #             cat("\nRecruits' indices analysis - completed\n")
+    #         }
+    #
+    #     } else {
+    #         message("\nRecruits' indices analysis skipped - (Run Error)\n")
+    #     }
+    #
+    # }  else {
+    #     cat("\nRecruits' indices analysis skipped\n")
+    # }
 
 
     #--------------------------------------------------------------
@@ -387,32 +495,20 @@ BioIndex <- function(ta,
     cat("Recruits' abundance indices\n")
     cat("############################\n")
     cat("\n")
-    #------> check the threshold in the file "~/input/maturity_sizes.csv"
+
     df_cutoff <- rec_threshold
     if (is.na(df_cutoff)) {
         message(
             "The RECRUITS' threshold value not provided. Please, define a value in the 'rec_threshold' parameter."
         )
     }
+
     skip_recruits <- FALSE
     rec_analysis <- "ok"
 
     if (rec_analysis == "ok") {
-        source.check <- try(index_recr(
-            mTATB,
-            mTATC,
-            GSA,
-            country,
-            depth_range = depth,
-            cutoff = rec_threshold,
-            stratification = stratification_tab,
-            wd,
-            save
-        )
-        ,
-        silent = T)
 
-        if (!is(source.check, "try-error"))  {
+        source.check <- try(
             index_recr(
                 mTATB,
                 mTATC,
@@ -423,21 +519,23 @@ BioIndex <- function(ta,
                 stratification = stratification_tab,
                 wd,
                 save
-            )
+            ),
+            silent = TRUE
+        )
+
+        if (!is(source.check, "try-error")) {
             if (skip_recruits) {
                 cat("\nRecruits' indices analysis skipped\n")
             } else {
                 cat("\nRecruits' indices analysis - completed\n")
             }
-
         } else {
             message("\nRecruits' indices analysis skipped - (Run Error)\n")
         }
 
-    }  else {
+    } else {
         cat("\nRecruits' indices analysis skipped\n")
     }
-
 
 
     #--------------------------------------------------------------
@@ -455,7 +553,7 @@ BioIndex <- function(ta,
             lfd <- LFD(
                 mTATC,
                 sex = "all",
-                GSA = 18,
+                GSA = GSA,
                 country = country,
                 depth_range = depth,
                 strata_scheme = strata,
@@ -470,7 +568,7 @@ BioIndex <- function(ta,
             lfd <- LFD(
                 mTATC,
                 sex = "M",
-                GSA = 18,
+                GSA = GSA,
                 country = country,
                 depth_range = depth,
                 strata_scheme = strata,
@@ -484,7 +582,7 @@ BioIndex <- function(ta,
             lfd <- LFD(
                 mTATC,
                 sex = "F",
-                GSA = 18,
+                GSA = GSA,
                 country = country,
                 depth_range = depth,
                 strata_scheme = strata,

@@ -43,3 +43,6 @@
 # BioIndex v0.6.02
   __Fixes for RBDFIS III__
   * The stratification tables relative to the rapa whelk beam trawl survey, conducted in the the Black Sea by Romania and Bulgaria, are included in the library: strata_scheme_rapana and stratification_rapana.
+
+# BioIndex v0.6.03  
+Added an embedded Shiny application to the package: run_BioIndex_app(). It provides a graphical user interface for running BioIndex analyses directly from the package environment.

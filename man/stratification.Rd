@@ -5,13 +5,13 @@
 \alias{stratification}
 \title{stratification}
 \format{
-An object of class \code{data.frame} with 277 rows and 6 columns.
+An object of class \code{data.frame} with 276 rows and 6 columns.
 }
 \usage{
 stratification
 }
 \description{
-stratification
+Data frame containing the surface area relative to the depth strata adopted in the stratification scheme (strata_scheme) of the demersal surveys (e.g. MEDITS survey).
 }
 \keyword{MEDITS}
 \keyword{stratification}
