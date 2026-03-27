@@ -2,7 +2,52 @@ library(shiny)
 library(shinyjs)
 library(BioIndex)
 
-invisible(options(shiny.maxRequestSize = 100 * 1024^2))
+invisible(options(shiny.maxRequestSize = 500 * 1024^2))
+
+# Safely retrieve aggregate_gsas whether it is exported or internal in BioIndex
+aggregate_gsas_safe <- function(...) {
+  if ("aggregate_gsas" %in% getNamespaceExports("BioIndex")) {
+    BioIndex::aggregate_gsas(...)
+  } else {
+    get("aggregate_gsas", envir = asNamespace("BioIndex"))(...)
+  }
+}
+
+# Normalize the output structure returned by aggregate_gsas
+parse_aggregate_result <- function(x, gsas) {
+  agg_gsa <- paste(sort(unique(as.character(gsas))), collapse = "")
+
+  if (is.null(x) || !is.list(x) || length(x) < 5) {
+    stop("aggregate_gsas returned an unexpected object.")
+  }
+
+  nms <- names(x)
+
+  if (!is.null(nms) && all(c("ta", "tb", "tc") %in% nms)) {
+    ta_out <- x$ta
+    tb_out <- x$tb
+    tc_out <- x$tc
+    stratification_out <- if ("stratification" %in% nms) x$stratification else x[[4]]
+    strata_scheme_out <- if ("strata_scheme" %in% nms) x$strata_scheme else x[[5]]
+    aggregated_gsa_out <- if ("aggregated_gsa" %in% nms) x$aggregated_gsa else agg_gsa
+  } else {
+    ta_out <- x[[1]]
+    tb_out <- x[[2]]
+    tc_out <- x[[3]]
+    stratification_out <- x[[4]]
+    strata_scheme_out <- x[[5]]
+    aggregated_gsa_out <- agg_gsa
+  }
+
+  list(
+    ta = ta_out,
+    tb = tb_out,
+    tc = tc_out,
+    stratification = stratification_out,
+    strata_scheme = strata_scheme_out,
+    aggregated_gsa = aggregated_gsa_out
+  )
+}
 
 ui <- fluidPage(
   useShinyjs(),
@@ -147,12 +192,12 @@ ui <- fluidPage(
           ),
           column(
             width = 3,
-            selectInput(
-              "GSA",
-              "GSA",
-              choices = NULL,
-              selected = NULL
-            )
+            checkboxInput(
+              "use_gsa_aggregation",
+              "Aggregate multiple GSAs",
+              value = FALSE
+            ),
+            uiOutput("gsa_selector_ui")
           ),
           column(
             width = 3,
@@ -309,6 +354,28 @@ server <- function(input, output, session) {
              34.00000, 35.88234, 41.15125, 46.88956, 47.28956)
   )
 
+  get_gsa_map_limits <- function(gsa_values, gsa_defaults) {
+    gsa_values <- suppressWarnings(as.numeric(gsa_values))
+    gsa_values <- gsa_values[!is.na(gsa_values)]
+
+    if (length(gsa_values) == 0) {
+      return(NULL)
+    }
+
+    rows <- gsa_defaults[gsa_defaults$GSA %in% gsa_values, , drop = FALSE]
+
+    if (nrow(rows) == 0) {
+      return(NULL)
+    }
+
+    c(
+      xmin = min(rows$xmin, na.rm = TRUE),
+      xmax = max(rows$xmax, na.rm = TRUE),
+      ymin = min(rows$ymin, na.rm = TRUE),
+      ymax = max(rows$ymax, na.rm = TRUE)
+    )
+  }
+
   rv <- reactiveValues(
     status = "Waiting for input.",
     log = "",
@@ -328,6 +395,34 @@ server <- function(input, output, session) {
 
   output$run_log <- renderText({
     rv$log
+  })
+
+  output$gsa_selector_ui <- renderUI({
+    req(rv$ta)
+
+    gsa_choices <- sort(unique(suppressWarnings(as.numeric(as.character(rv$ta$AREA)))))
+    gsa_choices <- gsa_choices[!is.na(gsa_choices)]
+
+    if (isTRUE(input$use_gsa_aggregation)) {
+      selectizeInput(
+        "GSA_multi",
+        "GSAs to aggregate",
+        choices = gsa_choices,
+        selected = NULL,
+        multiple = TRUE,
+        options = list(
+          placeholder = "Select two or more GSAs",
+          plugins = list("remove_button")
+        )
+      )
+    } else {
+      selectInput(
+        "GSA",
+        "GSA",
+        choices = gsa_choices,
+        selected = if (length(gsa_choices) > 0) gsa_choices[1] else NULL
+      )
+    }
   })
 
   read_medits_file <- function(fileinfo, sep) {
@@ -425,9 +520,6 @@ server <- function(input, output, session) {
     )))
     sspp_choices <- sspp_choices[!is.na(sspp_choices) & nzchar(sspp_choices)]
 
-    GSA_choices <- sort(unique(suppressWarnings(as.numeric(as.character(ta$AREA)))))
-    GSA_choices <- GSA_choices[!is.na(GSA_choices)]
-
     COUNTRY_choices <- sort(unique(trimws(as.character(ta$COUNTRY))))
     COUNTRY_choices <- COUNTRY_choices[!is.na(COUNTRY_choices) & nzchar(COUNTRY_choices)]
 
@@ -441,13 +533,6 @@ server <- function(input, output, session) {
 
     updateSelectInput(
       session,
-      "GSA",
-      choices = GSA_choices,
-      selected = if (length(GSA_choices) > 0) GSA_choices[1] else NULL
-    )
-
-    updateSelectInput(
-      session,
       "country",
       choices = c("all", COUNTRY_choices),
       selected = "all"
@@ -456,32 +541,31 @@ server <- function(input, output, session) {
     rv$status <- "Files loaded. Select species, GSA and country."
   })
 
-  observeEvent(input$GSA, {
-    req(input$GSA)
+  observe({
+    selected_gsas <- if (isTRUE(input$use_gsa_aggregation)) input$GSA_multi else input$GSA
 
-    gsa_sel <- suppressWarnings(as.numeric(input$GSA))
-    req(!is.na(gsa_sel))
+    req(selected_gsas)
 
-    row_gsa <- gsa_defaults[gsa_defaults$GSA == gsa_sel, ]
+    map_vals <- get_gsa_map_limits(selected_gsas, gsa_defaults)
 
-    if (nrow(row_gsa) == 1) {
-      updateNumericInput(session, "xmin", value = row_gsa$xmin)
-      updateNumericInput(session, "xmax", value = row_gsa$xmax)
-      updateNumericInput(session, "ymin", value = row_gsa$ymin)
-      updateNumericInput(session, "ymax", value = row_gsa$ymax)
+    if (!is.null(map_vals)) {
+      updateNumericInput(session, "xmin", value = unname(map_vals["xmin"]))
+      updateNumericInput(session, "xmax", value = unname(map_vals["xmax"]))
+      updateNumericInput(session, "ymin", value = unname(map_vals["ymin"]))
+      updateNumericInput(session, "ymax", value = unname(map_vals["ymax"]))
     } else {
       updateNumericInput(session, "xmin", value = NA_real_)
       updateNumericInput(session, "xmax", value = NA_real_)
       updateNumericInput(session, "ymin", value = NA_real_)
       updateNumericInput(session, "ymax", value = NA_real_)
-      rv$status <- "No default coordinates available for the selected GSA. Please insert map limits manually."
+      rv$status <- "No default coordinates available for the selected GSA set. Please insert map limits manually."
     }
   })
 
   observeEvent(input$run_btn, {
 
     req(rv$ta, rv$tb, rv$tc)
-    req(input$sspp, input$GSA, input$country)
+    req(input$sspp, input$country)
 
     sspp_val <- as.character(input$sspp)
     rec_threshold_val <- suppressWarnings(as.numeric(input$rec_threshold))
@@ -504,20 +588,14 @@ server <- function(input, output, session) {
 
     buffer_val <- suppressWarnings(as.numeric(input$buffer))
     sexes_val <- as.character(input$sexes)
-    GSA_val <- suppressWarnings(as.numeric(input$GSA))
+    single_gsa_val <- input$GSA
+    multi_gsa_val <- input$GSA_multi
     country_val <- as.character(input$country)
     strata_val <- rv$strata
     stratification_tab_val <- rv$stratification_tab
     zip_val <- TRUE
     save_val <- TRUE
     verbose_val <- isTRUE(input$verbose)
-
-    if (is.na(GSA_val)) {
-      rv$status <- "Invalid GSA."
-      rv$log <- "GSA must be numeric."
-      rv$running <- FALSE
-      return(NULL)
-    }
 
     depth_val <- c(
       suppressWarnings(as.numeric(input$depth_min)),
@@ -605,6 +683,69 @@ server <- function(input, output, session) {
     ta <- rv$ta
     tb <- rv$tb
     tc <- rv$tc
+
+    if (isTRUE(input$use_gsa_aggregation)) {
+
+      gsas_run <- sort(unique(as.character(multi_gsa_val)))
+
+      if (length(gsas_run) < 2) {
+        rv$status <- "Invalid aggregated GSA selection."
+        rv$log <- "Please select at least two GSAs to aggregate."
+        rv$running <- FALSE
+        return(NULL)
+      }
+
+      agg_raw <- tryCatch(
+        aggregate_gsas_safe(
+          ta = ta,
+          tb = tb,
+          tc = tc,
+          gsas = gsas_run,
+          strata_scheme = strata_val,
+          stratification = stratification_tab_val
+        ),
+        error = function(e) e
+      )
+
+      if (inherits(agg_raw, "error")) {
+        rv$status <- "Aggregation failed."
+        rv$log <- paste("ERROR:", conditionMessage(agg_raw))
+        rv$running <- FALSE
+        return(NULL)
+      }
+
+      agg_res <- tryCatch(
+        parse_aggregate_result(agg_raw, gsas_run),
+        error = function(e) e
+      )
+
+      if (inherits(agg_res, "error")) {
+        rv$status <- "Aggregation failed."
+        rv$log <- paste("ERROR:", conditionMessage(agg_res))
+        rv$running <- FALSE
+        return(NULL)
+      }
+
+      ta <- agg_res$ta
+      tb <- agg_res$tb
+      tc <- agg_res$tc
+      stratification_tab_val <- agg_res$stratification
+      strata_val <- agg_res$strata_scheme
+      GSA_val <- agg_res$aggregated_gsa
+
+    } else {
+
+      req(single_gsa_val)
+
+      GSA_val <- suppressWarnings(as.numeric(single_gsa_val))
+
+      if (is.na(GSA_val)) {
+        rv$status <- "Invalid GSA."
+        rv$log <- "GSA must be numeric."
+        rv$running <- FALSE
+        return(NULL)
+      }
+    }
 
     wd_run <- file.path(
       tempdir(),
