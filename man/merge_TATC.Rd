@@ -53,13 +53,22 @@ A `data.frame` in which each row represents one length-class
 \description{
 Combines a MEDITS **TA** table (haul metadata) with the corresponding
 **TC** table (length-frequency sample by haul and sex/maturity).
-The function keeps only valid hauls, runs all relevant RoMEBS
-quality checks, computes swept area, depth stratum, raising factors,
+The function keeps only valid hauls, runs all relevant quality checks
+(times, positions, wing opening, haul/date consistency) using the
+\code{RoME} package if available (or internal backup functions if not),
+computes swept area, depth stratum, raising factors,
 abundance/biomass indicators, and—optionally—writes the merged data.
 }
 \details{
-The code is identical to the official BioIndex routine except for two
-micro-optimisations: vectorised handling of missing `"NA NA"` entries
+The code is identical to the official BioIndex routine.
+
+\strong{Data Validation:}
+The function prioritises the use of the \code{RoME} package (suggested)
+for syntactic data validation. If \code{RoME} is not installed, it falls
+back to internal implementations of the validation routines.
+
+\strong{Optimisations:}
+Includes two micro-optimisations: vectorised handling of missing `"NA NA"` entries
 and a single depth-stratum loop. Numerical results remain unchanged.
 }
 \examples{

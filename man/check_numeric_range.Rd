@@ -2,20 +2,20 @@
 % Please edit documentation in R/check_numeric_range.R
 \name{check_numeric_range}
 \alias{check_numeric_range}
-\title{Check consistency of numeric ranges}
+\title{Check numeric range (RoME)}
 \usage{
 check_numeric_range(
-  Data,
+  ResultData,
   Field,
   Values,
   year,
   wd = NA,
-  suffix,
+  suffix = NA,
   verbose = FALSE
 )
 }
 \arguments{
-\item{Data}{data frame of a table in MEDITS format}
+\item{ResultData}{data frame in MEDITS tables}
 
 \item{Field}{field of the table to be checked}
 
@@ -27,8 +27,8 @@ check_numeric_range(
 
 \item{suffix}{name of the log file}
 
-\item{verbose}{boolean. If TRUE messages are promted in the console}
+\item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
 \description{
-The function checks whether the values contained in specific fields are consistent within the allowed range of values.
+The function checks whether the values contained in specific fields are consistent with the allowed ranges.
 }

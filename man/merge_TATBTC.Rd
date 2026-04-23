@@ -62,6 +62,15 @@ Merge TA–TB and TA–TC tables (MEDITS protocol)
 }
 \details{
 The implementation reproduces the official BioIndex workflow.
+
+\strong{Data Validation:}
+The function automatically performs syntactic data validation. To ensure
+centralisation of quality checks, it prioritises the use of the \code{RoME}
+package (suggested). If \code{RoME} is not installed, the function falls
+back to internal implementations of the validation routines to ensure
+data integrity.
+
+\strong{Optimisations:}
 Two micro-optimisations are included:
 \enumerate{
   \item vectorised replacement of missing \code{"NA NA"} entries
@@ -95,8 +104,9 @@ Combines a MEDITS **TA** file (haul metadata) with the corresponding
 The routine:
 \itemize{
   \item filters hauls by validity and by country;
-  \item performs the full set of RoMEBS quality checks (times, positions,
-        wing opening, haul/date consistency);
+  \item performs a full set of quality checks (times, positions, wing opening,
+        haul/date consistency) using the \code{RoME} package if available,
+        or internal backup functions if not;
   \item merges TA with TB and TA with TC, respectively;
   \item computes swept area, mean positions, depth stratum, raising
         factors, densities and biomasses;

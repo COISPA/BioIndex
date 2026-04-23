@@ -2,8 +2,10 @@
 #'
 #' Combines a MEDITS **TA** table (haul metadata) with the corresponding
 #' **TC** table (length-frequency sample by haul and sex/maturity).
-#' The function keeps only valid hauls, runs all relevant RoMEBS
-#' quality checks, computes swept area, depth stratum, raising factors,
+#' The function keeps only valid hauls, runs all relevant quality checks
+#' (times, positions, wing opening, haul/date consistency) using the
+#' \code{RoME} package if available (or internal backup functions if not),
+#' computes swept area, depth stratum, raising factors,
 #' abundance/biomass indicators, and—optionally—writes the merged data.
 #'
 #' @param ta   A `data.frame`/`data.table` containing a full TA dataset
@@ -33,8 +35,15 @@
 #'           (`kg_h`, `kg_km2`)
 #'
 #' @details
-#' The code is identical to the official BioIndex routine except for two
-#' micro-optimisations: vectorised handling of missing `"NA NA"` entries
+#' The code is identical to the official BioIndex routine.
+#'
+#' \strong{Data Validation:}
+#' The function prioritises the use of the \code{RoME} package (suggested)
+#' for syntactic data validation. If \code{RoME} is not installed, it falls
+#' back to internal implementations of the validation routines.
+#'
+#' \strong{Optimisations:}
+#' Includes two micro-optimisations: vectorised handling of missing `"NA NA"` entries
 #' and a single depth-stratum loop. Numerical results remain unchanged.
 #'
 #' @seealso [BioIndex] package documentation.
@@ -102,7 +111,7 @@ merge_TATC <- function(ta, tc,
     TA$id <- uid(TA); TC$id <- uid(TC)
     invalid_ids <- TA$id[TA$VALIDITY == "I"]
 
-    ## RoME checks – conditional usage ----------------------------------- ##
+    ## RoME checks: conditional usage (with fallback to local)         ##
     if (requireNamespace("RoME", quietly = TRUE)) {
         suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
         for (yy in sort(unique(TA$YEAR))) {
@@ -125,8 +134,26 @@ merge_TATC <- function(ta, tc,
                 stop("Date in TC not consistent with TA.")
         }
     } else {
-        if (verbose) {
-            message("The 'RoME' package is not installed. Skipping syntactic data validation.")
+        if (verbose) message("RoME package not available. Using local BioIndex validation functions.")
+        suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
+        for (yy in sort(unique(TA$YEAR))) {
+            TAy <- TA[TA$YEAR == yy, ]; TCy <- TC[TC$YEAR == yy, ]
+            if (!check_dictionary(TAy,"SHOOTING_TIME",0:2400,yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_TIME out of range.")
+            if (!check_dictionary(TAy,"HAULING_TIME",0:2400,yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_TIME out of range.")
+            if (!check_dictionary(TAy,"WING_OPENING",c(30,50:250),yy,paste0(wd,"/output/"),suffix))
+                stop("WING_OPENING out of range.")
+            if (!check_numeric_range(TAy,"SHOOTING_LATITUDE",c(3020,4730),yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_LATITUDE out of range.")
+            if (!check_numeric_range(TAy,"HAULING_LATITUDE",c(3020,4730),yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_LATITUDE out of range.")
+            if (!check_numeric_range(TAy,"SHOOTING_LONGITUDE",c(0,4200),yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_LONGITUDE out of range.")
+            if (!check_numeric_range(TAy,"HAULING_LONGITUDE",c(0,4200),yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_LONGITUDE out of range.")
+            if (!check_date_haul(TAy, TCy, yy, paste0(wd,"/output/"), suffix))
+                stop("Date in TC not consistent with TA.")
         }
     }
 

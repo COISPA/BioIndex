@@ -1,128 +1,81 @@
-#' Check consistency of numeric ranges
+#' Check numeric range (RoME)
 #' @description
-#' The function checks whether the values contained in specific fields are consistent within the allowed range of values.
-#' @param Data data frame of a table in MEDITS format
+#' The function checks whether the values contained in specific fields are consistent with the allowed ranges.
+#'
+#' @param ResultData data frame in MEDITS tables
 #' @param Field field of the table to be checked
 #' @param Values vector of the allowed values
 #' @param year reference year for the analysis
 #' @param wd working directory
 #' @param suffix name of the log file
-#' @param verbose boolean. If TRUE messages are promted in the console
+#' @param verbose boolean. If TRUE messages are prompted in the console
 #' @export
-check_numeric_range <- function(Data, Field, Values, year, wd=NA, suffix,verbose=FALSE) {
-
-
-  if (FALSE) {
-    Data = te #ResultDataTA
-    Field = "INDIVIDUAL_WEIGHT"
-    Values = c(0.1,999999) #c(3400,4600)
-    suffix=NA
-    check_numeric_range(Data, Field, Values, year=2015, wd, suffix=suffix)
-  }
+check_numeric_range <- function(ResultData, Field, Values, year, wd=NA, suffix=NA, verbose=FALSE) {
 
   if (is.na(wd)) {
-    wd = tempdir()
-    if (verbose){
-      message(paste("Missing working directory. Results are saved in the temporary folder: ",wd,sep=""))
-    }
+    wd <- tempdir()
+    if (verbose) message(paste("Missing working directory. Results are saved in the temporary folder: ", wd))
   }
 
-  if (!file.exists(file.path(wd, "Logfiles"))){
-    dir.create(file.path(wd, "Logfiles"), showWarnings = FALSE)
+  if (!file.exists(file.path(wd, "Logfiles"))) {
+    dir.create(file.path(wd, "Logfiles"), recursive = TRUE, showWarnings = FALSE)
   }
-  numberError = 0
-  if (!exists("suffix")){
-    suffix=paste(as.character(Sys.Date()),format(Sys.time(), "_time_h%Hm%Ms%OS0"),sep="")
+  
+  if (missing(suffix) || is.na(suffix)) {
+    suffix <- paste0(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"))
   }
-  Errors <- file.path(wd,"Logfiles",paste("Logfile_", suffix ,".dat",sep=""))
-  if (!file.exists(Errors)){
+  
+  Errors <- file.path(wd, "Logfiles", paste0("Logfile_", suffix, ".dat"))
+  if (!file.exists(Errors)) {
     file.create(Errors)
   }
 
-
-  #### CHECK TL FIELDS ####
-  {
-    if ("LITTER_SUB.CATEGORY" %in% colnames(Data)){
-      colnames(Data)[which(colnames(Data)=="LITTER_SUB.CATEGORY")] <- "LITTER_SUB-CATEGORY"
-    }
-    if ("TOTAL_WEIGHT_IN_THE_SUB.CATEGORY_HAUL" %in% colnames(Data)){
-      colnames(Data)[which(colnames(Data)=="TOTAL_WEIGHT_IN_THE_SUB.CATEGORY_HAUL")] <- "TOTAL_WEIGHT_IN_THE_SUB-CATEGORY_HAUL"
-    }
-    if ("TOTAL_NUMBER_IN_THE_SUB.CATEGORY_HAUL" %in% colnames(Data)){
-      colnames(Data)[which(colnames(Data)=="TOTAL_NUMBER_IN_THE_SUB.CATEGORY_HAUL")] <- "TOTAL_NUMBER_IN_THE_SUB-CATEGORY_HAUL"
-    }
+  # Filtering data for the selected year
+  if (length(year) != 1 || is.na(year)) {
+    stop("Argument 'year' must be a single non-NA value")
   }
-  #### CHECK TL FIELDS - END ####
-
-  ### FILTERING DATA FOR THE SELECTED YEAR
-  arg <- "year"
-  if (!exists(arg)) {
-    stop(paste0("'", arg, "' argument should be provided"))
-  } else if (length(year) != 1) {
-    stop(paste0("only one value should be provided for '", arg, "' argument"))
-  } else if (is.na(year)) {
-    stop(paste0(arg, " argument should be a numeric value"))
-  }
-  Data <- Data[Data$YEAR == year, ]
-  ########################################
-
-  Result = Data
-  write(paste("\n----------- check range of values for field:", Field, "-", Result$YEAR[1]), file = Errors, append = TRUE)
-
-
-  indexcol= which(names(Result)==Field)
-  lrange <- length(Values)
-  # if (class(Values)=="character") {
-  #   char.val <- as.character(Values[3:lrange])
-  #
-  #   Result <- Result[!which(Result[,indexcol] %in% char.val), indexcol]
-  # }
-  Valuesf <- as.numeric(Values)
-
-
-  Result <- Result[ !is.na(Result[, which(colnames(Result)==Field)]) , ]
-
-
-  if ( (nrow(Result)!=0)){
-    if (lrange == 2){
-      k=1
-        for (k in 1:nrow(Result)){
-           if (!(Result[k, indexcol] >= Valuesf[1] & Result[k, indexcol] <= Valuesf[2])) {
-             write(paste("Haul",Result$HAUL_NUMBER[k], ": value (",Result[k, indexcol],") out of allowed range for", Field, "in",  Result$TYPE_OF_FILE[1]), file = Errors, append = TRUE)
-          numberError <- numberError + 1
-           }
-
-        } # ciclo for
-    } else if (lrange > 2) {
-      k=1
-      for (k in 1:nrow(Result)){
-        if (!((Result[k, indexcol] >= Valuesf[1] & Result[k, indexcol] <= Valuesf[2]) |
-             Result[k, indexcol] %in% Valuesf[3:lrange])) {
-
-          write(paste("Haul",Result$HAUL_NUMBER[k], ": value (",Result[k, indexcol],") out of allowed range for", Field, "in",  Result$TYPE_OF_FILE[1]), file = Errors, append = TRUE)
-          numberError <- numberError + 1
-
-        }
-
-      } # ciclo for
-      }
-    }# nrow(Result)!=0
-
-  if (numberError ==0) {
-    write(paste("No error occurred for field", Field, "in",  Result$TYPE_OF_FILE[1]), file = Errors, append = TRUE)
-  }
-
-  if (file.exists(file.path(tempdir(), "Logfiles"))){
-    unlink(file.path(tempdir(),"Logfiles"),recursive=T)
-  }
-  if (file.exists(file.path(tempdir(), "Graphs"))){
-    unlink(file.path(tempdir(),"Graphs"),recursive=T)
-  }
-  if (file.exists(file.path(tempdir(), "files R-Sufi"))){
-    unlink(file.path(tempdir(),"files R-Sufi"),recursive=T)
-  }
-
-  if (numberError ==0) {
+  df <- ResultData[ResultData$YEAR == year, , drop = FALSE]
+  if (nrow(df) == 0) {
+    write(paste("\n----------- check range of values for field:", Field, "-", year), file = Errors, append = TRUE)
+    write(sprintf("No data found for year %s", year), file = Errors, append = TRUE)
     return(TRUE)
-  } else { return(FALSE) }
+  }
+  
+  tf <- df$TYPE_OF_FILE[1]
+  write(paste("\n----------- check range of values for field:", Field, "-", year), file = Errors, append = TRUE)
+
+  indexcol <- which(names(df) == Field)
+  Valuesf <- as.numeric(Values)
+  lrange <- length(Valuesf)
+
+  # Remove NAs for range check
+  df_sub <- df[!is.na(df[[Field]]), ]
+  numberError <- 0
+
+  if (nrow(df_sub) > 0) {
+    if (lrange == 2) {
+      for (k in 1:nrow(df_sub)) {
+        val <- df_sub[k, indexcol]
+        if (!(val >= Valuesf[1] & val <= Valuesf[2])) {
+          write(paste("Haul", df_sub$HAUL_NUMBER[k], ": value (", val, ") out of allowed range for", Field, "in", tf), file = Errors, append = TRUE)
+          numberError <- numberError + 1
+        }
+      }
+    } else if (lrange > 2) {
+      for (k in 1:nrow(df_sub)) {
+        val <- df_sub[k, indexcol]
+        if (!((val >= Valuesf[1] & val <= Valuesf[2]) | val %in% Valuesf[3:lrange])) {
+          write(paste("Haul", df_sub$HAUL_NUMBER[k], ": value (", val, ") out of allowed range for", Field, "in", tf), file = Errors, append = TRUE)
+          numberError <- numberError + 1
+        }
+      }
+    }
+  }
+
+  if (numberError == 0) {
+    write(paste("No error occurred for field", Field, "in", tf), file = Errors, append = TRUE)
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
 }

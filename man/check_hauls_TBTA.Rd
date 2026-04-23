@@ -2,23 +2,21 @@
 % Please edit documentation in R/check_hauls_TBTA.r
 \name{check_hauls_TBTA}
 \alias{check_hauls_TBTA}
-\title{Check presence in TB of the hauls in TA}
+\title{Check hauls TB TA (RoME)}
 \usage{
-check_hauls_TBTA(DataTA, DataTB, year, wd = NA, suffix, verbose = FALSE)
+check_hauls_TBTA(DataTA, DataTB, year, wd = NA, suffix = NA)
 }
 \arguments{
-\item{DataTA}{data frame of TA table}
+\item{DataTA}{MEDITS TA table}
 
-\item{DataTB}{data frame of TB table}
+\item{DataTB}{MEDITS TB table}
 
 \item{year}{reference year for the analysis}
 
 \item{wd}{working directory}
 
-\item{suffix}{name of the logfile}
-
-\item{verbose}{boolean. If TRUE messages are promted in the console}
+\item{suffix}{name of the log file}
 }
 \description{
-The function check the presence of the TB (catch data table) hauls in the TA (haul data table)
+Check if all the hauls in TB are in TA.
 }

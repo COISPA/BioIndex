@@ -10,7 +10,7 @@ check_dictionary(
   Values,
   year,
   wd = NA,
-  suffix,
+  suffix = NA,
   verbose = FALSE
 )
 }
@@ -27,7 +27,7 @@ check_dictionary(
 
 \item{suffix}{name of the log file}
 
-\item{verbose}{boolean. If TRUE messages are promted in the console}
+\item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
 \description{
 The function checks whether the values contained in specific fields are consistent with the allowed values of the dictionaries.

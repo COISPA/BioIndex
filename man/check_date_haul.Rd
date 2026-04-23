@@ -2,23 +2,21 @@
 % Please edit documentation in R/check_date_haul.r
 \name{check_date_haul}
 \alias{check_date_haul}
-\title{Check date consistency}
+\title{Check date haul (RoME)}
 \usage{
-check_date_haul(DataTA, Data, year, wd = NA, suffix, verbose = TRUE)
+check_date_haul(DataTA, Data, year, wd = NA, suffix = NA)
 }
 \arguments{
-\item{DataTA}{data frame of the TA table}
+\item{DataTA}{MEDITS TA table}
 
-\item{Data}{data frame of one table among TB, TC, TE and TL}
+\item{Data}{MEDITS TB, TC or TE table}
 
 \item{year}{reference year for the analysis}
 
 \item{wd}{working directory}
 
-\item{suffix}{name of the logfile}
-
-\item{verbose}{boolean. If TRUE messages are reported in the console}
+\item{suffix}{name of the log file}
 }
 \description{
-The function allows to check the consistency of date among the tables befor mergin them together.
+Check if in TB, TC or TE the date by haul is the same of the one reported in TA.
 }

@@ -2,8 +2,10 @@
 #'
 #' Combines a MEDITS **TA** table (haul metadata) with the corresponding
 #' **TB** table (catch-per-haul by species).
-#' The function keeps only valid hauls, performs all official RoME
-#' quality checks, computes spatial means, swept area, depth stratum,
+#' The function keeps only valid hauls, performs quality checks (times,
+#' positions, wing opening, haul/date consistency) using the \code{RoME}
+#' package if available (or internal backup functions if not),
+#' computes spatial means, swept area, depth stratum,
 #' biomass/density indicators, and—optionally—writes the merged data to disk.
 #'
 #' @param ta   A `data.frame`/`data.table` containing a full TA dataset
@@ -31,8 +33,15 @@
 #'         * Calculated fields: mean lat/lon, swept area, depth stratum,
 #'           density (`N_h`, `N_km2`) and biomass (`kg_h`, `kg_km2`)
 #' @details
-#' The implementation mirrors the original BioIndex routine but includes
-#' two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
+#' The implementation mirrors the original BioIndex routine.
+#'
+#' \strong{Data Validation:}
+#' The function prioritises the use of the \code{RoME} package (suggested)
+#' for syntactic data validation. If \code{RoME} is not installed, it falls
+#' back to internal implementations of the validation routines.
+#'
+#' \strong{Optimisations:}
+#' Includes two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
 #' (2) a single loop over depth strata instead of a nested haul × stratum
 #' loop.  Results are identical to the reference routine.
 #'
@@ -102,7 +111,7 @@ merge_TATB <- function(ta, tb,
     TA$id <- uid(TA); TB$id <- uid(TB)
     invalid_ids <- TA$id[TA$VALIDITY == "I"]
 
-    ## RoME checks – conditional usage ----------------------------------- ##
+    ## RoME checks: conditional usage (with fallback to local)         ##
     if (requireNamespace("RoME", quietly = TRUE)) {
         suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
         for (yy in sort(unique(TA$YEAR))) {
@@ -124,11 +133,31 @@ merge_TATB <- function(ta, tb,
             if (!RoME::check_date_haul(TAy,TBy,yy,paste0(wd,"/output/"),suffix))
                 stop("Date in TB not consistent with TA.")
             if (!RoME::check_hauls_TBTA(TAy,TBy,yy,paste0(wd,"/output/"),suffix))
-                stop("Haul in TB not reported in TA.")
+                stop("Hauls in TB not consistent with TA.")
         }
     } else {
-        if (verbose) {
-            message("The 'RoME' package is not installed. Skipping syntactic data validation.")
+        if (verbose) message("RoME package not available. Using local BioIndex validation functions.")
+        suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
+        for (yy in sort(unique(TA$YEAR))) {
+            TAy <- TA[TA$YEAR == yy, ]; TBy <- TB[TB$YEAR == yy, ]
+            if (!check_dictionary(TAy,"SHOOTING_TIME",0:2400,yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_TIME out of range.")
+            if (!check_dictionary(TAy,"HAULING_TIME",0:2400,yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_TIME out of range.")
+            if (!check_dictionary(TAy,"WING_OPENING",c(30,50:250),yy,paste0(wd,"/output/"),suffix))
+                stop("WING_OPENING out of range.")
+            if (!check_numeric_range(TAy,"SHOOTING_LATITUDE",c(3020,4730),yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_LATITUDE out of range.")
+            if (!check_numeric_range(TAy,"HAULING_LATITUDE",c(3020,4730),yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_LATITUDE out of range.")
+            if (!check_numeric_range(TAy,"SHOOTING_LONGITUDE",c(0,4200),yy,paste0(wd,"/output/"),suffix))
+                stop("SHOOTING_LONGITUDE out of range.")
+            if (!check_numeric_range(TAy,"HAULING_LONGITUDE",c(0,4200),yy,paste0(wd,"/output/"),suffix))
+                stop("HAULING_LONGITUDE out of range.")
+            if (!check_date_haul(TAy,TBy,yy,paste0(wd,"/output/"),suffix))
+                stop("Date in TB not consistent with TA.")
+            if (!check_hauls_TBTA(TAy,TBy,yy,paste0(wd,"/output/"),suffix))
+                stop("Hauls in TB not consistent with TA.")
         }
     }
 

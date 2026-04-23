@@ -52,13 +52,22 @@ A `data.frame` with one row per haul and the following groups
 \description{
 Combines a MEDITS **TA** table (haul metadata) with the corresponding
 **TB** table (catch-per-haul by species).
-The function keeps only valid hauls, performs all official RoME
-quality checks, computes spatial means, swept area, depth stratum,
+The function keeps only valid hauls, performs quality checks (times,
+positions, wing opening, haul/date consistency) using the \code{RoME}
+package if available (or internal backup functions if not),
+computes spatial means, swept area, depth stratum,
 biomass/density indicators, and—optionally—writes the merged data to disk.
 }
 \details{
-The implementation mirrors the original BioIndex routine but includes
-two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
+The implementation mirrors the original BioIndex routine.
+
+\strong{Data Validation:}
+The function prioritises the use of the \code{RoME} package (suggested)
+for syntactic data validation. If \code{RoME} is not installed, it falls
+back to internal implementations of the validation routines.
+
+\strong{Optimisations:}
+Includes two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
 (2) a single loop over depth strata instead of a nested haul × stratum
 loop.  Results are identical to the reference routine.
 }

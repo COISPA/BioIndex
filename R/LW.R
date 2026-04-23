@@ -17,8 +17,8 @@ LW <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
         te
 
         wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex_appoggio\\test"
-        ta <- RoME::TA
-        te <- RoME::TE
+        # ta <- RoME::TA
+        # te <- RoME::TE
         sp="MERLMER"
         GSA=10
         country="all"

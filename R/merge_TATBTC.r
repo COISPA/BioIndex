@@ -7,8 +7,9 @@
 #' The routine:
 #' \itemize{
 #'   \item filters hauls by validity and by country;
-#'   \item performs the full set of RoMEBS quality checks (times, positions,
-#'         wing opening, haul/date consistency);
+#'   \item performs a full set of quality checks (times, positions, wing opening,
+#'         haul/date consistency) using the \code{RoME} package if available,
+#'         or internal backup functions if not;
 #'   \item merges TA with TB and TA with TC, respectively;
 #'   \item computes swept area, mean positions, depth stratum, raising
 #'         factors, densities and biomasses;
@@ -49,6 +50,15 @@
 #'
 #' @details
 #' The implementation reproduces the official BioIndex workflow.
+#'
+#' \strong{Data Validation:}
+#' The function automatically performs syntactic data validation. To ensure
+#' centralisation of quality checks, it prioritises the use of the \code{RoME}
+#' package (suggested). If \code{RoME} is not installed, the function falls
+#' back to internal implementations of the validation routines to ensure
+#' data integrity.
+#'
+#' \strong{Optimisations:}
 #' Two micro-optimisations are included:
 #' \enumerate{
 #'   \item vectorised replacement of missing \code{"NA NA"} entries
@@ -173,51 +183,63 @@ merge_TATBTC <- function(ta, tb, tc,
 
   id_invalid <- id_TA$id[which(TA$VALIDITY == "I")]
 
-  ## ------------------------------------------------------------------ ##
-  ##  RoME checks: conditional usage                                    ##
-  ## ------------------------------------------------------------------ ##
+  ##  RoME checks: conditional usage (with fallback to local)         ##
   if (requireNamespace("RoME", quietly = TRUE)) {
-    suffix <- paste(as.character(Sys.Date()),
-                    format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
-    yyy <- sort(unique(TA$YEAR))
-    for (yy in seq_along(yyy)) {
-      TA_year <- TA[TA$YEAR == yyy[yy], ]
-      TB_year <- TB[TB$YEAR == yyy[yy], ]
-      TC_year <- TC[TC$YEAR == yyy[yy], ]
-      if (!RoME::check_dictionary(TA_year, "SHOOTING_TIME", 0:2400, yyy[yy],
-                                  paste(wd, "/output/", sep = ""), suffix))
-        stop("SHOOTING_TIME value out of the allowed range.")
-      if (!RoME::check_dictionary(TA_year, "HAULING_TIME", 0:2400, yyy[yy],
-                                  paste(wd, "/output/", sep = ""), suffix))
-        stop("HAULING_TIME value out of the allowed range.")
-      if (!RoME::check_dictionary(TA_year, "WING_OPENING", c(30, 50:250), yyy[yy],
-                                  paste(wd, "/output/", sep = ""), suffix))
-        stop("WING_OPENING value out of the allowed range.")
-      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LATITUDE", c(3020, 4730), yyy[yy],
-                                     paste(wd, "/output/", sep = ""), suffix))
-        stop("SHOOTING_LATITUDE in TA out of the allowed range.")
-      if (!RoME::check_numeric_range(TA_year, "HAULING_LATITUDE", c(3020, 4730), yyy[yy],
-                                     paste(wd, "/output/", sep = ""), suffix))
-        stop("HAULING_LATITUDE in TA out of the allowed range.")
-      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LONGITUDE", c(0, 4200), yyy[yy],
-                                     paste(wd, "/output/", sep = ""), suffix))
-        stop("SHOOTING_LONGITUDE in TA out of the allowed range.")
-      if (!RoME::check_numeric_range(TA_year, "HAULING_LONGITUDE", c(0, 4200), yyy[yy],
-                                     paste(wd, "/output/", sep = ""), suffix))
-        stop("HAULING_LONGITUDE in TA out of the allowed range.")
-      if (!RoME::check_date_haul(TA_year, TB_year, yyy[yy],
-                                 paste(wd, "/output/", sep = ""), suffix))
+    suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
+    yyy <- sort(unique(ta$YEAR))
+    for (yy in 1:length(yyy)) {
+      TA_year <- ta[ta$YEAR == yyy[yy], ]
+      TB_year <- tb[tb$YEAR == yyy[yy], ]
+      TC_year <- tc[tc$YEAR == yyy[yy], ]
+      if (!RoME::check_dictionary(TA_year, "SHOOTING_TIME", 0:2400, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_TIME out of range.")
+      if (!RoME::check_dictionary(TA_year, "HAULING_TIME", 0:2400, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_TIME out of range.")
+      if (!RoME::check_dictionary(TA_year, "WING_OPENING", c(30, 50:250), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("WING_OPENING out of range.")
+      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LATITUDE", c(3020, 4730), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_LATITUDE out of range.")
+      if (!RoME::check_numeric_range(TA_year, "HAULING_LATITUDE", c(3020, 4730), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_LATITUDE out of range.")
+      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LONGITUDE", c(0, 4200), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_LONGITUDE out of range.")
+      if (!RoME::check_numeric_range(TA_year, "HAULING_LONGITUDE", c(0, 4200), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_LONGITUDE out of range.")
+      if (!RoME::check_date_haul(TA_year, TB_year, yyy[yy], paste0(wd, "/output/"), suffix))
         stop("Date in TB not consistent with TA.")
-      if (!RoME::check_hauls_TBTA(TA_year, TB_year, yyy[yy],
-                                  paste(wd, "/output/", sep = ""), suffix))
-        stop("Haul in TB not reported in TA.")
-      if (!RoME::check_date_haul(TA_year, TC_year, yyy[yy],
-                                 paste(wd, "/output/", sep = ""), suffix))
+      if (!RoME::check_hauls_TBTA(TA_year, TB_year, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("Hauls in TB not consistent with TA.")
+      if (!RoME::check_date_haul(TA_year, TC_year, yyy[yy], paste0(wd, "/output/"), suffix))
         stop("Date in TC not consistent with TA.")
     }
   } else {
-    if (verbose) {
-      message("The 'RoME' package is not installed. Skipping syntactic data validation.")
+    if (verbose) message("RoME package not available. Using local BioIndex validation functions.")
+    suffix <- paste(Sys.Date(), format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
+    yyy <- sort(unique(ta$YEAR))
+    for (yy in 1:length(yyy)) {
+      TA_year <- ta[ta$YEAR == yyy[yy], ]
+      TB_year <- tb[tb$YEAR == yyy[yy], ]
+      TC_year <- tc[tc$YEAR == yyy[yy], ]
+      if (!check_dictionary(TA_year, "SHOOTING_TIME", 0:2400, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_TIME out of range.")
+      if (!check_dictionary(TA_year, "HAULING_TIME", 0:2400, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_TIME out of range.")
+      if (!check_dictionary(TA_year, "WING_OPENING", c(30, 50:250), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("WING_OPENING out of range.")
+      if (!check_numeric_range(TA_year, "SHOOTING_LATITUDE", c(3020, 4730), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_LATITUDE out of range.")
+      if (!check_numeric_range(TA_year, "HAULING_LATITUDE", c(3020, 4730), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_LATITUDE out of range.")
+      if (!check_numeric_range(TA_year, "SHOOTING_LONGITUDE", c(0, 4200), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("SHOOTING_LONGITUDE out of range.")
+      if (!check_numeric_range(TA_year, "HAULING_LONGITUDE", c(0, 4200), yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("HAULING_LONGITUDE out of range.")
+      if (!check_date_haul(TA_year, TB_year, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("Date in TB not consistent with TA.")
+      if (!check_hauls_TBTA(TA_year, TB_year, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("Hauls in TB not consistent with TA.")
+      if (!check_date_haul(TA_year, TC_year, yyy[yy], paste0(wd, "/output/"), suffix))
+        stop("Date in TC not consistent with TA.")
     }
   }
 
