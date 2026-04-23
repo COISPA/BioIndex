@@ -27,7 +27,7 @@
 #' @param save boolean. If TRUE the results are stored in the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
 #' spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
 #' map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),

@@ -11,10 +11,6 @@
   Non-standard file/directory found at top level: 'cran-comments.md'
   (This file is now added to .Rbuildignore and should not appear in the final tarball).
 
-- NOTE: checking examples ... NOTE
-  Examples with CPU time > 10s: BioIndex
-  (The main function example is now wrapped in \donttest{} to comply with execution time limits).
-
 ## Submission summary
 
 This is a new submission for the BioIndex package.
@@ -26,15 +22,15 @@ BioIndex is designed to support the standardized analysis of MEDITS trawl survey
 - Refactored `class()` checks to `inherits()` for robust type checking.
 - Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
 - Updated author metadata and standardized documentation.
-- Added `inst/WORDLIST` to address spell-check warnings on technical acronyms (MEDITS, GSAs, RDBFIS, etc.).
+- Added `WORDLIST` and `inst/WORDLIST` to address spell-check warnings on technical acronyms (MEDITS, GSAs, RDBFIS, etc.).
 - Fixed deprecated `ggplot2` arguments (`size` replaced by `linewidth`).
-- Simplified package examples and wrapped the main function in `\donttest{}` to ensure successful execution within time limits.
+- Wrapped the main function example in `\dontrun{}` to ensure it is never executed during automated checks, avoiding failures related to internet connectivity (NOAA downloads) and execution time limits.
 
 ### Dependencies:
 - **RoME**: BioIndex depends on the RoME package, which is currently undergoing a separate new submission process.
 
 ## Misspelled words (Technical Acronyms)
-The following words reported as potentially misspelled are technical acronyms or domain-specific terms and have been added to `inst/WORDLIST`:
+The following words reported as potentially misspelled are technical acronyms or domain-specific terms and have been added to the WORDLIST:
 - BioIndex
 - GSAs
 - MEDITS

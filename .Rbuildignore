@@ -8,3 +8,5 @@ README.Rmd
 ^check_log_final\.txt$
 ^.*\.tar\.gz$
 ^cran-comments\.md$
+^README\.Rmd$
+^WORDLIST$

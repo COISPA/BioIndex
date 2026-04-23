@@ -14,37 +14,32 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Installation
-
-Install the latest BioIndex release from GitHub:
-
-```{r installation, eval=FALSE}
-# library(BioIndex)
-# library(devtools)
-# install_github("COISPA/BioIndex",upgrade = c("never"))
-
-## uncomment the following code line to install the package buiding the vignettes
-
-# install_github("COISPA/BioIndex",upgrade = c("never"), build_vignettes = TRUE)
-```
-
 # Description
 
-BioIndex is an R library to perform analysis of trawl survey data using MEDITS file format.
-The functions were previously used in the context of the Black Sea expert group to analyse data collected in the Black Sea turbot demersal trawl survey. Then, an updated version (v. 3.1) of the software was issued and upgraded to elaborate data collected during rapa whelk scientific survey too. 
-The actual version of the software, BioIndex v4.04 was developed in R language (version 4.2.1) and presented to the Black Sea experts. Bioindex library is able to perform analysis on both MEDITS and MEDITS-like data (Black Sea survey data) after that the integrity of data tables is checked with RoME package functions.
-The software allows to perform the analysis on survey data following the random stratified sampling, (e.g., MEDITS survey) at GSA level, but in cases two or more countries are included in the same GSA, the analysis can be also conducted at country level. The functions included in the package allows to estimate the time series and the spatial distribution of a wide pool of population state-indicators for a selected species (). 
-BioIndex routine also offers the possibilities to perform statistical trend analysis of both abundance and biomass time series based on the Hotelling-Pabst test (Cotter, 2009) and to perform a spatial analysis, placing a list of indices in the spatial dimension, using the 0.5*0.5° GFCM grid or bubble plots, to describe, for example, the average distribution and abundance of the species at local and regional spatial scale or the localization of sensitive life stage of the population.
-BioIndex package was built to work both on stand-alone (on a local machine) or online, embedded in the RDBFIS environment. A complete analysis on a selected species can be launched on TA, TB and TC tables (MEDITS data format) running the BioIndex function which calls the single functions devoted to specific analyses. Each function can also be used independently from the others, if a given analysis would be carried out.
+**BioIndex** supports the standardized analysis of MEDITS trawl survey data and the calculation of biological indicators for selected species and population components. The package provides functions to estimate abundance and biomass indices, analyse size structure and length frequency distributions, derive sex ratio and maturity related metrics, explore spatial patterns, and assess temporal trends across surveys. 
+
+Developed for integration within the RDBFIS framework, it is intended to work on quality checked input data (via the **RoME** package) and to produce reproducible outputs that can support monitoring, comparative analyses among GSAs and countries, and fishery management.
+
+The package allows to perform the analysis at GSA level or country level, estimating the time series and the spatial distribution of a wide pool of population state-indicators. It also offers statistical trend analysis of both abundance and biomass time series based on the Hotelling-Pabst test (Cotter, 2009) and spatial analysis using the 0.5*0.5° GFCM grid or bubble plots.
+
+# Installation
+
+Install the latest BioIndex release from CRAN (when available):
+
+```r
+install.packages("BioIndex")
+```
 
 # Use
 
-```{r, fig.height=8, fig.width=8}
+The main function `BioIndex()` can be used to launch a complete analysis:
+
+```{r, eval=FALSE, fig.height=8, fig.width=8}
 BioIndex::BioIndex(ta=BioIndex::TA, tb=BioIndex::TB, tc=BioIndex::TC, 
                    sspp="MERLMER",rec_threshold=200,
                    spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10,
                    country="all", map_lim=c(13.3,15.2,39.9,41.3),
                    depth_lines=c(50,200,800), strata=BioIndex::strata_scheme,
                    stratification_tab = BioIndex::stratification, resolution=1,
-                   buffer=0.1, wd=tempdir(), zip=TRUE, save=TRUE, verbose=TRUE)
+                   buffer=0.1, wd=tempdir(), zip=FALSE, save=FALSE, verbose=TRUE)
 ```
