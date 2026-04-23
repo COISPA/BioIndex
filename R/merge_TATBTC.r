@@ -76,7 +76,7 @@
 #' @export
 #' @importFrom hms hms
 #' @importFrom utils write.table
-#' @importFrom RoME check_dictionary check_numeric_range check_date_haul check_hauls_TBTA
+#' @importFrom utils write.table
 merge_TATBTC <- function(ta, tb, tc,
                          species,
                          country = "all",
@@ -174,45 +174,51 @@ merge_TATBTC <- function(ta, tb, tc,
   id_invalid <- id_TA$id[which(TA$VALIDITY == "I")]
 
   ## ------------------------------------------------------------------ ##
-  ##  RoMEBS checks: unchanged                                          ##
+  ##  RoME checks: conditional usage                                    ##
   ## ------------------------------------------------------------------ ##
-  suffix <- paste(as.character(Sys.Date()),
-                  format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
-  yyy <- sort(unique(TA$YEAR))
-  for (yy in seq_along(yyy)) {
-    TA_year <- TA[TA$YEAR == yyy[yy], ]
-    TB_year <- TB[TB$YEAR == yyy[yy], ]
-    TC_year <- TC[TC$YEAR == yyy[yy], ]
-    if (!check_dictionary(TA_year, "SHOOTING_TIME", 0:2400, yyy[yy],
-                          paste(wd, "/output/", sep = ""), suffix))
-      stop("SHOOTING_TIME value out of the allowed range.")
-    if (!check_dictionary(TA_year, "HAULING_TIME", 0:2400, yyy[yy],
-                          paste(wd, "/output/", sep = ""), suffix))
-      stop("HAULING_TIME value out of the allowed range.")
-    if (!check_dictionary(TA_year, "WING_OPENING", c(30, 50:250), yyy[yy],
-                          paste(wd, "/output/", sep = ""), suffix))
-      stop("WING_OPENING value out of the allowed range.")
-    if (!check_numeric_range(TA_year, "SHOOTING_LATITUDE", c(3020, 4730), yyy[yy],
-                             paste(wd, "/output/", sep = ""), suffix))
-      stop("SHOOTING_LATITUDE in TA out of the allowed range.")
-    if (!check_numeric_range(TA_year, "HAULING_LATITUDE", c(3020, 4730), yyy[yy],
-                             paste(wd, "/output/", sep = ""), suffix))
-      stop("HAULING_LATITUDE in TA out of the allowed range.")
-    if (!check_numeric_range(TA_year, "SHOOTING_LONGITUDE", c(0, 4200), yyy[yy],
-                             paste(wd, "/output/", sep = ""), suffix))
-      stop("SHOOTING_LONGITUDE in TA out of the allowed range.")
-    if (!check_numeric_range(TA_year, "HAULING_LONGITUDE", c(0, 4200), yyy[yy],
-                             paste(wd, "/output/", sep = ""), suffix))
-      stop("HAULING_LONGITUDE in TA out of the allowed range.")
-    if (!check_date_haul(TA_year, TB_year, yyy[yy],
-                         paste(wd, "/output/", sep = ""), suffix))
-      stop("Date in TB not consistent with TA.")
-    if (!check_hauls_TBTA(TA_year, TB_year, yyy[yy],
-                          paste(wd, "/output/", sep = ""), suffix))
-      stop("Haul in TB not reported in TA.")
-    if (!check_date_haul(TA_year, TC_year, yyy[yy],
-                         paste(wd, "/output/", sep = ""), suffix))
-      stop("Date in TC not consistent with TA.")
+  if (requireNamespace("RoME", quietly = TRUE)) {
+    suffix <- paste(as.character(Sys.Date()),
+                    format(Sys.time(), "_time_h%Hm%Ms%OS0"), sep = "")
+    yyy <- sort(unique(TA$YEAR))
+    for (yy in seq_along(yyy)) {
+      TA_year <- TA[TA$YEAR == yyy[yy], ]
+      TB_year <- TB[TB$YEAR == yyy[yy], ]
+      TC_year <- TC[TC$YEAR == yyy[yy], ]
+      if (!RoME::check_dictionary(TA_year, "SHOOTING_TIME", 0:2400, yyy[yy],
+                                  paste(wd, "/output/", sep = ""), suffix))
+        stop("SHOOTING_TIME value out of the allowed range.")
+      if (!RoME::check_dictionary(TA_year, "HAULING_TIME", 0:2400, yyy[yy],
+                                  paste(wd, "/output/", sep = ""), suffix))
+        stop("HAULING_TIME value out of the allowed range.")
+      if (!RoME::check_dictionary(TA_year, "WING_OPENING", c(30, 50:250), yyy[yy],
+                                  paste(wd, "/output/", sep = ""), suffix))
+        stop("WING_OPENING value out of the allowed range.")
+      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LATITUDE", c(3020, 4730), yyy[yy],
+                                     paste(wd, "/output/", sep = ""), suffix))
+        stop("SHOOTING_LATITUDE in TA out of the allowed range.")
+      if (!RoME::check_numeric_range(TA_year, "HAULING_LATITUDE", c(3020, 4730), yyy[yy],
+                                     paste(wd, "/output/", sep = ""), suffix))
+        stop("HAULING_LATITUDE in TA out of the allowed range.")
+      if (!RoME::check_numeric_range(TA_year, "SHOOTING_LONGITUDE", c(0, 4200), yyy[yy],
+                                     paste(wd, "/output/", sep = ""), suffix))
+        stop("SHOOTING_LONGITUDE in TA out of the allowed range.")
+      if (!RoME::check_numeric_range(TA_year, "HAULING_LONGITUDE", c(0, 4200), yyy[yy],
+                                     paste(wd, "/output/", sep = ""), suffix))
+        stop("HAULING_LONGITUDE in TA out of the allowed range.")
+      if (!RoME::check_date_haul(TA_year, TB_year, yyy[yy],
+                                 paste(wd, "/output/", sep = ""), suffix))
+        stop("Date in TB not consistent with TA.")
+      if (!RoME::check_hauls_TBTA(TA_year, TB_year, yyy[yy],
+                                  paste(wd, "/output/", sep = ""), suffix))
+        stop("Haul in TB not reported in TA.")
+      if (!RoME::check_date_haul(TA_year, TC_year, yyy[yy],
+                                 paste(wd, "/output/", sep = ""), suffix))
+        stop("Date in TC not consistent with TA.")
+    }
+  } else {
+    if (verbose) {
+      message("The 'RoME' package is not installed. Skipping syntactic data validation.")
+    }
   }
 
   ## ------------------------------------------------------------------ ##

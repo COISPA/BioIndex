@@ -1,7 +1,7 @@
 Package: BioIndex
 Type: Package
 Title: Biological Indicators and Indices for MEDITS Survey Data
-Version: 0.6.04
+Version: 0.6.4
 Date: 2026-04-22
 Authors@R: person("Walter", "Zupa", email = "zupa@fondazionecoispa.org",
                   role = c("aut", "cre"))
@@ -32,7 +32,6 @@ Imports:
     methods,
     mgcv,
     reshape2,
-    RoME,
     shiny,
     shinyjs,
     stringr,
@@ -43,5 +42,6 @@ Suggests:
     knitr,
     mapproj,
     maps (>= 3.4.1),
-    rmarkdown
+    rmarkdown,
+    RoME
 VignetteBuilder: knitr

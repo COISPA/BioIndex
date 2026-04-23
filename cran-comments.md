@@ -16,7 +16,7 @@
 This is a new submission for the BioIndex package.
 BioIndex is designed to support the standardized analysis of MEDITS trawl survey data and the calculation of biological indicators.
 
-### Key Changes in v0.6.04:
+### Key Changes in v0.6.4:
 - Resolved `DESCRIPTION` field policy: Description now starts with a neutral verb instead of the package name.
 - Fixed non-ASCII characters in `continent` dataset.
 - Refactored `class()` checks to `inherits()` for robust type checking.
@@ -27,7 +27,8 @@ BioIndex is designed to support the standardized analysis of MEDITS trawl survey
 - Wrapped the main function example in `\dontrun{}` to ensure it is never executed during automated checks, avoiding failures related to internet connectivity (NOAA downloads) and execution time limits.
 
 ### Dependencies:
-- **RoME**: BioIndex depends on the RoME package, which is currently undergoing a separate new submission process.
+- **RoME**: BioIndex previously depended on the RoME package. To facilitate the submission process while RoME is pending on CRAN, it has been moved to `Suggests`. BioIndex now performs syntactic data validation only if RoME is available, ensuring compatibility with CRAN policies for new submissions.
+- **Version**: Updated version numbering to `0.6.4` to comply with CRAN policies regarding leading zeros.
 
 ## Misspelled words (Technical Acronyms)
 The following words reported as potentially misspelled are technical acronyms or domain-specific terms and have been added to the WORDLIST:
