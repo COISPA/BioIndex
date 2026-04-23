@@ -1,5 +1,6 @@
 #' Sex ratio
 #'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @param mTATB data frame of the merged TA and TB
 #' @param GSA reference GSA for the analysis
 #' @param country vector of reference countries for the analysis

@@ -15,7 +15,7 @@
 #' @importFrom stringr str_split
 #' @import grDevices
 #' @import graphics
-#' @import magrittr
+#' @importFrom magrittr %>%
 #' @export
 #'
 #'

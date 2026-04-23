@@ -35,3 +35,6 @@ indices_ts(
 \description{
 Estimation of abundance and biomass indices
 }
+\author{
+Walter Zupa \email{zupa@fondazionecoispa.org}
+}

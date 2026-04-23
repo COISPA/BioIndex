@@ -1,5 +1,6 @@
 #' Estimation of abundance and biomass indices
 #'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @param mTATB data frame
 #' @param GSA reference GSA for the analysis
 #' @param country reference countries in the GSA for the analysis

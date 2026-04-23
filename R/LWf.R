@@ -1,5 +1,6 @@
 #' Estimation of LW relationship
 #'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @param TE MEDITS or MEDITS-like TE table
 #' @param sp species rubin code (MEDITS format, e.g. "MERLMER")
 #' @param GEAR type of gear reported in the corresponding TA file
@@ -117,7 +118,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                             a <- model.lm$coefficients[1]
                             b <- model.lm$coefficients[2]
 
-                            if (class(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)),silent=TRUE)) != "try-error") {
+                            if (!inherits(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)), silent = TRUE), "try-error")) {
                                 mod <- nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b))
                                 lc_list <- seq(LC_range[1], LC_range[2], cl.size)
                                 prediction <- data.frame(matrix(nrow = length(lc_list), ncol = 2))
@@ -162,11 +163,11 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
 
         { #####  CLEAN WEIGHT - start #####
 
-            if (class(TE$CLEAN_WEIGHT)=="character"){
+            if (is.character(TE$CLEAN_WEIGHT)) {
                 data_cw <- TE[TE$GENUS == genus & TE$SPECIES == species &
                                   as.character(TE$CLEAN_WEIGHT != "ND"), ]
                 data_cw$CLEAN_WEIGHT <- as.numeric(data_cw$CLEAN_WEIGHT)
-            } else if(class(TE$CLEAN_WEIGHT)=="numeric") {
+            } else if (is.numeric(TE$CLEAN_WEIGHT)) {
                 data_cw <- TE[TE$GENUS == genus & TE$SPECIES == species &
                                   !is.na(TE$CLEAN_WEIGHT), ]
                 data_cw$CLEAN_WEIGHT <- as.numeric(data_cw$CLEAN_WEIGHT)
@@ -243,7 +244,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                             a <- model.lm$coefficients[1]
                             b <- model.lm$coefficients[2]
 
-                            if (class(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)),silent=TRUE)) != "try-error") {
+                            if (!inherits(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)), silent = TRUE), "try-error")) {
                                 mod <- nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b))
 
                                 lc_list <- seq(LC_range[1], LC_range[2], cl.size)
@@ -366,7 +367,7 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                         a <- model.lm$coefficients[1]
                         b <- model.lm$coefficients[2]
 
-                        if (class(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)),silent=TRUE)) != "try-error") {
+                        if (!inherits(try(nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b)), silent = TRUE), "try-error")) {
                             mod <- nls(Y ~ a * (X^b), data = df, start = list(a = exp(a), b = b))
 
                             lc_list <- seq(LC_range[1], LC_range[2], cl.size)

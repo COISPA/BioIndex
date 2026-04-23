@@ -1,4 +1,6 @@
 #' Bubble plot of abundance and biomass indices by haul
+#'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @description
 #' The function generates bubble plot of abundance and biomass indices by haul.
 #' If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
@@ -79,7 +81,7 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
                            panel.grid.major = element_blank(),
                            panel.background = element_rect(fill = 'light blue',linetype="solid",color="black"),
                            plot.background = element_rect(fill="white",
-                                                          size=1,linetype="solid",color="black"),
+                                                          linewidth=1,linetype="solid",color="black"),
                            axis.line = element_blank(),
                            axis.text.x = element_blank(),
                            axis.text.y = element_blank(),
@@ -161,13 +163,13 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
             geom_polygon(data=world, aes(long,lat,group=group), fill="light grey", colour="darkgrey")+
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[3], color = "#1F618D", size = 0.5) +
+                         breaks = depth_lines[3], color = "#1F618D", linewidth = 0.5) +
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[2], color = "#5499C7", size = 0.5) +
+                         breaks = depth_lines[2], color = "#5499C7", linewidth = 0.5) +
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[1], color = "#4db5fa", size = 0.5) +
+                         breaks = depth_lines[1], color = "#4db5fa", linewidth = 0.5) +
             geom_point(data=loc, aes(lon, lat, group=NA,fill=NA,size=N_km2),shape=21,
                        colour="black",fill=loc$colore,alpha=I(3/10)) +
             scale_size(range=c(1,14), breaks =br_n, labels = labels_n, guide = "legend",labs(size="n/km^2")) +
@@ -199,13 +201,13 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
             geom_polygon(data=world, aes(long,lat,group=group), fill="light grey", colour="darkgrey")+
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[3], color = "#1F618D", size = 0.5) +
+                         breaks = depth_lines[3], color = "#1F618D", linewidth = 0.5) +
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[2], color = "#5499C7", size = 0.5) +
+                         breaks = depth_lines[2], color = "#5499C7", linewidth = 0.5) +
             geom_contour(data = bat_xyz,
                          aes(x = V1, y = V2, z = V3),
-                         breaks = depth_lines[1], color = "#4db5fa", size = 0.5) +
+                         breaks = depth_lines[1], color = "#4db5fa", linewidth = 0.5) +
             geom_point(data=loc, aes(lon, lat, group=NA,fill=NA,size=kg_km2),shape=21,
                        colour="black",fill=loc$colore,alpha=I(3/10)) +
             scale_size(range=c(1,14), breaks =br_n, labels = labels_n, guide = "legend",labs(size="kg/km^2")) +

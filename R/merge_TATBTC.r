@@ -1,5 +1,6 @@
 #' Merge TA–TB and TA–TC tables (MEDITS protocol)
 #'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' Combines a MEDITS **TA** file (haul metadata) with the corresponding
 #' **TB** file (haul-level catches by species) and **TC** file
 #' (length–frequency by haul, sex and maturity).

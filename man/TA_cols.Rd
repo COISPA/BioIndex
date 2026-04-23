@@ -14,6 +14,6 @@ TA_cols
 TA table headings
 }
 \author{
-Walter Zupa \email{zupa@fondazionecoispa.it}
+Walter Zupa \email{zupa@fondazionecoispa.org}
 }
 \keyword{TA}

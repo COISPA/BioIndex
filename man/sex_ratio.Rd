@@ -38,3 +38,6 @@ sex_ratio(
 \description{
 Sex ratio
 }
+\author{
+Walter Zupa \email{zupa@fondazionecoispa.org}
+}

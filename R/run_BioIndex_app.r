@@ -1,7 +1,8 @@
-#' Run the BioIndex Shiny application
+#' launches the embedded Shiny application included in the package.
 #'
-#' Launches the embedded Shiny application included in the package.
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #'
+#' @importFrom shiny runApp
 #' @export
 run_BioIndex_app <- function() {
     app_dir <- system.file("shiny/BioIndexApp", package = "BioIndex")

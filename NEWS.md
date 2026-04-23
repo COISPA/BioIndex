@@ -44,5 +44,15 @@
   __Fixes for RBDFIS III__
   * The stratification tables relative to the rapa whelk beam trawl survey, conducted in the the Black Sea by Romania and Bulgaria, are included in the library: strata_scheme_rapana and stratification_rapana.
 
-# BioIndex v0.6.03  
+# BioIndex v0.6.03
 Added an embedded Shiny application to the package: run_BioIndex_app(). It provides a graphical user interface for running BioIndex analyses directly from the package environment.
+
+# BioIndex v0.6.04
+  __CRAN Submission Release__
+  
+  * Fixed non-ASCII characters in `continent` dataset to comply with CRAN standards.
+  * Refactored `class()` checks in `LWf.R` to use `inherits()` for robust type checking.
+  * Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
+  * Standardized author metadata and documentation across all R scripts.
+  * Added `globalVariables` declarations to resolve R CMD check notes on global bindings.
+  * Finalized dependencies for the embedded Shiny application.

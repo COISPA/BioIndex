@@ -2,10 +2,13 @@
 % Please edit documentation in R/run_BioIndex_app.r
 \name{run_BioIndex_app}
 \alias{run_BioIndex_app}
-\title{Run the BioIndex Shiny application}
+\title{launches the embedded Shiny application included in the package.}
 \usage{
 run_BioIndex_app()
 }
 \description{
-Launches the embedded Shiny application included in the package.
+launches the embedded Shiny application included in the package.
+}
+\author{
+Walter Zupa \email{zupa@fondazionecoispa.org}
 }

@@ -14,6 +14,6 @@ strata_scheme
 Stratification scheme adopted in the bottom trawl demersal survey (e.g. MEDITS survey).
 }
 \author{
-Walter Zupa \email{zupa@fondazionecoispa.it}
+Walter Zupa \email{zupa@fondazionecoispa.org}
 }
 \keyword{stratification}

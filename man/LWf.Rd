@@ -22,3 +22,6 @@ LWf(TE, sp, GEAR, GSA, country = NA, n_records = 10)
 \description{
 Estimation of LW relationship
 }
+\author{
+Walter Zupa \email{zupa@fondazionecoispa.org}
+}

@@ -2,7 +2,7 @@
 #'
 #' @name TA_cols
 #' @docType data
-#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @keywords TA
 "TA_cols"
 
@@ -10,7 +10,7 @@
 #'
 #' @name TB_cols
 #' @docType data
-#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @keywords TB
 "TB_cols"
 
@@ -18,7 +18,7 @@
 #'
 #' @name TC_cols
 #' @docType data
-#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @keywords TC
 "TC_cols"
 
@@ -26,7 +26,7 @@
 #'
 #' @name strata_scheme
 #' @docType data
-#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @keywords stratification
 #' @description
 #' Stratification scheme adopted in the bottom trawl demersal survey (e.g. MEDITS survey).
@@ -48,7 +48,7 @@
 #'
 #' @name strata_scheme_rapana
 #' @docType data
-#' @author Walter Zupa \email{zupa@fondazionecoispa.it}
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @keywords stratification rapa whelk Black Sea
 #' @description
 #' Stratification scheme adopted in the rapa whelk survey (e.g. Black Sea beam trawl survey).

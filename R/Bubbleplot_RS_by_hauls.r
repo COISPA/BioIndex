@@ -1,4 +1,6 @@
 #' Bubbleplot of abundance indices for recruits and spawners
+#'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @description
 #' The function generates bubbleplots of abundance indices for recruits and spawners
 #' If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
@@ -123,17 +125,17 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[3], color = "#1F618D", size = 0.5
+          breaks = depths[3], color = "#1F618D", linewidth = 0.5
         ) +
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[2], color = "#5499C7", size = 0.5
+          breaks = depths[2], color = "#5499C7", linewidth = 0.5
         ) +
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[1], color = "#4db5fa", size = 0.5
+          breaks = depths[1], color = "#4db5fa", linewidth = 0.5
         ) +
         geom_point(
           data = loc, aes(lon, lat, group = NULL, fill = NULL, size = indices), shape = 21,
@@ -208,17 +210,17 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[3], color = "#1F618D", size = 0.5
+          breaks = depths[3], color = "#1F618D", linewidth = 0.5
         ) +
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[2], color = "#5499C7", size = 0.5
+          breaks = depths[2], color = "#5499C7", linewidth = 0.5
         ) +
         geom_contour(
           data = bat_xyz,
           aes(x = V1, y = V2, z = V3),
-          breaks = depths[1], color = "#4db5fa", size = 0.5
+          breaks = depths[1], color = "#4db5fa", linewidth = 0.5
         ) +
         geom_point(
           data = loc, aes(lon, lat, group = NULL, fill = NULL, size = indices), shape = 21,

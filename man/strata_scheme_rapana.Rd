@@ -14,7 +14,7 @@ strata_scheme_rapana
 Stratification scheme adopted in the rapa whelk survey (e.g. Black Sea beam trawl survey).
 }
 \author{
-Walter Zupa \email{zupa@fondazionecoispa.it}
+Walter Zupa \email{zupa@fondazionecoispa.org}
 }
 \keyword{Black}
 \keyword{Sea}

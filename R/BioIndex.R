@@ -1,7 +1,9 @@
-#' BioIndex
+#' Main function to perform BioIndex analysis
 #'
 #' @description
-#' R code to perform analysis of trawl survey data using MEDITS file format
+#' BioIndex is an R package designed to support the standardized analysis of MEDITS trawl survey data and the calculation of biological indicators for selected species and population components.
+#'
+#' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #'
 #' @param ta data frame of the TA table in the MEDITS format
 #' @param tb data frame of the TB table in the MEDITS format
@@ -25,12 +27,14 @@
 #' @param save boolean. If TRUE the results are stored in the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @examples
+#' \donttest{
 #' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
 #' spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
 #' map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),
 #' strata=BioIndex::strata_scheme, stratification_tab =
 #' BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(),
-#' zip=TRUE, save=TRUE, verbose=TRUE)
+#' zip=FALSE, save=FALSE, verbose=TRUE)
+#' }
 #'
 #' @importFrom methods is
 #' @importFrom zip zip

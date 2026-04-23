@@ -39,3 +39,6 @@ hauls_position(
 This function generates a spatial plot of haul positions over time, displaying haul labels and bathymetric lines over a customizable map extent.
 If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 }
+\author{
+Walter Zupa \email{zupa@fondazionecoispa.org}
+}
