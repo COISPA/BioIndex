@@ -58,17 +58,29 @@ A list of two \code{data.frame}s:
   }
 }
 \description{
-Merge TA–TB and TA–TC tables (MEDITS protocol)
+This function is the primary entry point for integrating MEDITS survey data
+(e.g. TA, TB, and TC tables), producing unified datasets essential for
+population analysis and the estimation of demographic indicators.
+The routine:
+\itemize{
+  \item filters hauls by validity and by country;
+  \item performs a full set of quality checks (times, positions, wing opening,
+        haul/date consistency) using internal validation functions
+        (based on \code{RoME} version 0.2.3);
+  \item merges TA with TB and TA with TC, respectively;
+  \item computes swept area, mean positions, depth stratum, raising
+        factors, densities and biomasses;
+  \item (optionally) writes the two merged tables to
+        \code{file.path(wd, "output")}.
+}
 }
 \details{
 The implementation reproduces the official BioIndex workflow.
 
 \strong{Data Validation:}
-The function automatically performs syntactic data validation. To ensure
-centralisation of quality checks, it prioritises the use of the \code{RoME}
-package (suggested). If \code{RoME} is not installed, the function falls
-back to internal implementations of the validation routines to ensure
-data integrity.
+The function automatically performs syntactic data validation using internal
+routines based on \code{RoME} version 0.2.3 logic to ensure data integrity
+and standardisation.
 
 \strong{Optimisations:}
 Two micro-optimisations are included:
@@ -79,6 +91,11 @@ Two micro-optimisations are included:
         assign \code{STRATUM_CODE}.
 }
 Numerical outputs are identical to the reference routine.
+}
+\note{
+This version of \code{BioIndex} uses internal validation functions based on
+\strong{RoME version 0.2.3}. The package is fully self-sufficient and does
+not require external validation packages to be installed.
 }
 \examples{
 \dontrun{
@@ -98,19 +115,4 @@ mTATC <- m[[2]]   # TA–TC merged table
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}
-Combines a MEDITS **TA** file (haul metadata) with the corresponding
-**TB** file (haul-level catches by species) and **TC** file
-(length–frequency by haul, sex and maturity).
-The routine:
-\itemize{
-  \item filters hauls by validity and by country;
-  \item performs a full set of quality checks (times, positions, wing opening,
-        haul/date consistency) using the \code{RoME} package if available,
-        or internal backup functions if not;
-  \item merges TA with TB and TA with TC, respectively;
-  \item computes swept area, mean positions, depth stratum, raising
-        factors, densities and biomasses;
-  \item (optionally) writes the two merged tables to
-        \code{file.path(wd, "output")}.
-}
 }

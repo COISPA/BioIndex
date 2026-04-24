@@ -30,5 +30,7 @@ index_on_grid(
 \item{save}{boolean. If TRUE the results are stored in the working directory}
 }
 \description{
-Generating maps of indexes
+Generates density and biomass maps based on the spatial grid,
+allowing for the visual identification of resource concentration areas
+or potential biological hotspots.
 }

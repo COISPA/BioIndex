@@ -32,3 +32,8 @@ check_dictionary(
 \description{
 The function checks whether the values contained in specific fields are consistent with the allowed values of the dictionaries.
 }
+\note{
+This function is an internal routine based on \strong{RoME version 0.2.3}.
+It is provided within \code{BioIndex} to ensure the package remains
+functional and self-sufficient for data validation.
+}

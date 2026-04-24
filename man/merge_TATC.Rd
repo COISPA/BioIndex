@@ -51,11 +51,12 @@ A `data.frame` in which each row represents one length-class
           (`kg_h`, `kg_km2`)
 }
 \description{
-Combines a MEDITS **TA** table (haul metadata) with the corresponding
-**TC** table (length-frequency sample by haul and sex/maturity).
+Links haul metadata (TA) with length-frequency samples (TC),
+enabling the analysis of population demographic structure and the
+reconstruction of length-frequency distributions (LFD).
 The function keeps only valid hauls, runs all relevant quality checks
-(times, positions, wing opening, haul/date consistency) using the
-\code{RoME} package if available (or internal backup functions if not),
+(times, positions, wing opening, haul/date consistency) using internal
+validation functions (based on \code{RoME} version 0.2.3),
 computes swept area, depth stratum, raising factors,
 abundance/biomass indicators, and—optionally—writes the merged data.
 }
@@ -63,13 +64,17 @@ abundance/biomass indicators, and—optionally—writes the merged data.
 The code is identical to the official BioIndex routine.
 
 \strong{Data Validation:}
-The function prioritises the use of the \code{RoME} package (suggested)
-for syntactic data validation. If \code{RoME} is not installed, it falls
-back to internal implementations of the validation routines.
+The function performs syntactic data validation using internal
+implementations of the validation routines (based on \code{RoME} v0.2.3).
 
 \strong{Optimisations:}
 Includes two micro-optimisations: vectorised handling of missing `"NA NA"` entries
 and a single depth-stratum loop. Numerical results remain unchanged.
+}
+\note{
+This version of \code{BioIndex} uses internal validation functions based on
+\strong{RoME version 0.2.3}. The package is fully self-sufficient and does
+not require external validation packages to be installed.
 }
 \examples{
 \dontrun{

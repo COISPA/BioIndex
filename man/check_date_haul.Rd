@@ -20,3 +20,8 @@ check_date_haul(DataTA, Data, year, wd = NA, suffix = NA)
 \description{
 Check if in TB, TC or TE the date by haul is the same of the one reported in TA.
 }
+\note{
+This function is an internal routine based on \strong{RoME version 0.2.3}.
+It is provided within \code{BioIndex} to ensure the package remains
+functional and self-sufficient for data validation.
+}

@@ -36,5 +36,7 @@ index_recr(
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
 \description{
-Estimation of abundance indices for recruits
+Estimates specific abundance indices for the recruitment phase (using the
+user-defined cutoff value), allowing for the assessment of reproductive
+success and the prediction of future stock productivity.
 }

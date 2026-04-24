@@ -33,7 +33,8 @@ indices_ts(
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
 \description{
-Estimation of abundance and biomass indices
+Computes time series of stratified abundance and biomass indices,
+serving as the primary tool for monitoring temporal trends in stock status.
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}

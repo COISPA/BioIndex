@@ -50,26 +50,31 @@ A `data.frame` with one row per haul and the following groups
           density (`N_h`, `N_km2`) and biomass (`kg_h`, `kg_km2`)
 }
 \description{
-Combines a MEDITS **TA** table (haul metadata) with the corresponding
-**TB** table (catch-per-haul by species).
+Combines haul-level operational data (TA) with species catch data (TB),
+providing the essential foundation for calculating stratified abundance (N)
+and biomass (kg) indices.
 The function keeps only valid hauls, performs quality checks (times,
-positions, wing opening, haul/date consistency) using the \code{RoME}
-package if available (or internal backup functions if not),
-computes spatial means, swept area, depth stratum,
-biomass/density indicators, and—optionally—writes the merged data to disk.
+positions, wing opening, haul/date consistency) using internal validation
+functions (based on \code{RoME} version 0.2.3), computes spatial means,
+swept area, depth stratum, biomass/density indicators, and—optionally—writes
+the merged data to disk.
 }
 \details{
 The implementation mirrors the original BioIndex routine.
 
 \strong{Data Validation:}
-The function prioritises the use of the \code{RoME} package (suggested)
-for syntactic data validation. If \code{RoME} is not installed, it falls
-back to internal implementations of the validation routines.
+The function performs syntactic data validation using internal
+implementations of the validation routines (based on \code{RoME} v0.2.3).
 
 \strong{Optimisations:}
 Includes two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
 (2) a single loop over depth strata instead of a nested haul × stratum
 loop.  Results are identical to the reference routine.
+}
+\note{
+This version of \code{BioIndex} uses internal validation functions based on
+\strong{RoME version 0.2.3}. The package is fully self-sufficient and does
+not require external validation packages to be installed.
 }
 \examples{
 \dontrun{

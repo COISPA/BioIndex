@@ -30,5 +30,7 @@ overlayGrid(
 \item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
 \description{
-Overlay mTATB and mTATC on GFCM spatial grid
+Overlays survey haul data onto a standard spatial grid (e.g., GFCM grid),
+harmonizing biological information with a consistent geographic structure
+for standardized spatial analysis.
 }

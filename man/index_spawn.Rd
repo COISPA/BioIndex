@@ -36,5 +36,7 @@ index_spawn(
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
 \description{
-Estimation of abundance indices for spawners (females)
+Calculates abundance and biomass indices focused on the adult fraction
+(spawners, using the user-defined cutoff value), an essential indicator
+for evaluating the self-renewal capacity of the population.
 }

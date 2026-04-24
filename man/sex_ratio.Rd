@@ -36,7 +36,9 @@ sex_ratio(
 \item{verbose}{boolean. If TRUE a message is printed}
 }
 \description{
-Sex ratio
+Assesses the proportion of sexes within the population, providing
+critical information on demographic structure, reproductive potential,
+and stock resilience.
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}

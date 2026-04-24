@@ -36,5 +36,7 @@ MIW(
 \item{verbose}{boolean. If TRUE messages are reported in the console}
 }
 \description{
-Estimation of Mean Individual Weight (MIW) time series
+Calculates the Mean Individual Weight (MIW) time series, providing a
+summary indicator of the average size within the captured population
+and potential shifts due to fishing pressure.
 }
