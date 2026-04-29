@@ -32,6 +32,9 @@ index_ts_F(
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
+\value{
+A \code{data.frame} containing the time series of indices specifically for females.
+}
 \description{
 Estimation of abundance indices for females
 }

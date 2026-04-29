@@ -16,9 +16,11 @@
 #' @importFrom marmap getNOAA.bathy as.xyz
 #' @importFrom utils data
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
+#' @return A \code{ggplot} object representing the bubble plot of abundance or biomass by hauls.
 #' @export
 
 bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, res = NA, wd=NA,save=TRUE, verbose=TRUE){
+    if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {
         map_lim <- c(15.5,20.0,39.8,42.5)
@@ -187,7 +189,7 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
             warning("\nNo working directory defined by the user. The plot was not saved in the local folder\n")
         } else if (!is.na(wd)) {
             ggsave(paste(wd, "/output/",sspp,"_GSA",GSA,"-Abundance_by_haul.jpg", sep=""),
-                   width = 20, height = 20, units ="cm", dpi = 300)
+                   plot = p_n, width = 20, height = 20, units ="cm", dpi = 300)
           if (verbose) {
             message("Plot of abundance by haul saved successfully")
           }
@@ -225,7 +227,7 @@ bubble_plot_by_haul_indexes <- function(mTATB, map_lim, depth_lines, buffer=0, r
             warning("\nNo working directory defined by the user. The plot was not saved in the local folder\n")
         } else if (!is.na(wd)) {
             ggsave(paste(wd, "/output/",sspp,"_GSA",GSA,"-Biomass_by_haul.jpg", sep=""),
-                   width = 20, height = 20, units ="cm", dpi = 300)
+                   plot = p_k, width = 20, height = 20, units ="cm", dpi = 300)
           if (verbose) {
             message("Plot of biomass by haul saved successfully")
           }

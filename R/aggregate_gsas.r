@@ -47,15 +47,18 @@
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("strata_scheme", package = "BioIndex")
 #' data("stratification", package = "BioIndex")
+#' data("TA", package = "BioIndex")
+#' data("TB", package = "BioIndex")
+#' data("TC", package = "BioIndex")
 #'
 #' d <- aggregate_gsas(
-#'   ta = ta,
-#'   tb = tb,
-#'   tc = tc,
-#'   gsas = c(17, 18),
+#'   ta = TA,
+#'   tb = TB,
+#'   tc = TC,
+#'   gsas = 10,
 #'   strata_scheme = BioIndex::strata_scheme,
 #'   stratification = BioIndex::stratification
 #' )

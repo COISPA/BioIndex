@@ -29,6 +29,9 @@ overlayGrid(
 
 \item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
+\value{
+A \code{list} or \code{data.frame} containing the merged biological data mapped to the spatial grid.
+}
 \description{
 Overlays survey haul data onto a standard spatial grid (e.g., GFCM grid),
 harmonizing biological information with a consistent geographic structure

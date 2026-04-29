@@ -17,6 +17,9 @@ check_date_haul(DataTA, Data, year, wd = NA, suffix = NA)
 
 \item{suffix}{name of the log file}
 }
+\value{
+\code{TRUE} if the validation passes, \code{FALSE} otherwise.
+}
 \description{
 Check if in TB, TC or TE the date by haul is the same of the one reported in TA.
 }

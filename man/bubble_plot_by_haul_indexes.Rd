@@ -32,6 +32,9 @@ bubble_plot_by_haul_indexes(
 
 \item{verbose}{boolean. If TRUE a message is printed}
 }
+\value{
+A \code{ggplot} object representing the bubble plot of abundance or biomass by hauls.
+}
 \description{
 The function generates bubble plot of abundance and biomass indices by haul.
 If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.

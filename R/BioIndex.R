@@ -27,17 +27,18 @@
 #' @param save boolean. If TRUE the results are stored in the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
 #' spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
 #' map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),
 #' strata=BioIndex::strata_scheme, stratification_tab =
 #' BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(),
-#' zip=FALSE, save=FALSE, verbose=TRUE)
+#' zip=FALSE, save=TRUE, verbose=TRUE)
 #' }
 #'
 #' @importFrom methods is
 #' @importFrom zip zip
+#' @return A \code{list} containing the results of the BioIndex workflow, including data frames and plot objects.
 #' @export
 BioIndex <- function(ta,
                      tb,
@@ -56,10 +57,15 @@ BioIndex <- function(ta,
                      stratification_tab = BioIndex::stratification,
                      resolution = NA,
                      buffer = 0.1,
-                     wd,
+                     wd = NA,
                      zip = TRUE,
-                     save = TRUE,
+                     save=TRUE,
                      verbose = TRUE) {
+    if (is.na(wd)) {
+        wd <- tempdir()
+        if(verbose) message("No directory specified. Results will be saved in the temporary folder: ", wd)
+    }
+
     if (FALSE) {
         # library(BioIndex)
         # wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
@@ -110,7 +116,7 @@ BioIndex <- function(ta,
         resolution <- res
         strata = BioIndex::strata_scheme
         stratification_tab = BioIndex::stratification
-        save = TRUE
+        save=TRUE
         verbose = TRUE
 
         BioIndex(
@@ -132,7 +138,7 @@ BioIndex <- function(ta,
             buffer = buffer,
             wd = wd,
             zip = TRUE,
-            save = TRUE,
+            save=TRUE,
             verbose = TRUE
         )
 
@@ -221,10 +227,10 @@ BioIndex <- function(ta,
     #--------------------------------------------------------------
     # Map of abundance and biomass indices by haul
     #--------------------------------------------------------------
-    cat("\n########################\n")
-    cat("Plot of indices by haul\n")
-    cat("########################\n")
-    cat("\n")
+    if (verbose) message("\n########################")
+    if (verbose) message("Plot of indices by haul")
+    if (verbose) message("########################")
+    if (verbose) message("")
 
     source.check <- try(bubble_plot_by_haul_indexes(
         mTATB,
@@ -240,9 +246,9 @@ BioIndex <- function(ta,
     silent = T)
 
     if (!is(source.check, "try-error"))  {
-        cat("\nPlot of indices by haul - completed\n")
+        if (verbose) message("\nPlot of indices by haul - completed")
     } else {
-        message("\nPlot of indices by haul skipped - (Run Error)\n")
+        if (verbose) message("\nPlot of indices by haul skipped - (Run Error)\n")
     }
 
 
@@ -250,10 +256,10 @@ BioIndex <- function(ta,
     # Abundance and biomass indices per GSA in the timeseries
     #--------------------------------------------------------------
 
-    cat("\n########################\n")
-    cat("Time series of indices\n")
-    cat("########################\n")
-    cat("\n")
+    if (verbose) message("\n########################")
+    if (verbose) message("Time series of indices")
+    if (verbose) message("########################")
+    if (verbose) message("")
     index <- indices_ts(
         mTATB,
         GSA = GSA,
@@ -264,7 +270,7 @@ BioIndex <- function(ta,
         wd,
         save
     )
-    cat("Time series of indices - completed\n")
+    if (verbose) message("Time series of indices - completed")
 
 
 
@@ -273,10 +279,10 @@ BioIndex <- function(ta,
     # Mean Individual Weights (MIW) per GSA in the timeseries
     #--------------------------------------------------------------
 
-    cat("\n########################\n")
-    cat("Time series of indices\n")
-    cat("########################\n")
-    cat("\n")
+    if (verbose) message("\n########################")
+    if (verbose) message("Time series of indices")
+    if (verbose) message("########################")
+    if (verbose) message("")
     MIW(
         mTATB,
         GSA,
@@ -288,24 +294,24 @@ BioIndex <- function(ta,
         save,
         verbose
     )
-    cat("Time series of MIW - completed\n")
+    if (verbose) message("Time series of MIW - completed")
 
 
 
     #--------------------------------------------------------------
     # Sex ratio per GSA in the timeseries
     #--------------------------------------------------------------
-    cat("\n########################\n")
-    cat("Sex-ratio time series\n")
-    cat("########################\n")
-    cat("\n")
+    if (verbose) message("\n########################")
+    if (verbose) message("Sex-ratio time series")
+    if (verbose) message("########################")
+    if (verbose) message("")
 
     SR_analysis <- "ok"
 
     if (SR_analysis == "ok") {
         if (sum(mTATB$NB_OF_FEMALES + mTATB$NB_OF_MALES, na.rm = TRUE) == 0) {
-            message("Not enough sex data for sex-ratio estimation")
-            cat("\nSex-ratio analysis skipped\n")
+            if (verbose) message("Not enough sex data for sex-ratio estimation")
+            if (verbose) message("\nSex-ratio analysis skipped")
         } else {
             sex_ratio(
                 mTATB,
@@ -317,10 +323,10 @@ BioIndex <- function(ta,
                 wd,
                 save
             )
-            cat("\nSex-ratio analysis - completed\n")
+            if (verbose) message("\nSex-ratio analysis - completed")
         }
     } else {
-        cat("\nSex-ratio analysis skipped\n")
+        if (verbose) message("\nSex-ratio analysis skipped")
     }
 
 
@@ -328,10 +334,10 @@ BioIndex <- function(ta,
     # #--------------------------------------------------------------
     # # Abundance indices of spawners in the time series
     # #--------------------------------------------------------------
-    # cat("\n############################\n")
-    # cat("Spawners' abundance indices\n")
-    # cat("############################\n")
-    # cat("\n")
+    # message("\n############################")
+    # message("Spawners' abundance indices")
+    # message("############################")
+    # message("")
     # #------> check the threshold in the file "~/input/maturity_sizes.csv"
     # df_cutoff <- spaw_threshold
     # if (is.na(df_cutoff)) {
@@ -370,9 +376,9 @@ BioIndex <- function(ta,
     #             save
     #         )
     #         if (skip_spawners) {
-    #             cat("\nSpawners' indices analysis skipped\n")
+    #             message("\nSpawners' indices analysis skipped")
     #         } else {
-    #             cat("\nSpawners' indices analysis - completed\n")
+    #             message("\nSpawners' indices analysis - completed")
     #         }
     #
     #     } else {
@@ -380,20 +386,20 @@ BioIndex <- function(ta,
     #     }
     #
     # }  else {
-    #     cat("\nSpawners' indices analysis skipped\n")
+    #     message("\nSpawners' indices analysis skipped")
     # }
 
     #--------------------------------------------------------------
     # Abundance indices of spawners in the time series
     #--------------------------------------------------------------
-    cat("\n############################\n")
-    cat("Spawners' abundance indices\n")
-    cat("############################\n")
-    cat("\n")
+    if (verbose) message("\n############################")
+    if (verbose) message("Spawners' abundance indices")
+    if (verbose) message("############################")
+    if (verbose) message("")
 
     df_cutoff <- spaw_threshold
     if (is.na(df_cutoff)) {
-        message(
+        if (verbose) message(
             "The SPAWNERS' threshold value not provided. Please, define a value in the 'spaw_threshold' parameter."
         )
     }
@@ -420,26 +426,26 @@ BioIndex <- function(ta,
 
         if (!is(source.check, "try-error")) {
             if (skip_spawners) {
-                cat("\nSpawners' indices analysis skipped\n")
+                if (verbose) message("\nSpawners' indices analysis skipped")
             } else {
-                cat("\nSpawners' indices analysis - completed\n")
+                if (verbose) message("\nSpawners' indices analysis - completed")
             }
         } else {
-            message("\nSpawners' indices analysis skipped - (Run Error)\n")
+            if (verbose) message("\nSpawners' indices analysis skipped - (Run Error)\n")
         }
 
     } else {
-        cat("\nSpawners' indices analysis skipped\n")
+        if (verbose) message("\nSpawners' indices analysis skipped")
     }
 
 
     # #--------------------------------------------------------------
     # # Abundance indices of recruits in the time series
     # #--------------------------------------------------------------
-    # cat("\n############################\n")
-    # cat("Recruits' abundance indices\n")
-    # cat("############################\n")
-    # cat("\n")
+    # message("\n############################")
+    # message("Recruits' abundance indices")
+    # message("############################")
+    # message("")
     # #------> check the threshold in the file "~/input/maturity_sizes.csv"
     # df_cutoff <- rec_threshold
     # if (is.na(df_cutoff)) {
@@ -478,9 +484,9 @@ BioIndex <- function(ta,
     #             save
     #         )
     #         if (skip_recruits) {
-    #             cat("\nRecruits' indices analysis skipped\n")
+    #             message("\nRecruits' indices analysis skipped")
     #         } else {
-    #             cat("\nRecruits' indices analysis - completed\n")
+    #             message("\nRecruits' indices analysis - completed")
     #         }
     #
     #     } else {
@@ -488,21 +494,21 @@ BioIndex <- function(ta,
     #     }
     #
     # }  else {
-    #     cat("\nRecruits' indices analysis skipped\n")
+    #     message("\nRecruits' indices analysis skipped")
     # }
 
 
     #--------------------------------------------------------------
     # Abundance indices of recruits in the time series
     #--------------------------------------------------------------
-    cat("\n############################\n")
-    cat("Recruits' abundance indices\n")
-    cat("############################\n")
-    cat("\n")
+    if (verbose) message("\n############################")
+    if (verbose) message("Recruits' abundance indices")
+    if (verbose) message("############################")
+    if (verbose) message("")
 
     df_cutoff <- rec_threshold
     if (is.na(df_cutoff)) {
-        message(
+        if (verbose) message(
             "The RECRUITS' threshold value not provided. Please, define a value in the 'rec_threshold' parameter."
         )
     }
@@ -529,26 +535,26 @@ BioIndex <- function(ta,
 
         if (!is(source.check, "try-error")) {
             if (skip_recruits) {
-                cat("\nRecruits' indices analysis skipped\n")
+                if (verbose) message("\nRecruits' indices analysis skipped")
             } else {
-                cat("\nRecruits' indices analysis - completed\n")
+                if (verbose) message("\nRecruits' indices analysis - completed")
             }
         } else {
-            message("\nRecruits' indices analysis skipped - (Run Error)\n")
+            if (verbose) message("\nRecruits' indices analysis skipped - (Run Error)\n")
         }
 
     } else {
-        cat("\nRecruits' indices analysis skipped\n")
+        if (verbose) message("\nRecruits' indices analysis skipped")
     }
 
 
     #--------------------------------------------------------------
     # LFD & L0.95
     #--------------------------------------------------------------
-    cat("\n############################\n")
-    cat("LFD, L0.50 & L0.95\n")
-    cat("############################\n")
-    cat("\n")
+    if (verbose) message("\n############################")
+    if (verbose) message("LFD, L0.50 & L0.95")
+    if (verbose) message("############################")
+    if (verbose) message("")
 
     LFD_analysis <- "ok"
 
@@ -596,19 +602,19 @@ BioIndex <- function(ta,
             )
             Lquant(lfd[[1]], wd, sspp, GSA, save, verbose)
         }
-        cat("\nLFD & L0.95 analysis - completed\n")
+        if (verbose) message("\nLFD & L0.95 analysis - completed")
     } else {
-        cat("\nLFD & L0.95 analysis skipped\n")
+        if (verbose) message("\nLFD & L0.95 analysis skipped")
     }
 
 
     #--------------------------------------------------------------
     # Spearman test of trends on short timeseries
     #--------------------------------------------------------------
-    cat("\n###########################################\n")
-    cat("Spearman test of trends on short timeseries\n")
-    cat("###########################################\n")
-    cat("\n")
+    if (verbose) message("\n###########################################")
+    if (verbose) message("Spearman test of trends on short timeseries")
+    if (verbose) message("###########################################")
+    if (verbose) message("")
     years <- sort(unique(mTATB$YEAR))
     if (length(years) >= 3) {
         Trend_analysis <- "ok"
@@ -619,13 +625,13 @@ BioIndex <- function(ta,
                      sspp,
                      wd,
                      save)
-            cat("\nSpearman test - completed\n")
+            if (verbose) message("\nSpearman test - completed")
         } else {
-            cat("\nSpearman test skipped\n")
+            if (verbose) message("\nSpearman test skipped")
         }
 
     } else {
-        cat("\nSpearman test skipped\n")
+        if (verbose) message("\nSpearman test skipped")
     }
 
 
@@ -644,7 +650,7 @@ BioIndex <- function(ta,
         map_range = map_lim,
         threshold = haul_threshold,
         verbose = TRUE,
-        save = TRUE
+        save=TRUE
     )
 
 
@@ -652,10 +658,10 @@ BioIndex <- function(ta,
     #--------------------------------------------------------------
     # Sex ratio for statistical squares
     #--------------------------------------------------------------
-    cat("\n#############################\n")
-    cat("Sex-ratio on GFCM grid\n")
-    cat("#############################\n")
-    cat("\n")
+    if (verbose) message("\n#############################")
+    if (verbose) message("Sex-ratio on GFCM grid")
+    if (verbose) message("#############################")
+    if (verbose) message("")
 
     #------> select the minimum number of individuals per haul to be considered in the analysis
     sexratio_grid_skip <- FALSE
@@ -669,17 +675,17 @@ BioIndex <- function(ta,
             map_range = map_lim,
             threshold = haul_threshold,
             verbose = TRUE,
-            save = TRUE
+            save=TRUE
         )
 
         if (sexratio_grid_skip) {
-            cat("\nSex-ratio on GFCM grid skipped\n")
+            if (verbose) message("\nSex-ratio on GFCM grid skipped")
         } else {
-            cat("\nSex-ratio on GFCM grid - completed\n")
+            if (verbose) message("\nSex-ratio on GFCM grid - completed")
         }
 
     } else {
-        cat("\nSex-ratio on GFCM grid skipped\n")
+        if (verbose) message("\nSex-ratio on GFCM grid skipped")
     }
 
 
@@ -689,14 +695,14 @@ BioIndex <- function(ta,
     # Bubble plots - indices of recruits (abundance)
     # Bubble plots - indices of spawners (abundance)
     #--------------------------------------------------------------
-    cat("\n################################################\n")
-    cat("Bubble plots - indices of recruits and spawners\n")
-    cat("################################################\n")
-    cat("\n")
+    if (verbose) message("\n################################################")
+    if (verbose) message("Bubble plots - indices of recruits and spawners")
+    if (verbose) message("################################################")
+    if (verbose) message("")
     #------> check the threshold in the file "~/input/maturity_sizes.csv"
 
     if (any(is.na(c(rec_threshold, spaw_threshold)))) {
-        message("Missing threshold value for the selected species.")
+        if (verbose) message("Missing threshold value for the selected species.")
     } else {
         bubbleplot_RS_by_hauls(
             mTATC = mTATC,
@@ -710,7 +716,7 @@ BioIndex <- function(ta,
             save = save,
             verbose = verbose
         )
-        cat("\nBubble plots - indices of recruits and spawners - completed\n")
+        if (verbose) message("\nBubble plots - indices of recruits and spawners - completed")
 
     }
 
@@ -721,10 +727,10 @@ BioIndex <- function(ta,
 
 
 
-    cat("\n###################\n")
-    cat(" Analysis completed\n")
-    cat("###################\\n")
-    cat("\n")
+    if (verbose) message("\n###################")
+    if (verbose) message(" Analysis completed")
+    if(verbose) message("###################")
+    if (verbose) message("")
 
 
 
@@ -744,20 +750,25 @@ BioIndex <- function(ta,
             files <- files[-zips]
         }
 
-        output <- file.path(wd, "output")
-        zip::zip(paste0(
-            "BioIndex_results_" ,sspp,"_GSA",GSA,"_Depth",paste(depth, collapse="-"), "m_",
-            paste(
-                as.character(Sys.Date()),
-                format(Sys.time(), "_h%Hm%Ms%OS0"),
-                ".zip",
-                sep = ""
-            )
-        ), "output" , root = wd)
-        unlink(files , recursive = TRUE)
-        unlink(file.path(wd, "output"),
-               force = TRUE,
-               recursive = TRUE)
+        if (length(files) > 0) {
+            output <- file.path(wd, "output")
+            zip::zip(paste0(
+                "BioIndex_results_" ,sspp,"_GSA",GSA,"_Depth",paste(depth, collapse="-"), "m_",
+                paste(
+                    as.character(Sys.Date()),
+                    format(Sys.time(), "_h%Hm%Ms%OS0"),
+                    ".zip",
+                    sep = ""
+                )
+            ), "output" , root = wd)
+            unlink(files , recursive = TRUE)
+            unlink(file.path(wd, "output"),
+                   force = TRUE,
+                   recursive = TRUE)
+            if(verbose) message("ZIP file generated successfully in: ", wd)
+        } else {
+            if(verbose) message("No files generated to be zipped.")
+        }
     }
 
 

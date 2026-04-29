@@ -23,7 +23,8 @@
 #' @importFrom ggplot2 map_data
 #' @export
 
-sex_ratio_on_grid <- function(mTATBsp, depth, wd, map_range,threshold=30,verbose=FALSE, save=FALSE) {
+sex_ratio_on_grid <- function(mTATBsp, depth, wd=NA, map_range,threshold=30,verbose=FALSE, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {
         verbose=TRUE

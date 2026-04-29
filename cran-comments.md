@@ -3,8 +3,8 @@ This is a resubmission of the new package BioIndex. In this version:
 
 *   **Dependency Resolution**: Following the maintainer's feedback, the 'RoME' package has been completely removed from the 'Suggests' field to eliminate dependencies on non-mainstream repositories. 
 *   **Validation Logic**: Syntactic data validation is now handled exclusively by internal BioIndex routines, which are synchronized with RoME version 0.2.3 logic. This ensures the package is fully self-sufficient.
-*   **Documentation Improvements**: documentation (Roxygen tags) has been updated to include more descriptive analytical and biological context for all key functions.
-*   **Package Size Optimization**: The package size has been further optimized (~4.3 MB) by simplifying spatial geometries.
+*   **Documentation Improvements**: Based on reviewer suggestions, documentation (Roxygen tags) has been updated to include more descriptive analytical and biological context for all key functions.
+*   **Package Size Optimization**: The package size has been further optimized (~4.3 MB) by simplifying spatial geometries and removing unnecessary files from the source tree.
 
 ## Test environments
 

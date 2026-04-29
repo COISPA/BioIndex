@@ -12,8 +12,8 @@ bubbleplot_RS_by_hauls(
   depths = c(50, 200, 800),
   res = NA,
   buffer = 0.1,
-  wd,
-  save = FALSE,
+  wd = NA,
+  save = TRUE,
   verbose = FALSE
 )
 }
@@ -37,6 +37,9 @@ bubbleplot_RS_by_hauls(
 \item{save}{boolean. If TRUE the outputs are saved in the local folder}
 
 \item{verbose}{boolean. If TRUE messages are prompted in the console}
+}
+\value{
+A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
 }
 \description{
 The function generates bubbleplots of abundance indices for recruits and spawners

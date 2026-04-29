@@ -14,8 +14,12 @@
 #' @param wd working directory
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @param verbose boolean. If TRUE a message is printed
+#' @return A \code{data.frame} containing the sex ratio statistics by year and stratum.
 #' @export
 sex_ratio <- function(mTATB, GSA, country, depth_range, stratas, stratification, wd=NA, save=TRUE,verbose=FALSE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
         GSA=18
@@ -38,7 +42,7 @@ sex_ratio <- function(mTATB, GSA, country, depth_range, stratas, stratification,
     }
 
     if (is.na(wd) & save) {
-        save =FALSE
+        save=TRUE
         if (verbose){
             message("Missing working directory. Results are not saved in the local folder.")
         }

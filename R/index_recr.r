@@ -15,8 +15,12 @@
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @importFrom dplyr group_by summarise summarize
 #' @importFrom magrittr %>%
+#' @return A \code{data.frame} containing the abundance indices and density for the recruitment fraction.
 #' @export
 index_recr <- function(mTATB,mTATC, GSA, country, depth_range, cutoff, stratification, wd=NA, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
         verbose=TRUE
@@ -33,11 +37,11 @@ index_recr <- function(mTATB,mTATC, GSA, country, depth_range, cutoff, stratific
         m <- merge_TATBTC(ta, tb, tc, species="MERLMER", country="all", wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
         mTATC <- m[[2]]
-        index_recr(mTATB=mTATB,mTATC=mTATC, GSA=GSA, country="all", depth_range=c(10,800), cutoff=cutoff, stratification, wd, save=FALSE)
+        index_recr(mTATB=mTATB,mTATC=mTATC, GSA=GSA, country="all", depth_range=c(10,800), cutoff=cutoff, stratification, wd, save=TRUE)
     }
 
     if (is.na(wd) & save) {
-        save =FALSE
+        save=TRUE
         if (verbose){
             message("Missing working directory. Results are not saved in the local folder.")
         }
@@ -310,7 +314,7 @@ index_recr <- function(mTATB,mTATC, GSA, country, depth_range, cutoff, stratific
 
     return(timeseries)
     } else {
-        cat("No data for individuals in TC available for the estimation of recruits' abundance indices.\n")
+        message("No data for individuals in TC available for the estimation of recruits' abundance indices.")
     }
 
 }

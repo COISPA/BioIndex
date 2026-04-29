@@ -22,7 +22,7 @@ BioIndex(
   stratification_tab = BioIndex::stratification,
   resolution = NA,
   buffer = 0.1,
-  wd,
+  wd = NA,
   zip = TRUE,
   save = TRUE,
   verbose = TRUE
@@ -71,17 +71,20 @@ BioIndex(
 
 \item{verbose}{boolean. If TRUE messages are promted in the console}
 }
+\value{
+A \code{list} containing the results of the BioIndex workflow, including data frames and plot objects.
+}
 \description{
 BioIndex is an R package designed to support the standardized analysis of MEDITS trawl survey data and the calculation of biological indicators for selected species and population components.
 }
 \examples{
-\dontrun{
+\donttest{
 BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
 spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
 map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),
 strata=BioIndex::strata_scheme, stratification_tab =
 BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(),
-zip=FALSE, save=FALSE, verbose=TRUE)
+zip=FALSE, save=TRUE, verbose=TRUE)
 }
 
 }

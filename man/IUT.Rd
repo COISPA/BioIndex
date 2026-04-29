@@ -17,6 +17,9 @@ IUT(abundance, biomass, species, lastn = 5, save = TRUE)
 
 \item{save}{boolean. If TRUE results are saved in the output folder}
 }
+\value{
+A \code{data.frame} containing the Indicator of Unfished Trends (IUT) results.
+}
 \description{
 Interception Union Tets
 }

@@ -7,8 +7,10 @@
 #' @param wd path of working directory
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @importFrom utils write.table
+#' @return A \code{data.frame} or \code{list} with the results of the Spearman rank correlation test.
 #' @export
 spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE){
+    if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {
 
@@ -31,7 +33,7 @@ spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE)
 
         m <- merge_TATBTC(ta, tb, tc, species=species, country=country, wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
-        index <- indices_ts(mTATB, GSA=GSA, country=country, depth_range=depth_range, strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=FALSE)
+        index <- indices_ts(mTATB, GSA=GSA, country=country, depth_range=depth_range, strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
 
         abundance= index[[1]]
         biomass= index[[2]]
@@ -44,7 +46,7 @@ spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE)
     ########   START   ########
 
     if (is.na(wd) & save) {
-        save =FALSE
+        save=TRUE
         if (verbose){
             message("Missing working directory. Results are not saved in the local folder.")
         }

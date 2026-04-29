@@ -32,6 +32,9 @@ indices_ts(
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
+\value{
+A \code{data.frame} containing the calculated time series of abundance and biomass indices.
+}
 \description{
 Computes time series of stratified abundance and biomass indices,
 serving as the primary tool for monitoring temporal trends in stock status.

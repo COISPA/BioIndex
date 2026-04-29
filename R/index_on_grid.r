@@ -11,6 +11,7 @@
 #' @param threshold minimum number of individuals per haul
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @param save boolean. If TRUE the results are stored in the working directory
+#' @return A \code{ggplot} object displaying the generated map of indices on the spatial grid.
 #' @export
 #' @importFrom ggplot2 ggplot scale_fill_manual geom_polygon coord_sf labs xlab ylab map_data
 #' @importFrom stringr str_split
@@ -18,7 +19,8 @@
 #' @importFrom dplyr arrange
 #' @importFrom stats quantile
 
-index_on_grid <- function(mTATBsp, stratum, wd, map_range, threshold = 30, verbose = FALSE, save = FALSE) {
+index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, verbose = FALSE, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
   if (FALSE) {
     # library(stringr)
     # library(ggplot2)

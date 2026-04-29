@@ -21,9 +21,13 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices jpeg dev.off
 #' @importFrom stats sd
+#' @return A \code{data.frame} containing the calculated time series of abundance and biomass indices.
 #' @export
 
 indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
 
@@ -54,13 +58,13 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
 
         m <- merge_TATBTC(ta, tb, tc, species="MERLMER", country="all", wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
-        indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=FALSE)
+        indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
 
         # indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme,wd, stratification, save=TRUE)
     }
 
   if (is.na(wd) & save) {
-    save =FALSE
+    save=TRUE
     if (verbose){
       message("Missing working directory. Results are not saved in the local folder.")
     }
@@ -111,11 +115,11 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
     # plotting species' depth range information
     g1 <- ggplot(merge_TATB[merge_TATB[,varcol] >0,], aes(x=MEAN_DEPTH)) + geom_density()+xlab("depth (m)")+ggtitle(paste(sspp, " - GSA",GSA,sep="" ))
     if (save){
-        ggsave(paste(wd,"/output/depth.distribution_",sspp,"_GSA",GSA,".jpg", sep=""),width=5, height=5)
+        if(save) ggsave(paste(wd,"/output/depth.distribution_",sspp,"_GSA",GSA,".jpg", sep=""),width=5, height=5, plot = g1)
         }
     g2 <- ggplot(merge_TATB[merge_TATB[,varcol]>0,], aes(x=species, y=MEAN_DEPTH)) + geom_boxplot() + xlab("") + ylim(0, max(merge_TATB$MEAN_DEPTH))+ylab("depth (m)")+ggtitle(paste(sspp, " - GSA",GSA,sep="" ))
     if (save){
-        ggsave(paste(wd,"/output/depth.distribution_(boxplot)",sspp,"_GSA",GSA,".jpg", sep=""),width=5, height=5)
+        if(save) ggsave(paste(wd,"/output/depth.distribution_(boxplot)",sspp,"_GSA",GSA,".jpg", sep=""),width=5, height=5, plot = g2)
     }
     grid.arrange(g1, g2, ncol=2)
     #------------------------------------------
@@ -373,9 +377,9 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
                 ylab(dep_text) +
                 ggtitle(main.lab) +
                 theme_bw()
-            print(p1)
+        # print(p1) # rimosso per policy CRAN
             if(save){
-                ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5) #
+                if(save) ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5, plot = p1) #
                 }
         } else {
             p1 <- ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
@@ -384,9 +388,9 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
                 ylab(dep_text) +
                 ggtitle(main.lab) +
                 theme_bw()
-            print(p1)
+        # print(p1) # rimosso per policy CRAN
             if(save){
-                ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)
+                if(save) ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5, plot = p1)
             }
         }
 
@@ -451,7 +455,7 @@ timeseries_abundance <- timeseries
         plot(timeseries[,1],  timeseries[,6], type="b", col="black", pch=16, xlab="year", ylim=c(0,max_index*1.2), ylab="number of hauls (%)", main=main.lab) # ylim=c(0,max_index*1.2)
         legend("topright", c("number of positive hauls %"), lty=c(1), pch=c(16), col=c("black"))
     }
-    cat("\n Estimation of abundance indices completed \n")
+    message("\n Estimation of abundance indices completed ")
 
     index_ts_M(mTATB, GSA, country_analysis, depth_range, strata_scheme, stratification, wd=wd, save)
     index_ts_F(mTATB, GSA, country_analysis, depth_range, strata_scheme, stratification, wd=wd, save)
@@ -683,8 +687,8 @@ timeseries_abundance <- timeseries
                 ylab(dep_text) +
                 ggtitle(main.lab) +
                 theme_bw()
-            print(p2)
-            if (save) {ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)} #
+        # print(p2) # rimosso per policy CRAN
+            if (save) {ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5, plot = p2)} #
         } else {
            p2 <-  ggplot(data=df.plot1, aes(x=year, y=value, group=strata, colour=strata)) +
                 geom_point() +
@@ -692,8 +696,8 @@ timeseries_abundance <- timeseries
                 ylab(dep_text) +
                 ggtitle(main.lab) +
                 theme_bw()
-           print(p2)
-           if (save) {ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)}
+        # print(p2) # rimosso per policy CRAN
+           if (save) {ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5, plot = p2)}
         }
     }
     # is.na(timeseries) <- do.call(cbind,lapply(timeseries, is.infinite))
@@ -718,6 +722,6 @@ if (save){
     lines(timeseries[,1], (timeseries[,2]+1.96*timeseries[,3]), type="l",lty=2, col="red" )
     legend("topright", c("time series", "CI"), lty=c(1,2), pch=c(16, NA), col=c("black","red"))
 }
-    cat("\n Estimation of biomass indices completed \n")
+    message("\n Estimation of biomass indices completed ")
     return(list(timeseries_abundance,timeseries_biomass, tab.strata.abu, tab.strata.bio))
 }

@@ -9,6 +9,7 @@
 #' @param n_records minimum number of records to perform the analysis
 #' @importFrom stats lm predict coef coefficients nls
 #' @importFrom grDevices jpeg dev.off
+#' @return A \code{data.frame} containing the length-weight relationship parameters specifically for females.
 #' @export
 LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
     if (FALSE) {

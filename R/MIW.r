@@ -20,10 +20,14 @@
 #' @import grDevices
 #' @import graphics
 #' @importFrom magrittr %>%
+#' @return A \code{data.frame} containing the Mean Individual Weight (MIW) time series.
 #' @export
 #'
 #'
 MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE,verbose=TRUE){
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
         GSA <- 18
@@ -34,7 +38,7 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
         strata_scheme=BioIndex::strata_scheme
         stratification = BioIndex::stratification
         # wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\Test_BioIndex_package"
-        save=FALSE
+        save=TRUE
         verbose=TRUE
 
         # MIW(mTATB, GSA, country="all", depth_range=depthr, strata_scheme=strata, stratification=stratification_tab, wd, save,verbose)
@@ -42,10 +46,10 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
 
     vmsg <- function(...) if (isTRUE(verbose)) message(...)
 
-    ## ---- validate working directory when save = TRUE -----------
+    ## ---- validate working directory when save=TRUE -----------
     if (isTRUE(save)) {
         if (is.na(wd) || !nzchar(wd)) {
-            vmsg("[MIW] `save = TRUE` but `wd` not provided - disabling file output.")
+            vmsg("[MIW] `save=TRUE` but `wd` not provided - disabling file output.")
             save <- FALSE
         } else {
             if (!dir.exists(wd)) dir.create(wd, recursive = TRUE, showWarnings = FALSE)
@@ -387,17 +391,17 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
             theme_bw()
     }
 
-    print(pm1)
+        # print(pm1) # rimosso per policy CRAN
 
     if (save){
-        ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5)
+        if(save) ggsave(paste(wd,"/output/",main,"_Timeseries.jpg",sep=""), dpi=300 , width=6, height=5, plot = pm1)
     }
     #-------
 
 
 
     if (isTRUE(verbose))
-        cat("\n Estimation of MIW completed \n")
+        message("\n Estimation of MIW completed ")
     results <- list(timeseries,tab.strata.MIW)
     return(results)
 }

@@ -12,6 +12,7 @@
 #' @param nyears number of years of the time series to be considered in the analysis
 #' @param wd path of the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
+#' @return A \code{data.frame} representing the Age-Length Key.
 #' @export
 #' @import ggplot2
 ALK <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
@@ -30,7 +31,7 @@ ALK <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
         # wd=NA
         verbose=FALSE
 
-        ALK(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE)
+        ALK(ta,te,sp,GSA,country="all",nyears=NA,wd,verbose=FALSE)
     }
 
     if (is.na(wd)) {
@@ -41,10 +42,10 @@ ALK <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
     TE <- te
 
     if (verbose) {
-        cat("\n###########################\n")
-        cat("Age-Length keys (ALK)\n")
-        cat("###########################\n")
-        cat("\n")
+        message("\n###########################")
+        message("Age-Length keys (ALK)")
+        message("###########################")
+        message("")
     }
 
       if (nrow(TE)>0 & nrow(TA)>0) {

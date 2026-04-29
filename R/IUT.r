@@ -9,10 +9,14 @@
 #' @param save boolean. If TRUE results are saved in the output folder
 #' @importFrom utils write.table
 #' @importFrom grDevices jpeg dev.copy dev.off
+#' @return A \code{data.frame} containing the Indicator of Unfished Trends (IUT) results.
 #' @export
 #' @import mgcv
 
 IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
         GSA=18
@@ -30,7 +34,7 @@ IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
 
         m <- merge_TATBTC(ta, tb, tc, species="MERLMER", country="all", wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
-        ind <- indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=FALSE)
+        ind <- indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
 
         IUT(abundance=ind[[1]], biomass=ind[[2]], species="MERLMER", lastn=4, save=TRUE)
 

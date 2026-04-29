@@ -19,6 +19,9 @@ LWf(TE, sp, GEAR, GSA, country = NA, n_records = 10)
 
 \item{n_records}{minimum number of records to perform the analysis}
 }
+\value{
+A \code{data.frame} containing the length-weight relationship parameters specifically for females.
+}
 \description{
 Estimation of LW relationship
 }

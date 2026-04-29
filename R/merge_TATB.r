@@ -22,7 +22,7 @@
 #' @param strata  Depth-stratum reference table; default is
 #'                `BioIndex::strata_scheme`.
 #' @param wd      Working directory.  If `NA` (the default when
-#'                `save = FALSE`) no files are written.
+#'                `save     = FALSE`) no files are written.
 #' @param save    Logical.  If `TRUE`, writes
 #'                `"mergeTATB_<GENUS><SPECIES>.csv"` to
 #'                `file.path(wd, "output")`.
@@ -55,14 +55,16 @@
 #' @importFrom hms hms
 #' @importFrom utils write.table
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' data("TA", package = "BioIndex")
+#' data("TB", package = "BioIndex")
 #' m_tb <- merge_TATB(
-#'   ta       = ta_df,
-#'   tb       = tb_df,
+#'   ta       = TA,
+#'   tb       = TB,
 #'   species  = "ARISFOL",
 #'   country  = "ITA",
-#'   wd       = "/path/to/project",
-#'   save     = TRUE
+#'   wd       = tempdir(),
+#'   save     = FALSE
 #' )
 #' head(m_tb)
 #' }
@@ -73,7 +75,7 @@ merge_TATB <- function(ta, tb,
                        country = "all",
                        strata  = BioIndex::strata_scheme,
                        wd      = NA,
-                       save    = TRUE,
+                       save     = FALSE,
                        verbose = TRUE) {
 
     ## Working directory check (unchanged) ------------------------------- ##

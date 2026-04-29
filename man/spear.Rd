@@ -9,6 +9,9 @@ spear(x)
 \arguments{
 \item{x}{time series}
 }
+\value{
+A \code{numeric} value representing the Spearman correlation coefficient.
+}
 \description{
 Spearman test for timeseries
 }

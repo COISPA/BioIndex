@@ -29,6 +29,9 @@ check_dictionary(
 
 \item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
+\value{
+\code{TRUE} if the validation passes, \code{FALSE} otherwise.
+}
 \description{
 The function checks whether the values contained in specific fields are consistent with the allowed values of the dictionaries.
 }

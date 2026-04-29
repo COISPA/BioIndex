@@ -19,6 +19,9 @@ Lquant(lfd, wd = NA, sspp, GSA, save = TRUE, verbose = TRUE)
 
 \item{verbose}{boolean. If TRUE messages are reported in the console}
 }
+\value{
+A \code{data.frame} containing the length quantiles (e.g., L95) time series.
+}
 \description{
 Estimation of L50 and L95
 }

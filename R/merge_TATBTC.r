@@ -73,7 +73,10 @@
 #' not require external validation packages to be installed.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' data("TA", package = "BioIndex")
+#' data("TB", package = "BioIndex")
+#' data("TC", package = "BioIndex")
 #' m <- merge_TATBTC(
 #'   ta      = TA,
 #'   tb      = TB,
@@ -90,7 +93,6 @@
 #' @export
 #' @importFrom hms hms
 #' @importFrom utils write.table
-#' @importFrom utils write.table
 merge_TATBTC <- function(ta, tb, tc,
                          species,
                          country = "all",
@@ -99,28 +101,7 @@ merge_TATBTC <- function(ta, tb, tc,
                          save    = TRUE,
                          verbose = TRUE) {
 
-  if (FALSE) {
-    # Original usage example --------------------------------------------
-    # library(BioIndex)
-    verbose  <- TRUE
-    wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)"
-    ta <- read.table(paste(wd,"input/TA/TA GSA18 2017-2020.csv", sep="/"), sep=";", header = TRUE)
-    tb <- read.table(paste(wd,"input/TB/TB GSA18 2017-2020.csv", sep="/"), sep=";", header = TRUE)
-    tc <- read.table(paste(wd,"input/TC/TC GSA18 2017-2020.csv", sep="/"), sep=";", header = TRUE)
-    country <- "all"
-    species <- "ARISFOL"
-    m <- merge_TATBTC(ta, tb, tc, species = "PAPELON",
-                      country = "all", wd = wd, verbose = TRUE)
-  }
-
-  ## ------------------------------------------------------------------ ##
-  ##  Working-directory check                                           ##
-  ## ------------------------------------------------------------------ ##
-  if (is.na(wd) & save) {
-    save <- FALSE
-    if (verbose)
-      message("Missing working directory. Results will not be saved locally.")
-  }
+  if (is.na(wd)) { wd <- tempdir() }
 
   strata_scheme <- strata  # local alias
 
@@ -194,25 +175,25 @@ merge_TATBTC <- function(ta, tb, tc,
       TBy <- TB[TB$YEAR == yy, ]
       TCy <- TC[TC$YEAR == yy, ]
 
-      if (!check_dictionary(TAy, "SHOOTING_TIME", 0:2400, yy, paste0(wd, "/output/"), suffix))
+      if (!check_dictionary(TAy, "SHOOTING_TIME", 0:2400, yy, file.path(wd, "output"), suffix))
           stop("SHOOTING_TIME out of range.")
-      if (!check_dictionary(TAy, "HAULING_TIME", 0:2400, yy, paste0(wd, "/output/"), suffix))
+      if (!check_dictionary(TAy, "HAULING_TIME", 0:2400, yy, file.path(wd, "output"), suffix))
           stop("HAULING_TIME out of range.")
-      if (!check_dictionary(TAy, "WING_OPENING", c(30, 50:250), yy, paste0(wd, "/output/"), suffix))
+      if (!check_dictionary(TAy, "WING_OPENING", c(30, 50:250), yy, file.path(wd, "output"), suffix))
           stop("WING_OPENING out of range.")
-      if (!check_numeric_range(TAy, "SHOOTING_LATITUDE", c(3020, 4730), yy, paste0(wd, "/output/"), suffix))
+      if (!check_numeric_range(TAy, "SHOOTING_LATITUDE", c(3020, 4730), yy, file.path(wd, "output"), suffix))
           stop("SHOOTING_LATITUDE out of range.")
-      if (!check_numeric_range(TAy, "HAULING_LATITUDE", c(3020, 4730), yy, paste0(wd, "/output/"), suffix))
+      if (!check_numeric_range(TAy, "HAULING_LATITUDE", c(3020, 4730), yy, file.path(wd, "output"), suffix))
           stop("HAULING_LATITUDE out of range.")
-      if (!check_numeric_range(TAy, "SHOOTING_LONGITUDE", c(0, 4200), yy, paste0(wd, "/output/"), suffix))
+      if (!check_numeric_range(TAy, "SHOOTING_LONGITUDE", c(0, 4200), yy, file.path(wd, "output"), suffix))
           stop("SHOOTING_LONGITUDE out of range.")
-      if (!check_numeric_range(TAy, "HAULING_LONGITUDE", c(0, 4200), yy, paste0(wd, "/output/"), suffix))
+      if (!check_numeric_range(TAy, "HAULING_LONGITUDE", c(0, 4200), yy, file.path(wd, "output"), suffix))
           stop("HAULING_LONGITUDE out of range.")
-      if (!check_date_haul(TAy, TBy, yy, paste0(wd, "/output/"), suffix))
+      if (!check_date_haul(TAy, TBy, yy, file.path(wd, "output"), suffix))
           stop("Date in TB not consistent with TA.")
-      if (!check_date_haul(TAy, TCy, yy, paste0(wd, "/output/"), suffix))
+      if (!check_date_haul(TAy, TCy, yy, file.path(wd, "output"), suffix))
           stop("Date in TC not consistent with TA.")
-      if (!check_hauls_TBTA(TAy, TBy, yy, paste0(wd, "/output/"), suffix))
+      if (!check_hauls_TBTA(TAy, TBy, yy, file.path(wd, "output"), suffix))
           stop("Hauls in TB not consistent with TA.")
   }
 
@@ -319,10 +300,12 @@ merge_TATBTC <- function(ta, tb, tc,
   merge_TATB$kg_km2 <- merge_TATB$TOTAL_WEIGHT_IN_THE_HAUL / merge_TATB$SWEPT_AREA / 1000
   merge_TATB$MEDITS_CODE <- as.character(merge_TATB$MEDITS_CODE)
 
-  if (save)
+  if (save) {
+    if (!dir.exists(file.path(wd, "output"))) dir.create(file.path(wd, "output"), recursive = TRUE, showWarnings = FALSE)
     write.table(merge_TATB,
-                paste(wd, "/output/mergeTATB_", species[1], species[2], ".csv", sep = ""),
+                file.path(wd, "output", paste0("mergeTATB_", species[1], species[2], ".csv")),
                 sep = ";", row.names = FALSE)
+  }
   if (verbose) message("TA-TB files correctly merged")
 
   #######################################################################
@@ -411,10 +394,12 @@ merge_TATBTC <- function(ta, tb, tc,
   merge_TATC$kg_h   <- merge_TATC$WEIGHT_OF_THE_SAMPLE_MEASURED / duration / 1000
   merge_TATC$kg_km2 <- merge_TATC$WEIGHT_OF_THE_SAMPLE_MEASURED / merge_TATC$SWEPT_AREA / 1000
 
-  if (save)
+  if (save) {
+    if (!dir.exists(file.path(wd, "output"))) dir.create(file.path(wd, "output"), recursive = TRUE, showWarnings = FALSE)
     write.table(merge_TATC,
-                paste(wd, "/output/mergeTATC_", species[1], species[2], ".csv", sep = ""),
+                file.path(wd, "output", paste0("mergeTATC_", species[1], species[2], ".csv")),
                 sep = ";", row.names = FALSE)
+  }
   if (verbose) message("TA-TC files correctly merged")
 
   ## ------------------------------------------------------------------ ##

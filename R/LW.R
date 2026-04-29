@@ -12,6 +12,7 @@
 #' @param nyears number of years of the time series to be considered in the analysis
 #' @param wd path of the working directory
 #' @param verbose boolean. If TRUE messages are promted in the console
+#' @return A \code{data.frame} containing the length-weight relationship parameters and statistics.
 #' @export
 #' @import ggplot2
 LW <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
@@ -30,7 +31,7 @@ LW <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
         # wd=NA
         verbose=FALSE
 
-        LW(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE)
+        LW(ta,te,sp,GSA,country="all",nyears=NA,wd,verbose=FALSE)
     }
 
     if (is.na(wd)) {
@@ -41,10 +42,10 @@ LW <- function(ta,te,sp,GSA,country="all",nyears=NA,wd=NA,verbose=FALSE){
     TE <- te
 
     if (verbose) {
-        cat("\n################################\n")
-        cat("Length-Weight relationship (LW)\n")
-        cat("################################\\n")
-        cat("\n")
+        message("\n################################")
+        message("Length-Weight relationship (LW)")
+        message("################################")
+        message("")
     }
 
       if (nrow(TE)>0 & nrow(TA)>0) {

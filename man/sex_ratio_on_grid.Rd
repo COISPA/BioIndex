@@ -7,11 +7,11 @@
 sex_ratio_on_grid(
   mTATBsp,
   depth,
-  wd,
+  wd = NA,
   map_range,
   threshold = 30,
   verbose = FALSE,
-  save = FALSE
+  save = TRUE
 )
 }
 \arguments{

@@ -2,6 +2,7 @@
 #'
 #' @param weighted LFD data.frame
 #' @param qlin reference quantile for the analysis
+#' @return A \code{numeric} value or vector containing the requested quantiles.
 #' @export
 quant <- function(weighted,qlin=0.95){
     weighted <- data.frame(weighted)

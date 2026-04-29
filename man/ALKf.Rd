@@ -4,7 +4,7 @@
 \alias{ALKf}
 \title{Estimation of ALK}
 \usage{
-ALKf(te, sp, GEAR, GSA, country = NA, years = 5)
+ALKf(te, sp, GEAR, GSA, country = NA, years = 5, wd = NA, save = TRUE)
 }
 \arguments{
 \item{te}{MEDITS or MEDITS-like TE table}
@@ -18,6 +18,13 @@ ALKf(te, sp, GEAR, GSA, country = NA, years = 5)
 \item{country}{reference country}
 
 \item{years}{number of years to be considered in the analysis}
+
+\item{wd}{path of the working directory}
+
+\item{save}{boolean. If TRUE the outputs are saved in the local folder}
+}
+\value{
+A \code{data.frame} representing the Age-Length Key for females.
 }
 \description{
 Estimation of ALK

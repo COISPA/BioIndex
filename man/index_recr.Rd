@@ -35,6 +35,9 @@ index_recr(
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
+\value{
+A \code{data.frame} containing the abundance indices and density for the recruitment fraction.
+}
 \description{
 Estimates specific abundance indices for the recruitment phase (using the
 user-defined cutoff value), allowing for the assessment of reproductive

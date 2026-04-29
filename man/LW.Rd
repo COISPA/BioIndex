@@ -23,6 +23,9 @@ LW(ta, te, sp, GSA, country = "all", nyears = NA, wd = NA, verbose = FALSE)
 
 \item{verbose}{boolean. If TRUE messages are promted in the console}
 }
+\value{
+A \code{data.frame} containing the length-weight relationship parameters and statistics.
+}
 \description{
 Estimates the length-weight relationship for the selected species,
 a fundamental biological indicator to assess fish condition and convert

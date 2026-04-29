@@ -11,6 +11,7 @@
 #' This function is an internal routine based on \strong{RoME version 0.2.3}.
 #' It is provided within \code{BioIndex} to ensure the package remains
 #' functional and self-sufficient for data validation.
+#' @return \code{TRUE} if the validation passes, \code{FALSE} otherwise.
 #' @export
 check_date_haul <- function(DataTA, Data, year, wd=NA, suffix=NA) {
 

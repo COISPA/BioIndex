@@ -6,11 +6,15 @@
 #' @param GSA reference area for the analysis
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @param verbose boolean. If TRUE messages are reported in the console
+#' @return A \code{data.frame} containing the length quantiles (e.g., L95) time series.
 #' @export Lquant
 
 
 
 Lquant <- function(lfd, wd=NA, sspp, GSA, save=TRUE, verbose=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     if (FALSE) {
         wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)"
@@ -40,7 +44,7 @@ Lquant <- function(lfd, wd=NA, sspp, GSA, save=TRUE, verbose=TRUE) {
     }
 
     if (is.na(wd) & save) {
-        save =FALSE
+        save=TRUE
         if (verbose){
             message("Missing working directory. Results are not saved in the local folder.")
         }

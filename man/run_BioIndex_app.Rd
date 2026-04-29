@@ -6,6 +6,9 @@
 \usage{
 run_BioIndex_app()
 }
+\value{
+\code{No return value, called for side effects} (launches the Shiny application).
+}
 \description{
 launches the embedded Shiny application included in the package.
 }

@@ -11,7 +11,7 @@ merge_TATB(
   country = "all",
   strata = BioIndex::strata_scheme,
   wd = NA,
-  save = TRUE,
+  save = FALSE,
   verbose = TRUE
 )
 }
@@ -33,7 +33,7 @@ the last 3 as *SPECIES*.}
 `BioIndex::strata_scheme`.}
 
 \item{wd}{Working directory.  If `NA` (the default when
-`save = FALSE`) no files are written.}
+`save     = FALSE`) no files are written.}
 
 \item{save}{Logical.  If `TRUE`, writes
 `"mergeTATB_<GENUS><SPECIES>.csv"` to
@@ -77,14 +77,16 @@ This version of \code{BioIndex} uses internal validation functions based on
 not require external validation packages to be installed.
 }
 \examples{
-\dontrun{
+\donttest{
+data("TA", package = "BioIndex")
+data("TB", package = "BioIndex")
 m_tb <- merge_TATB(
-  ta       = ta_df,
-  tb       = tb_df,
+  ta       = TA,
+  tb       = TB,
   species  = "ARISFOL",
   country  = "ITA",
-  wd       = "/path/to/project",
-  save     = TRUE
+  wd       = tempdir(),
+  save     = FALSE
 )
 head(m_tb)
 }

@@ -35,6 +35,9 @@ sex_ratio(
 
 \item{verbose}{boolean. If TRUE a message is printed}
 }
+\value{
+A \code{data.frame} containing the sex ratio statistics by year and stratum.
+}
 \description{
 Assesses the proportion of sexes within the population, providing
 critical information on demographic structure, reproductive potential,

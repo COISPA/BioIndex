@@ -2,6 +2,7 @@
 #'
 #' @param x time series
 #' @importFrom stats pt
+#' @return A \code{numeric} value representing the Spearman correlation coefficient.
 #' @export
 spear<-function (x){
 

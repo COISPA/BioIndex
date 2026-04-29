@@ -35,6 +35,9 @@ MIW(
 
 \item{verbose}{boolean. If TRUE messages are reported in the console}
 }
+\value{
+A \code{data.frame} containing the Mean Individual Weight (MIW) time series.
+}
 \description{
 Calculates the Mean Individual Weight (MIW) time series, providing a
 summary indicator of the average size within the captured population

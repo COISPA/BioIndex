@@ -17,6 +17,9 @@ check_hauls_TBTA(DataTA, DataTB, year, wd = NA, suffix = NA)
 
 \item{suffix}{name of the log file}
 }
+\value{
+\code{TRUE} if the validation passes, \code{FALSE} otherwise.
+}
 \description{
 Check if all the hauls in TB are in TA.
 }

@@ -23,6 +23,9 @@ ALK(ta, te, sp, GSA, country = "all", nyears = NA, wd = NA, verbose = FALSE)
 
 \item{verbose}{boolean. If TRUE messages are promted in the console}
 }
+\value{
+A \code{data.frame} representing the Age-Length Key.
+}
 \description{
 Computes the Age-Length Key (ALK) from biological samples, a crucial
 parameter for converting length distributions into age classes and

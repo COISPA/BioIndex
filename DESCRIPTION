@@ -2,19 +2,26 @@ Package: BioIndex
 Type: Package
 Title: Biological Indicators and Indices for MEDITS Survey Data
 Version: 0.6.4
-Date: 2026-04-22
-Authors@R: person("Walter", "Zupa", email = "zupa@fondazionecoispa.org",
-                  role = c("aut", "cre"))
-Description: Supports the standardized analysis of MEDITS trawl survey data 
-    and the calculation of biological indicators for selected species and 
-    population components. The package provides functions to estimate 
-    abundance and biomass indices, analyse size structure and length 
-    frequency distributions, derive sex ratio and maturity related 
-    metrics, explore spatial patterns, and assess temporal trends across 
-    surveys. Developed for integration within the RDBFIS framework, it 
-    is intended to work on quality checked input data and to produce 
-    reproducible outputs that can support monitoring, comparative 
-    analyses among GSAs and countries, and fishery management.
+Date: 2026-04-29
+Authors@R: c(
+    person("Walter", "Zupa", email = "zupa@fondazionecoispa.org", role = c("aut", "cre")),
+    person("Loredana", "Casciaro", email = "casciaro@coispa.eu", role = "ctb"),
+    person("Cosmidano", "Neglia", email = "neglia@coispa.eu", role = "ctb"),
+    person("Isabella", "Bitetto", email = "bitetto@fondazionecoispa.org", role = "ctb"),
+    person("Maria Teresa", "Spedicato", email = "spedicato@fondazionecoispa.org", role = "aut")
+  )
+Description: Supports the standardized analysis of Mediterranean 
+    International Bottom Trawl Survey (MEDITS) data and the calculation 
+    of biological indicators for selected species and population 
+    components. The package provides functions to estimate abundance 
+    and biomass indices, analyse size structure and length frequency 
+    distributions, derive sex ratio and maturity related metrics, 
+    explore spatial patterns, and assess temporal trends across 
+    surveys. Developed for integration within the Regional Database 
+    for Fisheries (RDBFIS) framework, it is intended to work on 
+    quality checked input data and to produce reproducible outputs 
+    that can support monitoring, comparative analyses among 
+    Geographical Sub-Areas (GSAs) and countries, and fishery management.
 License: GPL-3
 Encoding: UTF-8
 LazyData: TRUE

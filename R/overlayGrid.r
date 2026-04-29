@@ -12,9 +12,11 @@
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @param verbose boolean. If TRUE messages are prompted in the console
 #' @importFrom terra wrap unwrap vect
+#' @return A \code{list} or \code{data.frame} containing the merged biological data mapped to the spatial grid.
 #' @export
 
 overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, verbose=FALSE) {
+    if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {
         verbose=TRUE
@@ -41,10 +43,10 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
 
 
     if (verbose){
-        cat("\n########################\n")
-        cat("spatial metaDB preparation\n")
-        cat("########################\n")
-        cat("\n")
+        message("\n########################")
+        message("spatial metaDB preparation")
+        message("########################")
+        message("")
     }
 
     countries <- unique(mTATB[!is.na(mTATB$COUNTRY),"COUNTRY"])
@@ -97,13 +99,13 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
         write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_catch in GRID.csv",sep=""), sep=";", row.names=F)
         if(verbose){
             message(paste("Catch metaDB saved in the output folder"))
-            cat("\n")
+            message("")
         }
     }
     if (any(is.na(metaDBnew_georef$cgpmgrid_id))) {
         if (verbose) {
             message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
-            cat("\n")
+            message("")
         }
     }
 
@@ -128,13 +130,13 @@ overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, v
         write.table(metaDBnew_georef, paste(wd, "/output/",sspp," - allGSAs_metaDB_biological in GRID.csv",sep=""), sep=";", row.names=F)
         if(verbose){
             message(paste("Biological metaDB saved in the output folder"))
-            cat("\n")
+            message("")
         }
     }
     if (any(is.na(metaDBnew_georef$cgpmgrid_id))) {
         if (verbose){
             message("One or more hauls are out of the reference grid area. Data from these hauls should be excluded by statial analysis.")
-            cat("\n")
+            message("")
         }
     }
     return(list(mTATB_geo,mTATC_geo))

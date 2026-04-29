@@ -7,11 +7,11 @@
 index_on_grid(
   mTATBsp,
   stratum,
-  wd,
+  wd = NA,
   map_range,
   threshold = 30,
   verbose = FALSE,
-  save = FALSE
+  save = TRUE
 )
 }
 \arguments{
@@ -28,6 +28,9 @@ index_on_grid(
 \item{verbose}{boolean. If TRUE messages are promted in the console}
 
 \item{save}{boolean. If TRUE the results are stored in the working directory}
+}
+\value{
+A \code{ggplot} object displaying the generated map of indices on the spatial grid.
 }
 \description{
 Generates density and biomass maps based on the spatial grid,

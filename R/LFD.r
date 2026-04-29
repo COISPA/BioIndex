@@ -48,6 +48,7 @@
 #' @importFrom ggplot2 ggplot geom_line xlab ylab ggtitle xlim ylim theme_bw aes facet_wrap
 #' @export
 LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE, verbose=TRUE){
+    if (is.na(wd)) { wd <- tempdir() }
 
     id <- NULL
     if (FALSE) {
@@ -76,7 +77,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
 
 
     if (is.na(wd) & save) {
-        save =FALSE
+        save=TRUE
         if (verbose){
             message("Missing working directory. Results are not saved in the local folder.")
         }
@@ -291,7 +292,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 theme_bw()
             print(p)
             if(save){
-                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+                if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p) #
                 }
         } else {
             main <- paste(sspp,"_GSA",GSA,"_(LFD_by_year_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
@@ -310,7 +311,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 theme_bw()
             print(p)
             if (save){
-                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+                if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p)
                 }
         }
 
@@ -336,7 +337,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
             print(p2)
             if (save) {
-                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5) #
+                if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p2) #
             }
         } else {
             main <- paste(sspp,"_GSA",GSA,"_(LFD_by_stratum_",toupper(sex),")_",depth_range[1],"-",depth_range[2], " m", sep="")
@@ -356,7 +357,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
             print(p2)
             if(save){
-                ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5)
+                if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p2)
             }
         }
 

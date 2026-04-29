@@ -13,8 +13,12 @@
 #' @importFrom stringr str_split
 #' @importFrom grDevices dev.off tiff
 #' @importFrom graphics legend lines par
+#' @return A \code{data.frame} containing the time series of indices specifically for males.
 #' @export
 index_ts_M <- function(mTATB, GSA, country_analysis, depth_range, strata_scheme, stratification, wd=NA, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
 
     MEAN_DEPTH <- strata <- value <- year <- NULL
     merge_TATB <- mTATB

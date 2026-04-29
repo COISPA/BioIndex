@@ -7,9 +7,14 @@
 #' @param country reference country
 #' @param years number of years to be considered in the analysis
 #' @importFrom stats predict AIC nls
+#' @param wd path of the working directory
+#' @param save boolean. If TRUE the outputs are saved in the local folder
+#' @return A \code{data.frame} representing the Age-Length Key for females.
 #' @export
+#' 
 
-ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
+ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5, wd = NA, save=TRUE) {
+    if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {
         TE <- te #[te$AGE <30, ] # read.table("D:\\OneDrive - Coispa Tecnologia & Ricerca S.C.A.R.L\\BLACK SEA\\2023 - Data preparation - RAPA\\-DATA-\\BGR\\Spring 2022\\TE.csv", sep = ";", header = TRUE)
@@ -43,7 +48,9 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
         Linf * (1 - exp(-k * (t - t0)))
     }
 
-    wd <- getwd()
+    if (is.na(wd)) {
+        wd <- tempdir()
+    }
     sspp <- sp
     genus <- substr(unique(sspp), 1, 4)
     species <- substr(unique(sspp), 5, 7)
@@ -121,8 +128,7 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
                             xlab("Age") +
                             theme(legend.position = "none") +
                             ylab(paste("Length (mm)"))
-                        print(p)
-                        ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
+                        if(save) ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
                     } else {
                         params[[s]] <- data.frame(species = sp, sex = sexes[s], Linf = NA, k = NA, t0 = NA, notes = "model not converged")
                         p <- ggplot() +
@@ -132,8 +138,7 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
                             xlab("Age") +
                             theme(legend.position = "none") +
                             ylab(paste("Length (mm)"))
-                        print(p)
-                        ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
+                        if(save) ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
                     }
                 }
 
@@ -163,8 +168,7 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
                         xlab("Age") +
                         theme(legend.position = "none") +
                         ylab(paste("Length (mm)"))
-                    print(p)
-                    ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
+                    if(save) ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
                 } else {
                     params[[s]] <- data.frame(species = sp, sex = sexes[s], Linf = NA, k = NA, t0 = NA, notes = "model not converged")
                     p <- ggplot() +
@@ -174,15 +178,14 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5) {
                         xlab("Age") +
                         theme(legend.position = "none") +
                         ylab(paste("Length (mm)"))
-                    print(p)
-                    ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
+                    if(save) ggsave(file.path(wd, "output","ALK", paste0("ALK_", sspp, "_", sexes[s], ".jpg")), dpi = 300, width = 9, height = 9, units = "in")
                 } }}
             } else {
-                cat(paste0("Not age data for '", sexes[s], "' sex"))
+                message(paste0("Not age data for '", sexes[s], "' sex"))
             }
         }
         df.params <- do.call(rbind, params)
-        write.table(df.params, file.path(wd, "output","ALK", paste0("ALK_", sspp, "_summary_table.csv")), sep=";", row.names=FALSE)
+        if(save) write.table(df.params, file.path(wd, "output","ALK", paste0("ALK_", sspp, "_summary_table.csv")), sep=";", row.names=FALSE)
         return(df.params)
     } else {
         message("Not enougth data to plot ALK")

@@ -47,12 +47,17 @@
 # BioIndex v0.6.03
 Added an embedded Shiny application to the package: run_BioIndex_app(). It provides a graphical user interface for running BioIndex analyses directly from the package environment.
 
-# BioIndex v0.6.04
+# BioIndex v0.6.4
   __CRAN Submission Release__
   
-  * Fixed non-ASCII characters in `continent` dataset to comply with CRAN standards.
-  * Refactored `class()` checks in `LWf.R` to use `inherits()` for robust type checking.
-  * Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
-  * Standardized author metadata and documentation across all R scripts.
-  * Added `globalVariables` declarations to resolve R CMD check notes on global bindings.
-  * Finalized dependencies for the embedded Shiny application.
+  * **CRAN Policy Compliance**:
+    * Standardized directory handling: functions now default to `tempdir()` when `wd = NA` and `save = TRUE`, ensuring compliance with CRAN's file system policies regarding unauthorized write access.
+    * Refactored console output: replaced all `cat()` and `print()` calls with `message()` wrapped in `if (verbose)` checks to ensure a silent default behavior and eliminate side-effects.
+    * Improved state management: added `on.exit(par(oldpar))` to all functions modifying graphical parameters.
+  * **Dependency Refinement**: Internalized data validation logic based on RoME (v0.2.3) to eliminate external dependencies on non-CRAN repositories.
+  * **Bug Fixes and Stability**:
+    * Fixed non-ASCII characters in `continent` dataset.
+    * Refactored `class()` checks to use `inherits()` for robust type checking.
+    * Fixed documentation examples for `aggregate_gsas` and merge functions to ensure they run correctly with built-in datasets.
+    * Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
+    * Added `globalVariables` declarations to resolve R CMD check notes.

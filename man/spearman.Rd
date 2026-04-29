@@ -19,6 +19,9 @@ spearman(abundance = NA, biomass = NA, years, sspp = NA, wd = NA, save = TRUE)
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
+\value{
+A \code{data.frame} or \code{list} with the results of the Spearman rank correlation test.
+}
 \description{
 Spearman test
 }

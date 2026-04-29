@@ -18,6 +18,7 @@
 #' @importFrom utils data
 #' @export
 hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, res=NA, wd=NA,save=TRUE, verbose=TRUE){
+    if (is.na(wd)) { wd <- tempdir() }
 
   Haul <- V1 <- V2 <- V3 <- Year <- group <- merge_TATB <-  lat <- lon <- long <-NULL #
 
@@ -35,7 +36,7 @@ hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, r
 
     m <- read.table("D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)\\output\\mergeTATB_MERLMER.csv",sep=";",header=TRUE)
 
-    hauls_position(mTATB=m,map_lim,depth_lines, buffer=0.1, wd=wd,save=FALSE, verbose=TRUE)
+    hauls_position(mTATB=m,map_lim,depth_lines, buffer=0.1, wd=wd,save=TRUE, verbose=TRUE)
   }
 
   if (!requireNamespace("mapproj", quietly = TRUE)) {
@@ -43,7 +44,7 @@ hauls_position <- function(mTATB, country="all",map_lim,depth_lines, buffer=0, r
   }
 
   if (is.na(wd) & save) {
-    save =FALSE
+    save=TRUE
     if (verbose){
       message("Missing working directory. Results are not saved in the local folder.")
     }

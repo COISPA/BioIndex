@@ -11,6 +11,9 @@ quant(weighted, qlin = 0.95)
 
 \item{qlin}{reference quantile for the analysis}
 }
+\value{
+A \code{numeric} value or vector containing the requested quantiles.
+}
 \description{
 Quantile estimation
 }

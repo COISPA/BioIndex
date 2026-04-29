@@ -98,7 +98,10 @@ This version of \code{BioIndex} uses internal validation functions based on
 not require external validation packages to be installed.
 }
 \examples{
-\dontrun{
+\donttest{
+data("TA", package = "BioIndex")
+data("TB", package = "BioIndex")
+data("TC", package = "BioIndex")
 m <- merge_TATBTC(
   ta      = TA,
   tb      = TB,

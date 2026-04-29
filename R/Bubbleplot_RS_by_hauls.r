@@ -15,12 +15,14 @@
 #' @param wd working directory
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @param verbose boolean. If TRUE messages are prompted in the console
+#' @return A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
 #' @export
 #' @importFrom marmap getNOAA.bathy as.xyz
 #' @importFrom utils data
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @importFrom stats aggregate
-bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=NA, buffer=0.1,wd, save = FALSE, verbose = FALSE) {
+bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=NA, buffer=0.1,wd=NA, save=TRUE, verbose = FALSE) {
+    if (is.na(wd)) { wd <- tempdir() }
   if (FALSE) {
     thresh_rec <- 20
     thresh_spaw <- 21
@@ -146,19 +148,19 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         ggtitle(dep_text) +
         theme_opts
     )
-    print(pr)
+        # print(pr) # rimosso per policy CRAN
     if (save) {
       ggsave(paste(wd, "/output/", sspp, "_GSA", GSA, " -indices of RECRUITS.jpg", sep = ""),
-        width = 20, height = 20, units = "cm", dpi = 300
+        width = 20, height = 20, units = "cm", dpi = 300, plot = pr
       )
     }
     if (verbose) {
-      cat("Bubble plot of recruits correctly saved \n")
+      message("Bubble plot of recruits correctly saved ")
     }
   } else {
     if (verbose) {
-      cat("Not enough data for recruits to be plotted\n")
-      cat("Bubble plots - indices of recruits skipped\n\n")
+      message("Not enough data for recruits to be plotted")
+      message("Bubble plots - indices of recruits skipped\n")
     }
   }
 
@@ -231,19 +233,19 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         ggtitle(dep_text) +
         theme_opts
     )
-    print(ps)
+        # print(ps) # rimosso per policy CRAN
     if (save) {
       ggsave(paste(wd, "/output/", sspp, "_GSA", GSA, " -indices of SPAWNERS.jpg", sep = ""),
-        width = 20, height = 20, units = "cm", dpi = 300
+        width = 20, height = 20, units = "cm", dpi = 300, plot = ps
       )
     }
     if (verbose) {
-      cat("Bubble plot of spawners correctly saved \n")
+      message("Bubble plot of spawners correctly saved ")
     }
   } else {
     if (verbose) {
-      cat("Not enough data for spawners to be plotted\n")
-      cat("Bubble plots - indices of spawners skipped\n")
+      message("Not enough data for spawners to be plotted")
+      message("Bubble plots - indices of spawners skipped")
     }
   }
 }
