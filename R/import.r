@@ -1,4 +1,4 @@
-#' @importFrom stats AIC coef coefficients cor.test dchisq deviance
+﻿#' @importFrom stats AIC coef coefficients cor.test dchisq deviance
 #' @importFrom stats df.residual lm na.exclude nls pnorm predict rnorm sd time quantile
 #' @importFrom utils data write.table read.table
 #' @importFrom magrittr %>%

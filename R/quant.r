@@ -1,4 +1,4 @@
-#' Quantile estimation
+﻿#' Quantile estimation
 #'
 #' @param weighted LFD data.frame
 #' @param qlin reference quantile for the analysis

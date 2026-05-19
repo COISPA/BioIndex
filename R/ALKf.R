@@ -1,7 +1,7 @@
 #' Estimation of ALK
 #'
 #' @param te MEDITS or MEDITS-like TE table
-#' @param sp species rubin code (MEDITS format, e.g. "MERLMER")
+#' @param sp species RUBIN code (MEDITS format, e.g. "MERLMER")
 #' @param GEAR type of gear reported in the corresponding TA file
 #' @param GSA reference GSA for the analysis
 #' @param country reference country
@@ -105,7 +105,7 @@ ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5, wd = NA, save=TRUE)
                     if (length(df[df$AGE == 1, "LENGTH_CLASS"])>0){
                         ss$K <- mean(df[df$AGE == 1, "LENGTH_CLASS"]) / ss$Linf
                     } else {
-                        ss$K <- 0.310 # (Sağlam, N., Sağlam, C., & Sağlam, Y. (2015))
+                        ss$K <- 0.310 # (SaÄŸlam, N., SaÄŸlam, C., & SaÄŸlam, Y. (2015))
                     }
                     ss$t0 <- -0.5
                     error <- try(mod3 <- nls(LENGTH_CLASS ~ vbf3(AGE, Linf, k, t0), start = c(Linf = abs(ss$Linf), k = abs(ss$K), t0 = ss$t0), data = df, algorithm = "default"),silent=TRUE)

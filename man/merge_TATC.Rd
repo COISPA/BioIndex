@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge_TATC.r
 \name{merge_TATC}
 \alias{merge_TATC}
-\title{Merge TA and TC tables (haul-level length–frequency data)}
+\title{Merge TA and TC tables (haul-level lengthâ€“frequency data)}
 \usage{
 merge_TATC(
   ta,
@@ -58,7 +58,7 @@ The function keeps only valid hauls, runs all relevant quality checks
 (times, positions, wing opening, haul/date consistency) using internal
 validation functions (based on \code{RoME} version 0.2.3),
 computes swept area, depth stratum, raising factors,
-abundance/biomass indicators, and—optionally—writes the merged data.
+abundance/biomass indicators, andâ€”optionallyâ€”writes the merged data.
 }
 \details{
 The code is identical to the official BioIndex routine.
@@ -77,7 +77,7 @@ This version of \code{BioIndex} uses internal validation functions based on
 not require external validation packages to be installed.
 }
 \examples{
-\donttest{
+# Use internal data
 data("TA", package = "BioIndex")
 data("TC", package = "BioIndex")
 m_tc <- merge_TATC(
@@ -89,7 +89,6 @@ m_tc <- merge_TATC(
   save=FALSE
 )
 head(m_tc)
-}
 }
 \seealso{
 [BioIndex] package documentation.

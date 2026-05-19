@@ -1,4 +1,4 @@
-#' Estimation of abundance and biomass indices
+﻿#' Estimation of abundance and biomass indices
 #' @description
 #' Computes time series of stratified abundance and biomass indices,
 #' serving as the primary tool for monitoring temporal trends in stock status.
@@ -21,17 +21,27 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices jpeg dev.off
 #' @importFrom stats sd
-#' @return A \code{data.frame} containing the calculated time series of abundance and biomass indices.
+#' @return A \code{list} of \code{ggplot} objects representing the time series of calculated indices.
+#' @examples
+#' data(TA)
+#' data(TB)
+#' # Create a merged dataset for GSA 10
+#' mTATB <- merge_TATB(TA[TA$AREA==10,], TB[TB$AREA==10,], "MERLMER")
+#' # Run indices_ts
+#' indices_ts(mTATB, GSA=10, country="all", depth_range=c(10,800),
+#'            strata_scheme=BioIndex::strata_scheme,
+#'            stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
 #' @export
 
 indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
     if (FALSE) {
 
-        GSA=18
+        GSA=10
         save=TRUE
         merge_TATB <- mTATB
         depth_range <- c(10,800)
@@ -58,9 +68,9 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
 
         m <- merge_TATBTC(ta, tb, tc, species="MERLMER", country="all", wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
-        indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
+        indices_ts(mTATB, GSA=10, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
 
-        # indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme,wd, stratification, save=TRUE)
+        # indices_ts(mTATB, GSA=10, country="all", depth_range=c(10,800), strata_scheme,wd, stratification, save=TRUE)
     }
 
   if (is.na(wd) & save) {
@@ -136,7 +146,16 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
     # depth_range <- data.frame(range = strsplit(depth_range, ",")); depth_range <- as.numeric(as.character(depth_range[,1]))
     if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
     data <-  data[data$MEAN_DEPTH>depth_range[1] & data$MEAN_DEPTH<=depth_range[2],]
-    strata_range <- seq(which(depth[,"min"]==depth_range[1]),which(depth[,"max"]==depth_range[2]),1)
+    idx_from <- which(depth[,"min"] == depth_range[1])
+    idx_to   <- which(depth[,"max"] == depth_range[2])
+
+    if (length(idx_from) != 1 || length(idx_to) != 1) {
+        stop(paste0("Error: depth range [", depth_range[1], ", ", depth_range[2],
+                    "] does not match the strata boundaries defined for this GSA. ",
+                    "Available min depths: ", paste(sort(unique(depth$min)), collapse=", "),
+                    "; Available max depths: ", paste(sort(unique(depth$max)), collapse=", ")))
+    }
+    strata_range <- seq(idx_from, idx_to, 1)
     depth[depth$strata %in% strata_range, "bul"] <- T
     depth[!(depth$strata %in% strata_range), "bul"] <- F
 

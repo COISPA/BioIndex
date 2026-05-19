@@ -1,4 +1,4 @@
-#' Length Frequency Distribution (LFD) Estimation and Plotting
+﻿#' Length Frequency Distribution (LFD) Estimation and Plotting
 #'
 #' This function estimates and plots the length frequency distribution (LFD) by year and by stratum,
 #' based on merged biological and haul data from MEDITS surveys. It computes raised numbers,
@@ -46,6 +46,15 @@
 #' @importFrom dplyr summarise summarize group_by arrange
 #' @importFrom reshape2 melt dcast
 #' @importFrom ggplot2 ggplot geom_line xlab ylab ggtitle xlim ylim theme_bw aes facet_wrap
+#' @return A \code{list} of \code{ggplot} objects representing the length-frequency distributions.
+#' @examples
+#' data(TA)
+#' data(TC)
+#' # Create a merged dataset for GSA 10
+#' mTATC <- merge_TATC(TA[TA$AREA==10,], TC[TC$AREA==10,], "MERLMER")
+#' LFD(mTATC, sex="all", GSA=10, country="all", depth_range=c(10,800),
+#'     strata_scheme=BioIndex::strata_scheme,
+#'     stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
 #' @export
 LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE, verbose=TRUE){
     if (is.na(wd)) { wd <- tempdir() }
@@ -71,7 +80,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
         m <- merge_TATBTC(ta, tb, tc, species=species, country=country, wd=wd, verbose=TRUE)
         mTATC <- m[[2]]
 
-        LFD(mTATC, sex=sex, GSA=18, country=country, depth_range=c(10,800), strata_scheme, stratification, wd, save=TRUE)
+        LFD(mTATC, sex=sex, GSA=10, country=country, depth_range=c(10,800), strata_scheme, stratification, wd, save=TRUE)
 
     }
 
@@ -133,7 +142,16 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
     if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
     mTATC <-  mTATC[mTATC$MEAN_DEPTH>depth_range[1] & mTATC$MEAN_DEPTH<=depth_range[2],]
     ddd <-  ddd[ddd$MEAN_DEPTH>depth_range[1] & ddd$MEAN_DEPTH<=depth_range[2],]
-    strata_range <- seq(which(depth[,"min"]==depth_range[1]),which(depth[,"max"]==depth_range[2]),1)
+    idx_from <- which(depth[,"min"] == depth_range[1])
+    idx_to   <- which(depth[,"max"] == depth_range[2])
+
+    if (length(idx_from) != 1 || length(idx_to) != 1) {
+        stop(paste0("Error: depth range [", depth_range[1], ", ", depth_range[2],
+                    "] does not match the strata boundaries defined for this GSA. ",
+                    "Available min depths: ", paste(sort(unique(depth$min)), collapse=", "),
+                    "; Available max depths: ", paste(sort(unique(depth$max)), collapse=", ")))
+    }
+    strata_range <- seq(idx_from, idx_to, 1)
     depth[depth$strata %in% strata_range, "bul"] <- T
     depth[!(depth$strata %in% strata_range), "bul"] <- F
 
@@ -290,7 +308,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 xlim(min_lc, max_lc) +
                 ylim(0,max_freq) +
                 theme_bw()
-            print(p)
+            # print(p) # rimosso per policy CRAN
             if(save){
                 if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p) #
                 }
@@ -309,7 +327,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 xlim(min_lc, max_lc) +
                 ylim(0,max_freq) +
                 theme_bw()
-            print(p)
+            # print(p) # rimosso per policy CRAN
             if (save){
                 if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p)
                 }
@@ -335,7 +353,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 ylim(0,max_freq) +
                 theme_bw()+
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
-            print(p2)
+            # print(p2) # rimosso per policy CRAN
             if (save) {
                 if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p2) #
             }
@@ -355,7 +373,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
                 ylim(0,max_freq) +
                 theme_bw()+
                 facet_wrap(~ STRATUM)  # , ncol=cols.graph
-            print(p2)
+            # print(p2) # rimosso per policy CRAN
             if(save){
                 if(save) ggsave(paste(wd,"/output/",main,".jpg",sep=""), dpi=300 , width=6, height=5, plot = p2)
             }

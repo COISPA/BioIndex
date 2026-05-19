@@ -16,6 +16,12 @@
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @param verbose boolean. If TRUE messages are prompted in the console
 #' @return A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
+#' @examples
+#' \donttest{
+#' # Create a merged dataset for GSA 10
+#' mTATC <- merge_TATC(TA[TA$AREA==10,], TC[TC$AREA==10,], "MERLMER")
+#' bubbleplot_RS_by_hauls(mTATC, map_range=c(15,21,39,43), thresh_rec=200, thresh_spaw=250)
+#' }
 #' @export
 #' @importFrom marmap getNOAA.bathy as.xyz
 #' @importFrom utils data
@@ -118,7 +124,7 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
     y_breaks <- c(round(yl[1], 0), round(yl[1], 0) + round((yl[2] - yl[1]) / 2, 0), round(yl[1], 0) + 2 * round((yl[2] - yl[1]) / 2, 0))
 
 
-    suppressMessages(
+    suppressWarnings(suppressMessages(
       pr <- ggplot() +
         coord_sf(xlim = xl, ylim = yl, expand = TRUE) +
         geom_polygon(data = world, aes(long, lat, group = group), fill = "grey") +
@@ -147,7 +153,7 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         coord_map(projection = "mercator", xlim = c((x1 - buff), (x2 + buff)), ylim = c((y1 - buff), (y2 + buff))) +
         ggtitle(dep_text) +
         theme_opts
-    )
+    ))
         # print(pr) # rimosso per policy CRAN
     if (save) {
       ggsave(paste(wd, "/output/", sspp, "_GSA", GSA, " -indices of RECRUITS.jpg", sep = ""),
@@ -203,7 +209,7 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
     # bath <- suppressMessages(getNOAA.bathy(lon1 = min(xl) - 1, lon2 = max(xl) + 1, lat1 = min(yl) - 1 - buff, lat2 = max(yl) + 1 + buff, resolution = res))
     # bat_xyz <- as.xyz(bath)
 
-    suppressMessages(
+    suppressWarnings(suppressMessages(
       ps <- ggplot() +
         coord_sf(xlim = xl, ylim = yl, expand = TRUE) +
         geom_polygon(data = world, aes(long, lat, group = group), fill = "grey") +
@@ -232,7 +238,7 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
         coord_map(projection = "mercator", xlim = c((x1 - buff), (x2 + buff)), ylim = c((y1 - buff), (y2 + buff))) +
         ggtitle(dep_text) +
         theme_opts
-    )
+    ))
         # print(ps) # rimosso per policy CRAN
     if (save) {
       ggsave(paste(wd, "/output/", sspp, "_GSA", GSA, " -indices of SPAWNERS.jpg", sep = ""),

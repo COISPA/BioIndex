@@ -1,4 +1,4 @@
-
+﻿
 
 #' Interception Union Tets
 #'
@@ -16,10 +16,11 @@
 IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
     if (FALSE) {
-        GSA=18
+        GSA=10
         save=TRUE
         depth_range <- c(10,800)
 
@@ -34,7 +35,7 @@ IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
 
         m <- merge_TATBTC(ta, tb, tc, species="MERLMER", country="all", wd=wd, verbose=TRUE)
         mTATB <- m[[1]]
-        ind <- indices_ts(mTATB, GSA=18, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
+        ind <- indices_ts(mTATB, GSA=10, country="all", depth_range=c(10,800), strata_scheme=BioIndex::strata_scheme, stratification=BioIndex::stratification,wd, save=TRUE)
 
         IUT(abundance=ind[[1]], biomass=ind[[2]], species="MERLMER", lastn=4, save=TRUE)
 

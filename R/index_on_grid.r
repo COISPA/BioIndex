@@ -1,4 +1,4 @@
-#' Generating maps of indexes
+﻿#' Generating maps of indexes
 #' @description
 #' Generates density and biomass maps based on the spatial grid,
 #' allowing for the visual identification of resource concentration areas
@@ -385,11 +385,11 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
    xlab("longitude")+
    ylab("latitude")
 
- print(p1)
+ # print(p1) # rimosso per policy CRAN
  if(verbose) message("Plot of abundance on grid successfully created.")
  if (save){
    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-   print(p1)
+   # print(p1) # rimosso per policy CRAN
    dev.off()
    if(verbose) message("Plot of abundance on grid successfully saved")
  }
@@ -494,11 +494,11 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  print(p2)
+  # print(p2) # rimosso per policy CRAN
   if(verbose) message("Plot of abundance inverse CV on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    print(p2)
+    # print(p2) # rimosso per policy CRAN
     dev.off()
     if(verbose) message("Plot of abundance inverse CV on grid successfully saved.")
   }
@@ -621,11 +621,11 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  print(p3)
+  # print(p3) # rimosso per policy CRAN
   if(verbose) message("Plot of biomass on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    print(p3)
+    # print(p3) # rimosso per policy CRAN
     dev.off()
     if(verbose) message("Plot of biomass on grid successfully saved")
   }
@@ -749,11 +749,11 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  print(p4)
+  # print(p4) # rimosso per policy CRAN
   if(verbose) message("Plot of MIW on grid successfully created.")
   if(save){
     jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    print(p4)
+    # print(p4) # rimosso per policy CRAN
     dev.off()
     if(verbose) message("Plot of MIW on grid successfully saved.")
   }
@@ -761,4 +761,3 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
 
   return(list(abundance_grid, biomass_grid, meanWEIGHT_grid))
 }
-

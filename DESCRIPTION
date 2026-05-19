@@ -5,11 +5,13 @@ Version: 0.6.4
 Date: 2026-04-29
 Authors@R: c(
     person("Walter", "Zupa", email = "zupa@fondazionecoispa.org", role = c("aut", "cre")),
-    person("Loredana", "Casciaro", email = "casciaro@coispa.eu", role = "ctb"),
-    person("Cosmidano", "Neglia", email = "neglia@coispa.eu", role = "ctb"),
-    person("Isabella", "Bitetto", email = "bitetto@fondazionecoispa.org", role = "ctb"),
+    person("Loredana", "Casciaro", email = "casciaro@coispa.eu", role = "rev"),
+    person("Cosmidano", "Neglia", email = "neglia@coispa.eu", role = "rev"),
+    person("Isabella", "Bitetto", email = "bitetto@fondazionecoispa.org", role = "rev"),
     person("Maria Teresa", "Spedicato", email = "spedicato@fondazionecoispa.org", role = "aut")
   )
+Author: Walter Zupa [aut, cre], Loredana Casciaro [rev], Cosmidano Neglia [rev], Isabella Bitetto [rev], Maria Teresa Spedicato [aut]
+Maintainer: Walter Zupa <zupa@fondazionecoispa.org>
 Description: Supports the standardized analysis of Mediterranean 
     International Bottom Trawl Survey (MEDITS) data and the calculation 
     of biological indicators for selected species and population 

@@ -12,6 +12,11 @@ run_BioIndex_app()
 \description{
 launches the embedded Shiny application included in the package.
 }
+\examples{
+if (interactive()) {
+  run_BioIndex_app()
+}
+}
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}
 }

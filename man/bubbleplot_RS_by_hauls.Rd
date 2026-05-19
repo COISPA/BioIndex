@@ -45,6 +45,13 @@ A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
 The function generates bubbleplots of abundance indices for recruits and spawners
 If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 }
+\examples{
+\donttest{
+# Create a merged dataset for GSA 10
+mTATC <- merge_TATC(TA[TA$AREA==10,], TC[TC$AREA==10,], "MERLMER")
+bubbleplot_RS_by_hauls(mTATC, map_range=c(15,21,39,43), thresh_rec=200, thresh_spaw=250)
+}
+}
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}
 }

@@ -1,4 +1,4 @@
-#' Plot sex ratio spatial distribution
+﻿#' Plot sex ratio spatial distribution
 #'
 #' @description
 #' This function calculates and plots the spatial distribution of sex ratio (F / (F + M)) over the GFCM grid for a given species. It uses data from merged MEDITS datasets (TA, TB, TC), previously spatialized with `overlayGrid()`. The function filters hauls by total abundance threshold and depth range, calculates sex ratio per grid cell, and plots the output using color-coded categories based on quantiles. The result is a choropleth map of sex ratio patterns, useful to highlight spatial differences in sex structure. Raw sex ratio estimates per grid cell can also be exported.
@@ -299,11 +299,11 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd=NA, map_range,threshold=30,verb
 
 
 
-            print(p1)
+            # print(p1) # rimosso per policy CRAN
             if (verbose) message("plot of sex ratio by grid cell successfully created")
             if (save){
                 jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-                print(p1)
+                # print(p1) # rimosso per policy CRAN
                 dev.off()
                 if (verbose) message("Plot of sex ratio by grid cell successfully saved.")
             }

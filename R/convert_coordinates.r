@@ -1,4 +1,4 @@
-#' MEDITS coordinates in decimal degrees
+﻿#' MEDITS coordinates in decimal degrees
 #' @description
 #' The function returns the data frame of the TA table with the coordinates expressed as decimal degrees.
 #'

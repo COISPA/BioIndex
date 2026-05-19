@@ -1,4 +1,4 @@
-#' Merge TA and TB tables (haul-level catches)
+﻿#' Merge TA and TB tables (haul-level catches)
 #'
 #' @description
 #' Combines haul-level operational data (TA) with species catch data (TB),
@@ -7,7 +7,7 @@
 #' The function keeps only valid hauls, performs quality checks (times,
 #' positions, wing opening, haul/date consistency) using internal validation
 #' functions (based on \code{RoME} version 0.2.3), computes spatial means,
-#' swept area, depth stratum, biomass/density indicators, and—optionally—writes
+#' swept area, depth stratum, biomass/density indicators, andâ€”optionallyâ€”writes
 #' the merged data to disk.
 #'
 #' @param ta   A `data.frame`/`data.table` containing a full TA dataset
@@ -43,7 +43,7 @@
 #'
 #' \strong{Optimisations:}
 #' Includes two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
-#' (2) a single loop over depth strata instead of a nested haul × stratum
+#' (2) a single loop over depth strata instead of a nested haul Ã— stratum
 #' loop.  Results are identical to the reference routine.
 #'
 #' @note
@@ -55,7 +55,7 @@
 #' @importFrom hms hms
 #' @importFrom utils write.table
 #' @examples
-#' \donttest{
+#' # Use internal data
 #' data("TA", package = "BioIndex")
 #' data("TB", package = "BioIndex")
 #' m_tb <- merge_TATB(
@@ -67,9 +67,7 @@
 #'   save     = FALSE
 #' )
 #' head(m_tb)
-#' }
 #' @export
-
 merge_TATB <- function(ta, tb,
                        species,
                        country = "all",
@@ -78,6 +76,7 @@ merge_TATB <- function(ta, tb,
                        save     = FALSE,
                        verbose = TRUE) {
 
+    if (is.na(wd)) { wd <- tempdir() }
     ## Working directory check (unchanged) ------------------------------- ##
     if (is.na(wd) & save) {
         save <- FALSE
@@ -112,10 +111,12 @@ merge_TATB <- function(ta, tb,
     TB <- TB[TB$COUNTRY %in% country_analysis, ]
 
     ## Unique haul IDs (unchanged) --------------------------------------- ##
-    uid <- function(df)
+    uid <- function(df) {
+        if (nrow(df) == 0) return(character(0))
         paste(df$AREA, df$COUNTRY, df$YEAR, "_",
               df$VESSEL, df$MONTH, df$DAY, "_",
               df$HAUL_NUMBER, sep = "")
+    }
     TA$id <- uid(TA); TB$id <- uid(TB)
     invalid_ids <- TA$id[TA$VALIDITY == "I"]
 
@@ -151,7 +152,7 @@ merge_TATB <- function(ta, tb,
     TB_ <- TB[!TB$id %in% invalid_ids &
                   TB$GENUS == species[1] & TB$SPECIES == species[2], TB_cols]
 
-    ## MERGE TA – TB (unchanged logic, incl. optimisations) -------------- ##
+    ## MERGE TA â€“ TB (unchanged logic, incl. optimisations) -------------- ##
     if (verbose) message("- Merging TA-TB files")
     merge_TATB <- merge(TA_, TB_, by = "id", all.x = TRUE)
     merge_TATB$MEDITS_CODE <- paste(merge_TATB$GENUS, merge_TATB$SPECIES)
@@ -168,53 +169,68 @@ merge_TATB <- function(ta, tb,
         merge_TATB$NB_OF_UNDETERMINED[bad]        <- 0
     }
 
+    ## MERGE coordinates (RoME-based) ------------------------------------ ##
     coord <- convert_coordinates(merge_TATB)
-    merge_TATB$MEAN_DEPTH <- (merge_TATB$SHOOTING_DEPTH + merge_TATB$HAULING_DEPTH) / 2
-    merge_TATB$SWEPT_AREA <- merge_TATB$DISTANCE * merge_TATB$WING_OPENING / 1e7
+    merge_TATB$MEAN_LATITUDE     <- (merge_TATB$SHOOTING_LATITUDE +
+                                         merge_TATB$HAULING_LATITUDE) / 2
+    merge_TATB$MEAN_LATITUDE_DEC <- (coord$lat_start + coord$lat_end) / 2
+    merge_TATB$MEAN_LONGITUDE    <- (merge_TATB$SHOOTING_LONGITUDE +
+                                         merge_TATB$HAULING_LONGITUDE) / 2
+    merge_TATB$MEAN_LONGITUDE_DEC<- (coord$lon_start + coord$lon_end) / 2
+    merge_TATB$MEAN_DEPTH        <- (merge_TATB$SHOOTING_DEPTH +
+                                         merge_TATB$HAULING_DEPTH) / 2
+    merge_TATB$SWEPT_AREA        <- merge_TATB$DISTANCE *
+        merge_TATB$WING_OPENING / 10000000
 
-    strata_sub <- strata_scheme[
-        strata_scheme$GSA == unique(merge_TATB$GSA) &
-            strata_scheme$COUNTRY %in% unique(merge_TATB$COUNTRY), ]
+    ## MERGE Stratum (optimised single loop) ----------------------------- ##
+    subset_strata <- strata_scheme[strata_scheme$GSA == unique(merge_TATB$GSA) &
+                                       strata_scheme$COUNTRY %in% as.character(unique(merge_TATB$COUNTRY)), ]
     merge_TATB$STRATUM_CODE <- NA
-    for (k in seq_len(nrow(strata_sub))) {
-        lo <- strata_sub[k,4]; hi <- strata_sub[k,5]; cd <- strata_sub[k,3]
-        sel <- if (cd==1)
-            floor(merge_TATB$MEAN_DEPTH) >= lo & floor(merge_TATB$MEAN_DEPTH) <= hi
-        else
-            floor(merge_TATB$MEAN_DEPTH)  > lo & floor(merge_TATB$MEAN_DEPTH) <= hi
-        merge_TATB$STRATUM_CODE[sel] <- cd
+    for (j in seq_len(nrow(subset_strata))) {
+        low <- subset_strata[j, 4]; up <- subset_strata[j, 5]; co <- subset_strata[j, 3]
+        if (co == 1) {
+            idx <- floor(merge_TATB$MEAN_DEPTH) >= low &
+                floor(merge_TATB$MEAN_DEPTH) <= up
+        } else {
+            idx <- floor(merge_TATB$MEAN_DEPTH) >  low &
+                floor(merge_TATB$MEAN_DEPTH) <= up
+        }
+        merge_TATB$STRATUM_CODE[idx] <- co
     }
 
-    ## Duration & density (original lines preserved) --------------------- ##
-    hh  <- ifelse(nchar(merge_TATB$SHOOTING_TIME)==4,
-                  substr(merge_TATB$SHOOTING_TIME,1,2),
-                  substr(merge_TATB$SHOOTING_TIME,1,1))
-    mm  <- ifelse(nchar(merge_TATB$SHOOTING_TIME)==4,
-                  substr(merge_TATB$SHOOTING_TIME,3,4),
-                  substr(merge_TATB$SHOOTING_TIME,2,3))
-    hh2 <- ifelse(nchar(merge_TATB$HAULING_TIME)==4,
-                  substr(merge_TATB$HAULING_TIME,1,2),
-                  substr(merge_TATB$HAULING_TIME,1,1))
-    mm2 <- ifelse(nchar(merge_TATB$HAULING_TIME)==4,
-                  substr(merge_TATB$HAULING_TIME,3,4),
-                  substr(merge_TATB$HAULING_TIME,2,3))
+    ## Duration and Final Indicators ------------------------------------- ##
+    h_s <- ifelse(nchar(merge_TATB$SHOOTING_TIME) == 4,
+                  substr(merge_TATB$SHOOTING_TIME, 1, 2),
+                  substr(merge_TATB$SHOOTING_TIME, 1, 1))
+    m_s <- ifelse(nchar(merge_TATB$SHOOTING_TIME) == 4,
+                  substr(merge_TATB$SHOOTING_TIME, 3, 4),
+                  substr(merge_TATB$SHOOTING_TIME, 2, 3))
+    h_h <- ifelse(nchar(merge_TATB$HAULING_TIME) == 4,
+                  substr(merge_TATB$HAULING_TIME, 1, 2),
+                  substr(merge_TATB$HAULING_TIME, 1, 1))
+    m_h <- ifelse(nchar(merge_TATB$HAULING_TIME) == 4,
+                  substr(merge_TATB$HAULING_TIME, 3, 4),
+                  substr(merge_TATB$HAULING_TIME, 2, 3))
 
-    h1 <- hms(rep(0, length(hh)),  as.numeric(mm),  as.numeric(hh))
-    h2 <- hms(rep(0, length(hh2)), as.numeric(mm2), as.numeric(hh2))
-    dur <- as.numeric(h2 - h1) / 3600
-
+    hms_s    <- hms(rep(0, length(h_s)), as.numeric(m_s), as.numeric(h_s))
+    hms_h    <- hms(rep(0, length(h_h)), as.numeric(m_h), as.numeric(h_h))
+    dur      <- as.numeric(hms_h - hms_s) / 3600
+    merge_TATB$SHOOTING_TIME <- hms_s
+    merge_TATB$HAULING_TIME  <- hms_h
     merge_TATB$N_h    <- merge_TATB$TOTAL_NUMBER_IN_THE_HAUL / dur
-    merge_TATB$N_km2  <- merge_TATB$TOTAL_NUMBER_IN_THE_HAUL / merge_TATB$SWEPT_AREA
-    merge_TATB$kg_h   <- merge_TATB$TOTAL_WEIGHT_IN_THE_HAUL / 1000 / dur
-    merge_TATB$kg_km2 <- merge_TATB$TOTAL_WEIGHT_IN_THE_HAUL / 1000 / merge_TATB$SWEPT_AREA
+    merge_TATB$N_km2  <- merge_TATB$TOTAL_NUMBER_IN_THE_HAUL /
+        merge_TATB$SWEPT_AREA
+    merge_TATB$kg_h   <- (merge_TATB$TOTAL_WEIGHT_IN_THE_HAUL / 1000) / dur
+    merge_TATB$kg_km2 <- (merge_TATB$TOTAL_WEIGHT_IN_THE_HAUL / 1000) /
+        merge_TATB$SWEPT_AREA
 
-    ## Save & return (unchanged) ----------------------------------------- ##
-    if (save)
-        write.table(merge_TATB,
-                    file = file.path(wd, "output",
-                                     paste0("mergeTATB_", species[1], species[2], ".csv")),
+    if (save) {
+        if (!dir.exists(wd)) dir.create(wd, recursive = TRUE)
+        out <- file.path(wd, "output")
+        if (!dir.exists(out)) dir.create(out, recursive = TRUE)
+        write.table(merge_TATB, file.path(out, paste0("mergeTATB_", species[1], species[2], ".csv")),
                     sep = ";", row.names = FALSE)
-    if (verbose) message("TA-TB merge completed")
+    }
 
-    merge_TATB
+    return(merge_TATB)
 }

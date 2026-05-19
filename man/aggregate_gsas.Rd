@@ -68,7 +68,7 @@ The aggregated GSA code is created using \code{paste(gsas, collapse = "")}.
 For example, \code{c(17, 18)} becomes \code{"1718"}.
 }
 \examples{
-\donttest{
+# Use internal data
 data("strata_scheme", package = "BioIndex")
 data("stratification", package = "BioIndex")
 data("TA", package = "BioIndex")
@@ -89,7 +89,6 @@ tb_agg <- d[[2]]
 tc_agg <- d[[3]]
 stratification_agg <- d[[4]]
 strata_scheme_agg <- d[[5]]
-}
 
 }
 \seealso{

@@ -39,6 +39,18 @@ A \code{ggplot} object representing the bubble plot of abundance or biomass by h
 The function generates bubble plot of abundance and biomass indices by haul.
 If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
 }
+\examples{
+\donttest{
+# Use internal data
+data(TA)
+data(TB)
+# Create a merged dataset for GSA 10 and year 2016
+mTATB <- merge_TATB(TA[TA$AREA == 10 & TA$YEAR == 2016, ],
+                    TB[TB$AREA == 10 & TB$YEAR == 2016, ],
+                    "MERLMER")
+bubble_plot_by_haul_indexes(mTATB, map_lim = NA, depth_lines = c(200, 500, 800), save = FALSE)
+}
+}
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}
 }

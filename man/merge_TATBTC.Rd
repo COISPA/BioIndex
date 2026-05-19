@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge_TATBTC.r
 \name{merge_TATBTC}
 \alias{merge_TATBTC}
-\title{Merge TA–TB and TA–TC tables (MEDITS protocol)}
+\title{Merge TAâ€“TB and TAâ€“TC tables (MEDITS protocol)}
 \usage{
 merge_TATBTC(
   ta,
@@ -26,7 +26,7 @@ merge_TATBTC(
 \item{tc}{A MEDITS or MEDITS-like \strong{TC} table
 (columns listed in \code{BioIndex::TC_cols}).}
 
-\item{species}{Character. MEDITS 7-letter RubIN code (e.g. \code{"MERLMER"}):
+\item{species}{Character. MEDITS 7-letter RUBIN code (e.g. \code{"MERLMER"}):
 the first 4 letters are used as \emph{GENUS}, the last 3 as
 \emph{SPECIES}.}
 
@@ -56,6 +56,8 @@ A list of two \code{data.frame}s:
           with TA metadata, TC counts, depth stratum, raising factor,
           densities and biomasses.}
   }
+
+A \code{list} containing two data frames: the first with merged TA-TB-TC data at the haul level, and the second with the length-frequency distribution.
 }
 \description{
 This function is the primary entry point for integrating MEDITS survey data
@@ -87,7 +89,7 @@ Two micro-optimisations are included:
 \enumerate{
   \item vectorised replacement of missing \code{"NA NA"} entries
         in both merges;
-  \item a single loop over depth strata (instead of haul × stratum) to
+  \item a single loop over depth strata (instead of haul Ã— stratum) to
         assign \code{STRATUM_CODE}.
 }
 Numerical outputs are identical to the reference routine.
@@ -98,7 +100,8 @@ This version of \code{BioIndex} uses internal validation functions based on
 not require external validation packages to be installed.
 }
 \examples{
-\donttest{
+# Use internal data
+
 data("TA", package = "BioIndex")
 data("TB", package = "BioIndex")
 data("TC", package = "BioIndex")
@@ -111,9 +114,8 @@ m <- merge_TATBTC(
   wd      = tempdir(),
   verbose = TRUE
 )
-mTATB <- m[[1]]   # TA–TB merged table
-mTATC <- m[[2]]   # TA–TC merged table
-}
+mTATB <- m[[1]]   # TAâ€“TB merged table
+mTATC <- m[[2]]   # TAâ€“TC merged table
 
 }
 \author{

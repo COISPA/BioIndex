@@ -10,8 +10,12 @@ spear(x)
 \item{x}{time series}
 }
 \value{
-A \code{numeric} value representing the Spearman correlation coefficient.
+A \code{data.frame} representing the Spearman correlation coefficient and related statistics.
 }
 \description{
 Spearman test for timeseries
+}
+\examples{
+x <- runif(10, 1, 100)
+spear(x)
 }

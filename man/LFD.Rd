@@ -44,6 +44,8 @@ A named list with two elements:
   \item{`LFD`}{A data frame of total LFD by year across all strata.}
   \item{`LFD by stratum`}{A data frame of LFD by year and by stratum.}
 }
+
+A \code{list} of \code{ggplot} objects representing the length-frequency distributions.
 }
 \description{
 Input parameters include biological and haul data, stratification schemes,
@@ -72,4 +74,13 @@ The plot outputs include:
 }
 
 Output files are saved as CSV and high-resolution JPEGs if `save = TRUE` and `wd` is defined.
+}
+\examples{
+data(TA)
+data(TC)
+# Create a merged dataset for GSA 10
+mTATC <- merge_TATC(TA[TA$AREA==10,], TC[TC$AREA==10,], "MERLMER")
+LFD(mTATC, sex="all", GSA=10, country="all", depth_range=c(10,800),
+    strata_scheme=BioIndex::strata_scheme,
+    stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
 }

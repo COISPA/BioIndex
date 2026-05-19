@@ -1,4 +1,4 @@
-#' Aggregate MEDITS data across multiple GSAs
+﻿#' Aggregate MEDITS data across multiple GSAs
 #'
 #' Aggregate TA, TB, and TC MEDITS tables across a user-defined set of
 #' Geographical Sub-Areas (GSAs), and update the associated stratification
@@ -47,7 +47,7 @@
 #' }
 #'
 #' @examples
-#' \donttest{
+#' # Use internal data
 #' data("strata_scheme", package = "BioIndex")
 #' data("stratification", package = "BioIndex")
 #' data("TA", package = "BioIndex")
@@ -68,7 +68,6 @@
 #' tc_agg <- d[[3]]
 #' stratification_agg <- d[[4]]
 #' strata_scheme_agg <- d[[5]]
-#' }
 #'
 #' @seealso
 #' \code{\link[BioIndex:BioIndex]{strata_scheme}},

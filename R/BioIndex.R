@@ -28,11 +28,12 @@
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @examples
 #' \donttest{
-#' BioIndex(ta=TA, tb=TB, tc=TC, sspp="MERLMER",rec_threshold=200,
+#' BioIndex(ta=TA[TA$YEAR %in% c(2015, 2016), ], tb=TB[TB$YEAR %in% c(2015, 2016), ],
+#' tc=TC[TC$YEAR %in% c(2015, 2016), ], sspp="MERLMER",rec_threshold=200,
 #' spaw_threshold=210,sexes="all", depth=c(10,800), GSA=10, country="all",
 #' map_lim=c(13.3,15.2,39.9,41.3),depth_lines=c(50,200,800),
 #' strata=BioIndex::strata_scheme, stratification_tab =
-#' BioIndex::stratification, resolution=1, buffer=0.1, wd=tempdir(),
+#' BioIndex::stratification, resolution=NA, buffer=0.1, wd=tempdir(),
 #' zip=FALSE, save=TRUE, verbose=TRUE)
 #' }
 #'
@@ -59,12 +60,12 @@ BioIndex <- function(ta,
                      buffer = 0.1,
                      wd = NA,
                      zip = TRUE,
-                     save=TRUE,
+                     save = TRUE,
                      verbose = TRUE) {
     if (is.na(wd)) {
         wd <- tempdir()
-        if(verbose) message("No directory specified. Results will be saved in the temporary folder: ", wd)
     }
+    if (verbose) message("No directory specified. Results will be saved in the temporary folder: ", wd)
 
     if (FALSE) {
         # library(BioIndex)
@@ -95,29 +96,29 @@ BioIndex <- function(ta,
         #                  sep = ";",
         #                  header = TRUE)
 
-        ta <- read.table(file.path(wd,"TA-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
-        tb <- read.table(file.path(wd,"TB-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
-        tc <- read.table(file.path(wd,"TC-2020-GRC.csv"),sep=",",header=TRUE)[,-1]
+        ta <- read.table(file.path(wd, "TA-2020-GRC.csv"), sep = ",", header = TRUE)[, -1]
+        tb <- read.table(file.path(wd, "TB-2020-GRC.csv"), sep = ",", header = TRUE)[, -1]
+        tc <- read.table(file.path(wd, "TC-2020-GRC.csv"), sep = ",", header = TRUE)[, -1]
         colnames(ta) <- colnames(BioIndex::TA)
         colnames(tb) <- colnames(BioIndex::TB)
         colnames(tc) <- colnames(BioIndex::TC)
         sspp <- "MERLMER"
-        rec_threshold = 200
-        spaw_threshold = 210
-        haul_threshold = 30
+        rec_threshold <- 200
+        spaw_threshold <- 210
+        haul_threshold <- 30
         sexes <- "all"
         depth <- c(50, 200)
         GSA <- 20
         country <- "all"
-        map_lim <- c(19.166,23.23, 35,39.88)
+        map_lim <- c(19.166, 23.23, 35, 39.88)
         depth_lines <- c(50, 100, 200)
-        buffer = 0.1
-        res = NA
+        buffer <- 0.1
+        res <- NA
         resolution <- res
-        strata = BioIndex::strata_scheme
-        stratification_tab = BioIndex::stratification
-        save=TRUE
-        verbose = TRUE
+        strata <- BioIndex::strata_scheme
+        stratification_tab <- BioIndex::stratification
+        save <- TRUE
+        verbose <- TRUE
 
         BioIndex(
             ta,
@@ -138,7 +139,7 @@ BioIndex <- function(ta,
             buffer = buffer,
             wd = wd,
             zip = TRUE,
-            save=TRUE,
+            save = TRUE,
             verbose = TRUE
         )
 
@@ -167,10 +168,25 @@ BioIndex <- function(ta,
         # verbose=TRUE
 
 
-
         # BioIndex(ta, tb, tc, sspp,rec_threshold=rec_threshold, spaw_threshold=spaw_threshold,sexes="all", depth=depth, GSA=GSA, country="all", map_lim=map_lim,depth_lines=depth_lines, strata=stratas, stratification_tab = stratification_tabs, resolution=res, buffer=buffer, wd=wd, zip=FALSE, save=TRUE, verbose=TRUE)
     }
 
+    # Filter data by GSA if present to ensure consistency in downstream functions
+    if ("AREA" %in% colnames(ta)) {
+        ta <- ta[as.character(ta$AREA) %in% as.character(GSA), ]
+    }
+    if ("AREA" %in% colnames(tb)) {
+        tb <- tb[as.character(tb$AREA) %in% as.character(GSA), ]
+    }
+    if ("AREA" %in% colnames(tc)) {
+        tc <- tc[as.character(tc$AREA) %in% as.character(GSA), ]
+    }
+    if ("GSA" %in% colnames(strata)) {
+        strata <- strata[as.character(strata$GSA) %in% as.character(GSA), ]
+    }
+    if ("GSA" %in% colnames(stratification_tab)) {
+        stratification_tab <- stratification_tab[as.character(stratification_tab$GSA) %in% as.character(GSA), ]
+    }
 
     if (dir.exists(file.path(wd, "output"))) {
         dir <- list.files(
@@ -179,9 +195,8 @@ BioIndex <- function(ta,
             full.names = TRUE,
             include.dirs = TRUE
         )
-        unlink(dir , recursive = T)
+        unlink(dir, recursive = T)
     }
-
 
 
     m <- merge_TATBTC(
@@ -213,7 +228,7 @@ BioIndex <- function(ta,
 
     hauls_position(
         mTATB = mTATB,
-        country = country ,
+        country = country,
         map_lim = map_lim,
         depth_lines = depth_lines,
         buffer = buffer,
@@ -232,20 +247,21 @@ BioIndex <- function(ta,
     if (verbose) message("########################")
     if (verbose) message("")
 
-    source.check <- try(bubble_plot_by_haul_indexes(
-        mTATB,
-        map_lim,
-        depth_lines,
-        buffer = 0,
-        res = resolution,
-        wd = wd,
-        save,
-        verbose
+    source.check <- try(
+        bubble_plot_by_haul_indexes(
+            mTATB,
+            map_lim,
+            depth_lines,
+            buffer = 0,
+            res = resolution,
+            wd = wd,
+            save,
+            verbose
+        ),
+        silent = T
     )
-    ,
-    silent = T)
 
-    if (!is(source.check, "try-error"))  {
+    if (!is(source.check, "try-error")) {
         if (verbose) message("\nPlot of indices by haul - completed")
     } else {
         if (verbose) message("\nPlot of indices by haul skipped - (Run Error)\n")
@@ -273,8 +289,6 @@ BioIndex <- function(ta,
     if (verbose) message("Time series of indices - completed")
 
 
-
-
     #--------------------------------------------------------------
     # Mean Individual Weights (MIW) per GSA in the timeseries
     #--------------------------------------------------------------
@@ -295,7 +309,6 @@ BioIndex <- function(ta,
         verbose
     )
     if (verbose) message("Time series of MIW - completed")
-
 
 
     #--------------------------------------------------------------
@@ -328,7 +341,6 @@ BioIndex <- function(ta,
     } else {
         if (verbose) message("\nSex-ratio analysis skipped")
     }
-
 
 
     # #--------------------------------------------------------------
@@ -399,16 +411,17 @@ BioIndex <- function(ta,
 
     df_cutoff <- spaw_threshold
     if (is.na(df_cutoff)) {
-        if (verbose) message(
-            "The SPAWNERS' threshold value not provided. Please, define a value in the 'spaw_threshold' parameter."
-        )
+        if (verbose) {
+            message(
+                "The SPAWNERS' threshold value not provided. Please, define a value in the 'spaw_threshold' parameter."
+            )
+        }
     }
 
     skip_spawners <- FALSE
     spaw_analysis <- "ok"
 
     if (spaw_analysis == "ok") {
-
         source.check <- try(
             index_spawn(
                 mTATB,
@@ -433,7 +446,6 @@ BioIndex <- function(ta,
         } else {
             if (verbose) message("\nSpawners' indices analysis skipped - (Run Error)\n")
         }
-
     } else {
         if (verbose) message("\nSpawners' indices analysis skipped")
     }
@@ -508,16 +520,17 @@ BioIndex <- function(ta,
 
     df_cutoff <- rec_threshold
     if (is.na(df_cutoff)) {
-        if (verbose) message(
-            "The RECRUITS' threshold value not provided. Please, define a value in the 'rec_threshold' parameter."
-        )
+        if (verbose) {
+            message(
+                "The RECRUITS' threshold value not provided. Please, define a value in the 'rec_threshold' parameter."
+            )
+        }
     }
 
     skip_recruits <- FALSE
     rec_analysis <- "ok"
 
     if (rec_analysis == "ok") {
-
         source.check <- try(
             index_recr(
                 mTATB,
@@ -542,7 +555,6 @@ BioIndex <- function(ta,
         } else {
             if (verbose) message("\nRecruits' indices analysis skipped - (Run Error)\n")
         }
-
     } else {
         if (verbose) message("\nRecruits' indices analysis skipped")
     }
@@ -619,17 +631,18 @@ BioIndex <- function(ta,
     if (length(years) >= 3) {
         Trend_analysis <- "ok"
         if (Trend_analysis == "ok") {
-            spearman(abundance = index[[1]],
-                     biomass = index[[2]],
-                     years,
-                     sspp,
-                     wd,
-                     save)
+            spearman(
+                abundance = index[[1]],
+                biomass = index[[2]],
+                years,
+                sspp,
+                wd,
+                save
+            )
             if (verbose) message("\nSpearman test - completed")
         } else {
             if (verbose) message("\nSpearman test skipped")
         }
-
     } else {
         if (verbose) message("\nSpearman test skipped")
     }
@@ -650,9 +663,8 @@ BioIndex <- function(ta,
         map_range = map_lim,
         threshold = haul_threshold,
         verbose = TRUE,
-        save=TRUE
+        save = TRUE
     )
-
 
 
     #--------------------------------------------------------------
@@ -675,7 +687,7 @@ BioIndex <- function(ta,
             map_range = map_lim,
             threshold = haul_threshold,
             verbose = TRUE,
-            save=TRUE
+            save = TRUE
         )
 
         if (sexratio_grid_skip) {
@@ -683,12 +695,9 @@ BioIndex <- function(ta,
         } else {
             if (verbose) message("\nSex-ratio on GFCM grid - completed")
         }
-
     } else {
         if (verbose) message("\nSex-ratio on GFCM grid skipped")
     }
-
-
 
 
     #--------------------------------------------------------------
@@ -717,21 +726,13 @@ BioIndex <- function(ta,
             verbose = verbose
         )
         if (verbose) message("\nBubble plots - indices of recruits and spawners - completed")
-
     }
-
-
-
-
-
-
 
 
     if (verbose) message("\n###################")
     if (verbose) message(" Analysis completed")
-    if(verbose) message("###################")
+    if (verbose) message("###################")
     if (verbose) message("")
-
 
 
     #----------------
@@ -753,23 +754,22 @@ BioIndex <- function(ta,
         if (length(files) > 0) {
             output <- file.path(wd, "output")
             zip::zip(paste0(
-                "BioIndex_results_" ,sspp,"_GSA",GSA,"_Depth",paste(depth, collapse="-"), "m_",
+                "BioIndex_results_", sspp, "_GSA", GSA, "_Depth", paste(depth, collapse = "-"), "m_",
                 paste(
                     as.character(Sys.Date()),
                     format(Sys.time(), "_h%Hm%Ms%OS0"),
                     ".zip",
                     sep = ""
                 )
-            ), "output" , root = wd)
-            unlink(files , recursive = TRUE)
+            ), "output", root = wd)
+            unlink(files, recursive = TRUE)
             unlink(file.path(wd, "output"),
-                   force = TRUE,
-                   recursive = TRUE)
-            if(verbose) message("ZIP file generated successfully in: ", wd)
+                force = TRUE,
+                recursive = TRUE
+            )
+            if (verbose) message("ZIP file generated successfully in: ", wd)
         } else {
-            if(verbose) message("No files generated to be zipped.")
+            if (verbose) message("No files generated to be zipped.")
         }
     }
-
-
 }

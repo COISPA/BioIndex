@@ -1,4 +1,4 @@
-#' Estimation of abundance indices for spawners (females)
+﻿#' Estimation of abundance indices for spawners (females)
 #' @description
 #' Calculates abundance and biomass indices focused on the adult fraction
 #' (spawners, using the user-defined cutoff value), an essential indicator
@@ -20,12 +20,13 @@
 index_spawn <- function(mTATB,mTATC, GSA, country, depth_range, cutoff, stratification, wd=NA, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
     if (FALSE) {
         verbose=TRUE
         wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)"
-        GSA=18
+        GSA=10
         save=TRUE
         depth_range <- c(10,800)
         cutoff <- 30
@@ -116,7 +117,16 @@ index_spawn <- function(mTATB,mTATC, GSA, country, depth_range, cutoff, stratifi
         depth$max <-strata_scheme$MAX_DEPTH  # c(50,100,200,500,800)
         if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
         data <-  ddd[ddd$MEAN_DEPTH>depth_range[1] & ddd$MEAN_DEPTH<=depth_range[2],]
-        strata_range <- seq(which(depth[,"min"]==depth_range[1]),which(depth[,"max"]==depth_range[2]),1)
+        idx_from <- which(depth[,"min"] == depth_range[1])
+        idx_to   <- which(depth[,"max"] == depth_range[2])
+
+        if (length(idx_from) != 1 || length(idx_to) != 1) {
+            stop(paste0("Error: depth range [", depth_range[1], ", ", depth_range[2],
+                        "] does not match the strata boundaries defined for this GSA. ",
+                        "Available min depths: ", paste(sort(unique(depth$min)), collapse=", "),
+                        "; Available max depths: ", paste(sort(unique(depth$max)), collapse=", ")))
+        }
+        strata_range <- seq(idx_from, idx_to, 1)
         depth[depth$strata %in% strata_range, "bul"] <- T
         depth[!(depth$strata %in% strata_range), "bul"] <- F
 

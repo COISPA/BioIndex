@@ -56,7 +56,7 @@ and biomass (kg) indices.
 The function keeps only valid hauls, performs quality checks (times,
 positions, wing opening, haul/date consistency) using internal validation
 functions (based on \code{RoME} version 0.2.3), computes spatial means,
-swept area, depth stratum, biomass/density indicators, and—optionally—writes
+swept area, depth stratum, biomass/density indicators, andâ€”optionallyâ€”writes
 the merged data to disk.
 }
 \details{
@@ -68,7 +68,7 @@ implementations of the validation routines (based on \code{RoME} v0.2.3).
 
 \strong{Optimisations:}
 Includes two speed-ups: (1) vectorised replacement of missing `"NA NA"` records,
-(2) a single loop over depth strata instead of a nested haul × stratum
+(2) a single loop over depth strata instead of a nested haul Ã— stratum
 loop.  Results are identical to the reference routine.
 }
 \note{
@@ -77,7 +77,7 @@ This version of \code{BioIndex} uses internal validation functions based on
 not require external validation packages to be installed.
 }
 \examples{
-\donttest{
+# Use internal data
 data("TA", package = "BioIndex")
 data("TB", package = "BioIndex")
 m_tb <- merge_TATB(
@@ -89,7 +89,6 @@ m_tb <- merge_TATB(
   save     = FALSE
 )
 head(m_tb)
-}
 }
 \seealso{
 [BioIndex] package documentation.

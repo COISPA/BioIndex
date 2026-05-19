@@ -33,11 +33,26 @@ hauls_position(
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 
-\item{verbose}{boolean. If TRUE a message is printed}
+\item{verbose}{boolean. If TRUE messages are reported in the console}
+}
+\value{
+A \code{ggplot} object representing the spatial distribution of hauls.
 }
 \description{
 This function generates a spatial plot of haul positions over time, displaying haul labels and bathymetric lines over a customizable map extent.
 If no resolution is specified (res = NA), the function works offline and uses an internal bathymetry dataset (med_bathy) covering the Mediterranean and Black Sea, reducing the computational time.
+}
+\examples{
+\donttest{
+# Use internal data
+data(TA)
+data(TB)
+# Create a merged dataset for GSA 10 and year 2016
+mTATB <- merge_TATB(TA[TA$AREA == 10 & TA$YEAR == 2016, ],
+                    TB[TB$AREA == 10 & TB$YEAR == 2016, ],
+                    "MERLMER")
+hauls_position(mTATB, country = "all", map_lim = NA, depth_lines = c(200, 500, 800), save = FALSE)
+}
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}

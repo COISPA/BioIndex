@@ -1,4 +1,4 @@
-#' Merge TA–TB and TA–TC tables (MEDITS protocol)
+#' Merge TAâ€“TB and TAâ€“TC tables (MEDITS protocol)
 #'
 #' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @description
@@ -24,7 +24,7 @@
 #'                (columns listed in \code{BioIndex::TB_cols}).
 #' @param tc      A MEDITS or MEDITS-like \strong{TC} table
 #'                (columns listed in \code{BioIndex::TC_cols}).
-#' @param species Character. MEDITS 7-letter RubIN code (e.g. \code{"MERLMER"}):
+#' @param species Character. MEDITS 7-letter RUBIN code (e.g. \code{"MERLMER"}):
 #'                the first 4 letters are used as \emph{GENUS}, the last 3 as
 #'                \emph{SPECIES}.
 #' @param country Character vector of MEDITS country codes to keep.
@@ -62,7 +62,7 @@
 #' \enumerate{
 #'   \item vectorised replacement of missing \code{"NA NA"} entries
 #'         in both merges;
-#'   \item a single loop over depth strata (instead of haul × stratum) to
+#'   \item a single loop over depth strata (instead of haul Ã— stratum) to
 #'         assign \code{STRATUM_CODE}.
 #' }
 #' Numerical outputs are identical to the reference routine.
@@ -72,8 +72,10 @@
 #' \strong{RoME version 0.2.3}. The package is fully self-sufficient and does
 #' not require external validation packages to be installed.
 #'
+#' @return A \code{list} containing two data frames: the first with merged TA-TB-TC data at the haul level, and the second with the length-frequency distribution.
 #' @examples
-#' \donttest{
+#' # Use internal data
+#'
 #' data("TA", package = "BioIndex")
 #' data("TB", package = "BioIndex")
 #' data("TC", package = "BioIndex")
@@ -86,9 +88,8 @@
 #'   wd      = tempdir(),
 #'   verbose = TRUE
 #' )
-#' mTATB <- m[[1]]   # TA–TB merged table
-#' mTATC <- m[[2]]   # TA–TC merged table
-#' }
+#' mTATB <- m[[1]]   # TAâ€“TB merged table
+#' mTATC <- m[[2]]   # TAâ€“TC merged table
 #'
 #' @export
 #' @importFrom hms hms
@@ -156,15 +157,27 @@ merge_TATBTC <- function(ta, tb, tc,
   ## ------------------------------------------------------------------ ##
   ##  Unique haul identifiers                                           ##
   ## ------------------------------------------------------------------ ##
-  id_TA <- data.frame(id = paste(TA$AREA, TA$COUNTRY, TA$YEAR, "_",
-                                 TA$VESSEL, TA$MONTH, TA$DAY, "_",
-                                 TA$HAUL_NUMBER, sep = ""))
-  id_TB <- data.frame(id = paste(TB$AREA, TB$COUNTRY, TB$YEAR, "_",
-                                 TB$VESSEL, TB$MONTH, TB$DAY, "_",
-                                 TB$HAUL_NUMBER, sep = ""))
-  id_TC <- data.frame(id = paste(TC$AREA, TC$COUNTRY, TC$YEAR, "_",
-                                 TC$VESSEL, TC$MONTH, TC$DAY, "_",
-                                 TC$HAUL_NUMBER, sep = ""))
+  id_TA <- if (nrow(TA) > 0) {
+      data.frame(id = paste(TA$AREA, TA$COUNTRY, TA$YEAR, "_",
+                            TA$VESSEL, TA$MONTH, TA$DAY, "_",
+                            TA$HAUL_NUMBER, sep = ""))
+  } else {
+      data.frame(id = character(0))
+  }
+  id_TB <- if (nrow(TB) > 0) {
+      data.frame(id = paste(TB$AREA, TB$COUNTRY, TB$YEAR, "_",
+                            TB$VESSEL, TB$MONTH, TB$DAY, "_",
+                            TB$HAUL_NUMBER, sep = ""))
+  } else {
+      data.frame(id = character(0))
+  }
+  id_TC <- if (nrow(TC) > 0) {
+      data.frame(id = paste(TC$AREA, TC$COUNTRY, TC$YEAR, "_",
+                            TC$VESSEL, TC$MONTH, TC$DAY, "_",
+                            TC$HAUL_NUMBER, sep = ""))
+  } else {
+      data.frame(id = character(0))
+  }
 
   id_invalid <- id_TA$id[which(TA$VALIDITY == "I")]
 
@@ -225,7 +238,7 @@ merge_TATBTC <- function(ta, tb, tc,
                        which(colnames(TC_merge) %in% TC_cols)]
 
   #######################################################################
-  ##                 MERGE TA – TB  (optimised)                        ##
+  ##                 MERGE TA â€“ TB  (optimised)                        ##
   #######################################################################
   if (verbose) message("- Merging TA-TB files")
 
@@ -309,14 +322,21 @@ merge_TATBTC <- function(ta, tb, tc,
   if (verbose) message("TA-TB files correctly merged")
 
   #######################################################################
-  ##                 MERGE TA – TC  (optimised)                        ##
+  ##                 MERGE TA â€“ TC  (optimised)                        ##
   #######################################################################
   if (verbose) message("- Merging TA-TC files")
 
   merge_TATC <- merge(TA_merge, TC_merge, by = "id", all.x = TRUE, all.y = TRUE)
   merge_TATC$MEDITS_CODE <- paste(merge_TATC$GENUS, merge_TATC$SPECIES)
 
-  ## Same “NA NA” optimization ----------------------------------------- ##
+  coord_tc <- convert_coordinates(merge_TATC)
+  merge_TATC$MEAN_LATITUDE      <- (merge_TATC$SHOOTING_LATITUDE + merge_TATC$HAULING_LATITUDE) / 2
+  merge_TATC$MEAN_LATITUDE_DEC  <- (coord_tc$lat_start + coord_tc$lat_end) / 2
+  merge_TATC$MEAN_LONGITUDE     <- (merge_TATC$SHOOTING_LONGITUDE + merge_TATC$HAULING_LONGITUDE) / 2
+  merge_TATC$MEAN_LONGITUDE_DEC <- (coord_tc$lon_start + coord_tc$lon_end) / 2
+  merge_TATC$MEAN_DEPTH         <- (merge_TATC$SHOOTING_DEPTH + merge_TATC$HAULING_DEPTH) / 2
+
+  ## Same â€œNA NAâ€ optimization ----------------------------------------- ##
   na_idx2 <- merge_TATC$MEDITS_CODE == "NA NA"
   if (any(na_idx2)) {
     merge_TATC$MEDITS_CODE[na_idx2] <- -1
@@ -329,13 +349,6 @@ merge_TATBTC <- function(ta, tb, tc,
     merge_TATC$NUMBER_OF_INDIVIDUALS_IN_THE_LENGTH_CLASS_AND_MATURITY_STAGE[na_idx2] <- 0
   }
 
-  coord2 <- convert_coordinates(merge_TATC)
-
-  merge_TATC$MEAN_LATITUDE      <- (merge_TATC$SHOOTING_LATITUDE + merge_TATC$HAULING_LATITUDE) / 2
-  merge_TATC$MEAN_LATITUDE_DEC  <- (coord2$lat_start + coord2$lat_end) / 2
-  merge_TATC$MEAN_LONGITUDE     <- (merge_TATC$SHOOTING_LONGITUDE + merge_TATC$HAULING_LONGITUDE) / 2
-  merge_TATC$MEAN_LONGITUDE_DEC <- (coord2$lon_start + coord2$lon_end) / 2
-  merge_TATC$MEAN_DEPTH         <- (merge_TATC$SHOOTING_DEPTH + merge_TATC$HAULING_DEPTH) / 2
   merge_TATC$SWEPT_AREA         <- merge_TATC$DISTANCE * merge_TATC$WING_OPENING / 10000000
 
   strata_subset2 <- strata_scheme[

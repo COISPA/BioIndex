@@ -43,6 +43,15 @@ Assesses the proportion of sexes within the population, providing
 critical information on demographic structure, reproductive potential,
 and stock resilience.
 }
+\examples{
+data(TA)
+data(TB)
+# Create a merged dataset for GSA 10
+mTATB <- merge_TATB(TA[TA$AREA==10,], TB[TB$AREA==10,], "MERLMER")
+sex_ratio(mTATB, GSA=10, country="all", depth_range=c(10,800),
+          stratas=BioIndex::strata_scheme,
+          stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
+}
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}
 }

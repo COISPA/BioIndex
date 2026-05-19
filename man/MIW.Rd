@@ -43,3 +43,12 @@ Calculates the Mean Individual Weight (MIW) time series, providing a
 summary indicator of the average size within the captured population
 and potential shifts due to fishing pressure.
 }
+\examples{
+data(TA)
+data(TB)
+# Create a merged dataset for GSA 10
+mTATB <- merge_TATB(TA[TA$AREA==10,], TB[TB$AREA==10,], "MERLMER")
+MIW(mTATB, GSA=10, country="all", depth_range=c(10,800),
+    strata_scheme=BioIndex::strata_scheme,
+    stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
+}

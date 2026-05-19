@@ -1,4 +1,4 @@
-#' Spearman test
+﻿#' Spearman test
 #'
 #' @param abundance data frame of abundance indices
 #' @param biomass data frame of biomass indices
@@ -8,6 +8,11 @@
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @importFrom utils write.table
 #' @return A \code{data.frame} or \code{list} with the results of the Spearman rank correlation test.
+#' @examples
+#' abundance <- data.frame(year = 2010:2020, index = runif(11, 1, 10))
+#' biomass <- data.frame(year = 2010:2020, index = runif(11, 5, 20))
+#' spearman(abundance=abundance, biomass=biomass, years=c(2010,2020), 
+#'          sspp="MERLMER", wd=tempdir(), save=FALSE)
 #' @export
 spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE){
     if (is.na(wd)) { wd <- tempdir() }
@@ -17,7 +22,7 @@ spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE)
         # library(BioIndex)
         years <- c(2017, 2020)
 
-        GSA=18
+        GSA=10
         save=TRUE
         country="all"
         depth_range <- c(10,800)

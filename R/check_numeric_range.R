@@ -1,4 +1,4 @@
-#' Check numeric range (RoME)
+﻿#' Check numeric range (RoME)
 #' @description
 #' The function checks whether the values contained in specific fields are consistent with the allowed ranges.
 #'

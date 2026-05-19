@@ -1,4 +1,4 @@
-#' Merge TA and TC tables (haul-level length–frequency data)
+﻿#' Merge TA and TC tables (haul-level lengthâ€“frequency data)
 #'
 #' @description
 #' Links haul metadata (TA) with length-frequency samples (TC),
@@ -8,7 +8,7 @@
 #' (times, positions, wing opening, haul/date consistency) using internal
 #' validation functions (based on \code{RoME} version 0.2.3),
 #' computes swept area, depth stratum, raising factors,
-#' abundance/biomass indicators, and—optionally—writes the merged data.
+#' abundance/biomass indicators, andâ€”optionallyâ€”writes the merged data.
 #'
 #' @param ta   A `data.frame`/`data.table` containing a full TA dataset
 #'             (columns listed in `BioIndex::TA_cols`).
@@ -56,7 +56,7 @@
 #' @importFrom hms hms
 #' @importFrom utils write.table
 #' @examples
-#' \donttest{
+#' # Use internal data
 #' data("TA", package = "BioIndex")
 #' data("TC", package = "BioIndex")
 #' m_tc <- merge_TATC(
@@ -68,7 +68,6 @@
 #'   save=FALSE
 #' )
 #' head(m_tc)
-#' }
 #' @export
 merge_TATC <- function(ta, tc,
                        species,
@@ -78,6 +77,7 @@ merge_TATC <- function(ta, tc,
                        save    = TRUE,
                        verbose = TRUE) {
 
+    if (is.na(wd)) { wd <- tempdir() }
     ## Working-directory check ------------------------------------------- ##
     if (is.na(wd) & save) {
         save <- FALSE
@@ -112,10 +112,12 @@ merge_TATC <- function(ta, tc,
     TC <- TC[TC$COUNTRY %in% country_analysis, ]
 
     ## Unique haul IDs --------------------------------------------------- ##
-    uid <- function(df)
+    uid <- function(df) {
+        if (nrow(df) == 0) return(character(0))
         paste(df$AREA, df$COUNTRY, df$YEAR, "_",
               df$VESSEL, df$MONTH, df$DAY, "_",
               df$HAUL_NUMBER, sep = "")
+    }
     TA$id <- uid(TA); TC$id <- uid(TC)
     invalid_ids <- TA$id[TA$VALIDITY == "I"]
 
@@ -150,12 +152,12 @@ merge_TATC <- function(ta, tc,
     TC_ <- TC[!TC$id %in% invalid_ids &
                   TC$GENUS == species[1] & TC$SPECIES == species[2], TC_cols]
 
-    ## MERGE TA – TC  (unchanged logic) --------------------------------- ##
+    ## MERGE TA â€“ TC  (unchanged logic) --------------------------------- ##
     if (verbose) message("- Merging TA-TC files")
     merge_TATC <- merge(TA_, TC_, by = "id", all.x = TRUE, all.y = TRUE)
     merge_TATC$MEDITS_CODE <- paste(merge_TATC$GENUS, merge_TATC$SPECIES)
 
-    ## Clean “NA NA” rows (vectorised) ---------------------------------- ##
+    ## Clean â€œNA NAâ€ rows (vectorised) ---------------------------------- ##
     bad <- merge_TATC$MEDITS_CODE == "NA NA"
     if (any(bad)) {
         merge_TATC$MEDITS_CODE[bad] <- -1
@@ -169,6 +171,12 @@ merge_TATC <- function(ta, tc,
     }
 
     coord <- convert_coordinates(merge_TATC)
+    merge_TATC$MEAN_LATITUDE     <- (merge_TATC$SHOOTING_LATITUDE +
+                                         merge_TATC$HAULING_LATITUDE) / 2
+    merge_TATC$MEAN_LATITUDE_DEC <- (coord$lat_start + coord$lat_end) / 2
+    merge_TATC$MEAN_LONGITUDE    <- (merge_TATC$SHOOTING_LONGITUDE +
+                                         merge_TATC$HAULING_LONGITUDE) / 2
+    merge_TATC$MEAN_LONGITUDE_DEC<- (coord$lon_start + coord$lon_end) / 2
     merge_TATC$MEAN_DEPTH <- (merge_TATC$SHOOTING_DEPTH + merge_TATC$HAULING_DEPTH) / 2
     merge_TATC$SWEPT_AREA <- merge_TATC$DISTANCE * merge_TATC$WING_OPENING / 1e7
 

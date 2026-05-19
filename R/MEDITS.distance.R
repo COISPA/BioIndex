@@ -1,4 +1,4 @@
-#' Estimation of haul distance
+﻿#' Estimation of haul distance
 #'
 #' @param data data frame containing the hauls data (TA, table A).
 #' @param unit string value indicating the measure unit of the distance. Allowed values: "m" for meters, "km" for kilometers and "NM" for nautical miles.
@@ -54,4 +54,3 @@ MEDITS.distance<-function(data, unit = "m", verbose = TRUE)  {
 
   return(dist)
 }
-

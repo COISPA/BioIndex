@@ -1,4 +1,4 @@
-#' Estimate hauls distances (decimal degrees)
+﻿#' Estimate hauls distances (decimal degrees)
 #' @description
 #' Function to estimate the hauls length using TA (table A, hauls data) with coordinates in the decimal degrees format (dd.ddd). The distances could be returned expressed in meters, kilometers and nautical miles.
 #'

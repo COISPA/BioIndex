@@ -1,4 +1,4 @@
-#' TA table headings
+﻿#' TA table headings
 #'
 #' @name TA_cols
 #' @docType data
@@ -172,7 +172,7 @@
 #' @keywords stratum_200_800
 "stratum_200_800"
 
-#' Mediterranean and Black Sea bathymetry (0–1000 m, bathy object)
+#' Mediterranean and Black Sea bathymetry (0â€“1000 m, bathy object)
 #'
 #' A precomputed \code{bathy} object containing bathymetric data for the Mediterranean Sea
 #' and the Black Sea. Depth values are restricted between 0 and -1000 meters. This dataset
@@ -187,8 +187,8 @@
 #' @details
 #' The spatial extent includes:
 #' \itemize{
-#'   \item Longitude: from -6° to 42°
-#'   \item Latitude: from 30° to 47°
+#'   \item Longitude: from -6Â° to 42Â°
+#'   \item Latitude: from 30Â° to 47Â°
 #'   \item Depth: from 0 to -1000 meters
 #' }
 #' Only marine cells within this depth range are retained. Land and deeper areas are set to \code{NA}.

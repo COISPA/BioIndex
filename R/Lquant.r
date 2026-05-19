@@ -1,4 +1,4 @@
-#' Estimation of L50 and L95
+﻿#' Estimation of L50 and L95
 #'
 #' @param lfd data frame of combined LFD
 #' @param wd working directory
@@ -14,7 +14,8 @@
 Lquant <- function(lfd, wd=NA, sspp, GSA, save=TRUE, verbose=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
     if (FALSE) {
         wd <- "D:\\Documents and Settings\\Utente\\Documenti\\GitHub\\BioIndex\\R_BioIndex_3.3_(in update)"
@@ -37,7 +38,7 @@ Lquant <- function(lfd, wd=NA, sspp, GSA, save=TRUE, verbose=TRUE) {
         m <- merge_TATBTC(ta, tb, tc, species=species, country=country, wd=wd, verbose=TRUE)
         mTATC <- m[[2]]
 
-        lfd <- LFD(mTATC, sex=sex, GSA=18, country=country, depth_range=c(10,800), strata_scheme, stratification, wd, save=TRUE)
+        lfd <- LFD(mTATC, sex=sex, GSA=10, country=country, depth_range=c(10,800), strata_scheme, stratification, wd, save=TRUE)
         lfd <- lfd[[1]]
 
         Lquant(lfd,wd, save=TRUE)
@@ -76,7 +77,7 @@ write.table(table,paste(wd, "/output/",sspp,"_GSA",GSA,"_L50_L95_RSS.csv", sep="
 }
 
 #formatting table for plots
-par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0))
+# par(mfrow=c(1,1),oma=c(1,1,1,1), mgp=c(2, 1,0)) # rimosso per policy CRAN
 t <- data.frame(t(table))
 headers <- as.character(t[1,])
 t <- t[-1,]
@@ -95,15 +96,15 @@ rL95 <- range(t$`95th perc.`)
 r2 <- (rL95[2]-rL95[1])*20/100
 rL95[2] <- rL95[2]+r2
 
-plot(t[,1],  t[,2], type="b", col="black", pch=16, xlab="year", ylab="L50 (mm)", ylim=rL50) # ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab # ylim=c(0,max_index*1.2)
-lines(t[,1], (t[,2]-1.96*t[,3]), type="l",lty=2, col="red" )
-lines(t[,1], (t[,2]+1.96*t[,3]), type="l",lty=2, col="red" )
-legend("topright", c("time series", "CI"), lty=c(1,1), pch=c(16, NA), col=c("black","red"))
+# plot(t[,1],  t[,2], type="b", col="black", pch=16, xlab="year", ylab="L50 (mm)", ylim=rL50) # rimosso per policy CRAN
+# lines(t[,1], (t[,2]-1.96*t[,3]), type="l",lty=2, col="red" ) # rimosso per policy CRAN
+# lines(t[,1], (t[,2]+1.96*t[,3]), type="l",lty=2, col="red" ) # rimosso per policy CRAN
+# legend("topright", c("time series", "CI"), lty=c(1,1), pch=c(16, NA), col=c("black","red")) # rimosso per policy CRAN
 
-plot(t[,1],  t[,5], type="b", col="black", pch=16, xlab="year", ylab="L95 (mm)", ylim=rL95) # ylim=c(0,max_index*1.2), ylab=dep_text, main=main.lab # ylim=c(0,max_index*1.2)
-lines(t[,1], (t[,5]-1.96*t[,6]), type="l",lty=2, col="red" )
-lines(t[,1], (t[,5]+1.96*t[,6]), type="l",lty=2, col="red" )
-legend("topright", c("time series", "CI"), lty=c(1,1), pch=c(16, NA), col=c("black","red"))
+# plot(t[,1],  t[,5], type="b", col="black", pch=16, xlab="year", ylab="L95 (mm)", ylim=rL95) # rimosso per policy CRAN
+# lines(t[,1], (t[,5]-1.96*t[,6]), type="l",lty=2, col="red" ) # rimosso per policy CRAN
+# lines(t[,1], (t[,5]+1.96*t[,6]), type="l",lty=2, col="red" ) # rimosso per policy CRAN
+# legend("topright", c("time series", "CI"), lty=c(1,1), pch=c(16, NA), col=c("black","red")) # rimosso per policy CRAN
 
 if (save){
 jpeg(paste(wd,"/output/L50_Timeseries.jpg",sep=""), res = 300, width = 8, height = 7, units = 'in')
@@ -124,5 +125,3 @@ dev.off()
 return(t)
 
 }
-
-

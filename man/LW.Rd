@@ -4,14 +4,24 @@
 \alias{LW}
 \title{LW (Length-Weight relationship)}
 \usage{
-LW(ta, te, sp, GSA, country = "all", nyears = NA, wd = NA, verbose = FALSE)
+LW(
+  ta,
+  te,
+  sp,
+  GSA,
+  country = "all",
+  nyears = NA,
+  wd = NA,
+  save = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{ta}{MEDITS or MEDITS-like TA table}
 
 \item{te}{MEDITS or MEDITS-like TE table}
 
-\item{sp}{species rubin code (MEDITS format, e.g. "MERLMER")}
+\item{sp}{species RUBIN code (MEDITS format, e.g. "MERLMER")}
 
 \item{GSA}{reference GSA for the analysis}
 
@@ -20,6 +30,8 @@ LW(ta, te, sp, GSA, country = "all", nyears = NA, wd = NA, verbose = FALSE)
 \item{nyears}{number of years of the time series to be considered in the analysis}
 
 \item{wd}{path of the working directory}
+
+\item{save}{boolean. If TRUE the outputs are saved in the local folder}
 
 \item{verbose}{boolean. If TRUE messages are promted in the console}
 }

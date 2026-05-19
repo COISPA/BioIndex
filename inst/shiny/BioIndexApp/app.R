@@ -241,15 +241,15 @@ ui <- fluidPage(
         fluidRow(
           column(
             width = 3,
-            numericInput("depth_min", "Depth lower", value = 10)
+            selectInput("depth_min", "Depth lower", choices = NULL)
           ),
           column(
             width = 3,
-            numericInput("depth_max", "Depth upper", value = 800)
+            selectInput("depth_max", "Depth upper", choices = NULL)
           ),
           column(
             width = 3,
-            textInput("depth_lines", "Depth lines", value = "50,200,800")
+            textInput("depth_lines", "Depth lines", value = "")
           ),
           column(
             width = 3,
@@ -543,9 +543,11 @@ server <- function(input, output, session) {
 
   observe({
     selected_gsas <- if (isTRUE(input$use_gsa_aggregation)) input$GSA_multi else input$GSA
+    selected_country <- input$country
 
     req(selected_gsas)
 
+    # Update map limits
     map_vals <- get_gsa_map_limits(selected_gsas, gsa_defaults)
 
     if (!is.null(map_vals)) {
@@ -558,7 +560,39 @@ server <- function(input, output, session) {
       updateNumericInput(session, "xmax", value = NA_real_)
       updateNumericInput(session, "ymin", value = NA_real_)
       updateNumericInput(session, "ymax", value = NA_real_)
-      rv$status <- "No default coordinates available for the selected GSA set. Please insert map limits manually."
+    }
+
+    # Update depth range based on strata
+    current_strata <- rv$strata
+    if (!is.null(current_strata) && "GSA" %in% names(current_strata)) {
+      relevant_strata <- current_strata[as.character(current_strata$GSA) %in% as.character(selected_gsas), ]
+
+      if (!is.null(selected_country) && selected_country != "all" && "COUNTRY" %in% names(relevant_strata)) {
+        relevant_strata <- relevant_strata[relevant_strata$COUNTRY == selected_country, ]
+      }
+
+      if (nrow(relevant_strata) > 0) {
+        all_mins <- sort(unique(relevant_strata$MIN_DEPTH))
+        all_maxs <- sort(unique(relevant_strata$MAX_DEPTH))
+
+        updateSelectInput(session, "depth_min", choices = all_mins, selected = min(all_mins))
+        updateSelectInput(session, "depth_max", choices = all_maxs, selected = max(all_maxs))
+
+        # Update depth lines with sensible defaults from stratification cutoffs
+        all_depths <- sort(unique(c(all_mins, all_maxs)))
+        d_min <- min(all_depths)
+        d_max <- max(all_depths)
+        
+        if (length(all_depths) >= 3) {
+          inner_depths <- all_depths[-c(1, length(all_depths))]
+          target <- (d_min + d_max) / 2
+          mid_depth <- inner_depths[which.min(abs(inner_depths - target))]
+        } else {
+          mid_depth <- round((d_min + d_max) / 2)
+        }
+        
+        updateTextInput(session, "depth_lines", value = paste(d_min, mid_depth, d_max, sep = ","))
+      }
     }
   })
 

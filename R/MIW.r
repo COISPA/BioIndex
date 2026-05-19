@@ -1,4 +1,4 @@
-#' Estimation of Mean Individual Weight (MIW) time series
+﻿#' Estimation of Mean Individual Weight (MIW) time series
 #' @description
 #' Calculates the Mean Individual Weight (MIW) time series, providing a
 #' summary indicator of the average size within the captured population
@@ -21,13 +21,22 @@
 #' @import graphics
 #' @importFrom magrittr %>%
 #' @return A \code{data.frame} containing the Mean Individual Weight (MIW) time series.
+#' @examples
+#' data(TA)
+#' data(TB)
+#' # Create a merged dataset for GSA 10
+#' mTATB <- merge_TATB(TA[TA$AREA==10,], TB[TB$AREA==10,], "MERLMER")
+#' MIW(mTATB, GSA=10, country="all", depth_range=c(10,800),
+#'     strata_scheme=BioIndex::strata_scheme,
+#'     stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
 #' @export
 #'
 #'
 MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratification, wd=NA, save=TRUE,verbose=TRUE){
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
     if (FALSE) {
         GSA <- 18
@@ -102,7 +111,16 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
     # depth_range <- data.frame(range = strsplit(depth_range, ",")); depth_range <- as.numeric(as.character(depth_range[,1]))
     if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
     data <-  data[data$MEAN_DEPTH>depth_range[1] & data$MEAN_DEPTH<=depth_range[2],]
-    strata_range <- seq(which(depth[,"min"]==depth_range[1]),which(depth[,"max"]==depth_range[2]),1)
+    idx_from <- which(depth[,"min"] == depth_range[1])
+    idx_to   <- which(depth[,"max"] == depth_range[2])
+
+    if (length(idx_from) != 1 || length(idx_to) != 1) {
+        stop(paste0("Error: depth range [", depth_range[1], ", ", depth_range[2],
+                    "] does not match the strata boundaries defined for this GSA. ",
+                    "Available min depths: ", paste(sort(unique(depth$min)), collapse=", "),
+                    "; Available max depths: ", paste(sort(unique(depth$max)), collapse=", ")))
+    }
+    strata_range <- seq(idx_from, idx_to, 1)
     depth[depth$strata %in% strata_range, "bul"] <- T
     depth[!(depth$strata %in% strata_range), "bul"] <- F
     #---

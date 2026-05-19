@@ -1,8 +1,11 @@
-#' Spearman test for timeseries
+﻿#' Spearman test for timeseries
 #'
 #' @param x time series
 #' @importFrom stats pt
-#' @return A \code{numeric} value representing the Spearman correlation coefficient.
+#' @return A \code{data.frame} representing the Spearman correlation coefficient and related statistics.
+#' @examples
+#' x <- runif(10, 1, 100)
+#' spear(x)
 #' @export
 spear<-function (x){
 

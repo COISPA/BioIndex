@@ -9,7 +9,7 @@ ALKf(te, sp, GEAR, GSA, country = NA, years = 5, wd = NA, save = TRUE)
 \arguments{
 \item{te}{MEDITS or MEDITS-like TE table}
 
-\item{sp}{species rubin code (MEDITS format, e.g. "MERLMER")}
+\item{sp}{species RUBIN code (MEDITS format, e.g. "MERLMER")}
 
 \item{GEAR}{type of gear reported in the corresponding TA file}
 

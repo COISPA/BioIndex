@@ -1,4 +1,4 @@
-#' Conversion of MEDITS format coordinates in decimal degrees format
+﻿#' Conversion of MEDITS format coordinates in decimal degrees format
 #' @description
 #' Conversion of MEDITS format coordinates in decimal degrees format
 #'

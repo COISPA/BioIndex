@@ -25,3 +25,9 @@ A \code{data.frame} or \code{list} with the results of the Spearman rank correla
 \description{
 Spearman test
 }
+\examples{
+abundance <- data.frame(year = 2010:2020, index = runif(11, 1, 10))
+biomass <- data.frame(year = 2010:2020, index = runif(11, 5, 20))
+spearman(abundance=abundance, biomass=biomass, years=c(2010,2020), 
+         sspp="MERLMER", wd=tempdir(), save=FALSE)
+}

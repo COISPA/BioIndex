@@ -1,4 +1,4 @@
-#' Overlay mTATB and mTATC on GFCM spatial grid
+﻿#' Overlay mTATB and mTATC on GFCM spatial grid
 #' @description
 #' Overlays survey haul data onto a standard spatial grid (e.g., GFCM grid),
 #' harmonizing biological information with a consistent geographic structure
@@ -13,6 +13,16 @@
 #' @param verbose boolean. If TRUE messages are prompted in the console
 #' @importFrom terra wrap unwrap vect
 #' @return A \code{list} or \code{data.frame} containing the merged biological data mapped to the spatial grid.
+#' @examples
+#' # Use internal data
+#' data(TA)
+#' data(TB)
+#' data(TC)
+#' # Create a merged dataset for GSA 10
+#' m <- merge_TATBTC(TA[TA$AREA==10,], TB[TB$AREA==10,], TC[TC$AREA==10,], species="MERLMER")
+#' mTATB <- m[[1]]
+#' mTATC <- m[[2]]
+#' # overlayGrid(mTATB, mTATC, GSA=10, save=FALSE)
 #' @export
 
 overlayGrid <- function(mTATB, mTATC, GSA=NA, country="all", wd=NA, save=TRUE, verbose=FALSE) {

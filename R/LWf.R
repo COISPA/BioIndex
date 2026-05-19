@@ -2,23 +2,27 @@
 #'
 #' @author Walter Zupa \email{zupa@fondazionecoispa.org}
 #' @param TE MEDITS or MEDITS-like TE table
-#' @param sp species rubin code (MEDITS format, e.g. "MERLMER")
+#' @param sp species RUBIN code (MEDITS format, e.g. "MERLMER")
 #' @param GEAR type of gear reported in the corresponding TA file
 #' @param GSA reference GSA for the analysis
 #' @param country reference country
 #' @param n_records minimum number of records to perform the analysis
+#' @param wd path of the working directory
+#' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @importFrom stats lm predict coef coefficients nls
 #' @importFrom grDevices jpeg dev.off
 #' @return A \code{data.frame} containing the length-weight relationship parameters specifically for females.
 #' @export
-LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
+LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10, wd = NA, save = TRUE) {
+    if (is.na(wd)) {
+        wd <- tempdir()
+    }
+    
     if (FALSE) {
         sp <- "MERLMER"
         GEAR <- "GOC73"
         country <- country_analysis
         n_records <- 5
-
-
 
         TE=TE
         sp=sspp
@@ -27,11 +31,10 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
         country = country_analysis
         years = n_years
         n_records=10
-
     }
 
-    genus <- substr(unique(sspp), 1, 4)
-    species <- substr(unique(sspp), 5, 7)
+    genus <- substr(unique(sp), 1, 4)
+    species <- substr(unique(sp), 5, 7)
 
     sspp <- sp
     TE$COUNTRY <- as.character(TE$COUNTRY)
@@ -56,16 +59,18 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                 sexes <- unique(data$SEX)
 
                 ###########   LW directory creation ###########################
-                wd <- getwd()
-                setwd(paste(wd, ("output/"), sep = "/"))
-                dir_LW <- "LW"
-
-                if (file.exists(dir_LW)) {
-                    setwd(wd)
-                } else {
-                    dir.create(file.path(getwd(), dir_LW), showWarnings = FALSE)
-                    setwd(wd)
+                oldwd <- getwd()
+                on.exit(setwd(oldwd), add = TRUE)
+                
+                if (save) {
+                    if (!dir.exists(file.path(wd, "output"))) {
+                        dir.create(file.path(wd, "output"), showWarnings = FALSE)
+                    }
+                    if (!dir.exists(file.path(wd, "output", "LW"))) {
+                        dir.create(file.path(wd, "output", "LW"), showWarnings = FALSE)
+                    }
                 }
+                
                 LW_table_tot <- list()
                 sex <- "M"
                 for (sex in sexes) {
@@ -83,22 +88,18 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
 
                     for (year in years) {
 
-
                         ###########   sex directory creation ###########################
-                        setwd(paste(wd, ("output/LW/"), sep = "/"))
-                        dir_sex <- sex
-
-                        if (file.exists(dir_sex)) {
-                            setwd(wd)
-                        } else {
-                            dir.create(file.path(getwd(), dir_sex), showWarnings = FALSE)
-                            setwd(wd)
+                        if (save) {
+                            if (!dir.exists(file.path(wd, "output", "LW", sex))) {
+                                dir.create(file.path(wd, "output", "LW", sex), showWarnings = FALSE, recursive = TRUE)
+                            }
                         }
+                        
                         #################################################################
                         datay <- data[data$SEX == sex & data$YEAR == year & data$GENUS == genus & data$SPECIES == species, ]
 
                         # LC definition --------------------------------------------
-                        LC_range <- c(min(datay$LENGTH_CLASS), max(datay$LENGTH_CLASS))
+                        LC_range <- c(min(datay$LENGTH_CLASS, na.rm = TRUE), max(datay$LENGTH_CLASS, na.rm = TRUE))
 
                         class_code <- unique(datay[datay$GENUS != -1, "LENGTH_CLASSES_CODE"])
                         if (class_code == "m") {
@@ -127,11 +128,13 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                                 prediction$X <- lc_list
                                 prediction$pred <- predict(mod, newdata = prediction)
 
-                                jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Brut_weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
-                                plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
-                                lines(prediction$X, prediction$pred, col = "red", lwd = 2)
-                                legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
-                                dev.off()
+                                if (save) {
+                                    jpeg(filename  = file.path(wd, "output", "LW", sex, paste0(sspp, "-", sex, "-", year, "-LW_Brut_weight.jpg")), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                                    plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
+                                    lines(prediction$X, prediction$pred, col = "red", lwd = 2)
+                                    legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
+                                    dev.off()
+                                }
 
                                 LW_table[which(years == year), 3] <- coef(mod)[[1]]
                                 LW_table[which(years == year), 4] <- coef(mod)[[2]]
@@ -151,11 +154,15 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                     } # years
 
                     LW_table_tot[[sex]] <- LW_table
-                    write.table(LW_table, paste(getwd(), "/output/LW/", sex, "/LW_", sspp, "_", sex, "_", "Brut_Weight", ".csv", sep = ""), sep = ";", row.names = FALSE)
+                    if (save) {
+                        write.table(LW_table, file.path(wd, "output", "LW", sex, paste0("LW_", sspp, "_", sex, "_Brut_Weight.csv")), sep = ";", row.names = FALSE)
+                    }
                 }
                 LW_table_final_brut <- do.call(rbind, LW_table_tot)
                 LW_table_final_brut$notes <- "Brut weight"
-                write.table(LW_table_final_brut, paste(getwd(), "/output/LW/LW_", sspp, "_", "Brut_Weight", ".csv", sep = ""), sep = ";", row.names = FALSE)
+                if (save) {
+                    write.table(LW_table_final_brut, file.path(wd, "output", "LW", paste0("LW_", sspp, "_Brut_Weight.csv")), sep = ";", row.names = FALSE)
+                }
             } else {
                 message("Not enougth data for length-weight analysis")
             }
@@ -183,16 +190,12 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                 sexes <- unique(data$SEX)
 
                 ###########   LW directory creation ###########################
-                wd <- getwd()
-                setwd(paste(wd, ("output/"), sep = "/"))
-                dir_LW <- "LW"
-
-                if (file.exists(dir_LW)) {
-                    setwd(wd)
-                } else {
-                    dir.create(file.path(getwd(), dir_LW), showWarnings = FALSE)
-                    setwd(wd)
+                if (save) {
+                    if (!dir.exists(file.path(wd, "output", "LW"))) {
+                        dir.create(file.path(wd, "output", "LW"), showWarnings = FALSE, recursive = TRUE)
+                    }
                 }
+                
                 sex="F"
                 for (sex in sexes) {
                     years <- unique(data$YEAR)
@@ -209,22 +212,18 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                     year <- years[1]
                     for (year in years) {
 
-
                         ###########   sex directory creation ###########################
-                        setwd(paste(wd, ("output/LW/"), sep = "/"))
-                        dir_sex <- sex
-
-                        if (file.exists(dir_sex)) {
-                            setwd(wd)
-                        } else {
-                            dir.create(file.path(getwd(), dir_sex), showWarnings = FALSE)
-                            setwd(wd)
+                        if (save) {
+                            if (!dir.exists(file.path(wd, "output", "LW", sex))) {
+                                dir.create(file.path(wd, "output", "LW", sex), showWarnings = FALSE, recursive = TRUE)
+                            }
                         }
+                        
                         #################################################################
                         datay <- data[data$SEX == sex & data$YEAR == year & data$GENUS == genus & data$SPECIES == species, ]
 
                         # LC definition --------------------------------------------
-                        LC_range <- c(min(datay$LENGTH_CLASS), max(datay$LENGTH_CLASS))
+                        LC_range <- c(min(datay$LENGTH_CLASS, na.rm = TRUE), max(datay$LENGTH_CLASS, na.rm = TRUE))
 
                         class_code <- unique(datay[datay$GENUS != -1, "LENGTH_CLASSES_CODE"])
                         if (class_code == "m") {
@@ -254,11 +253,13 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                                 prediction$X <- lc_list
                                 prediction$pred <- predict(mod, newdata = prediction)
 
-                                jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW_Clean_Weight.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
-                                plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
-                                lines(prediction$X, prediction$pred, col = "red", lwd = 2)
-                                legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
-                                dev.off()
+                                if (save) {
+                                    jpeg(filename  = file.path(wd, "output", "LW", sex, paste0(sspp, "-", sex, "-", year, "-LW_Clean_Weight.jpg")), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                                    plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
+                                    lines(prediction$X, prediction$pred, col = "red", lwd = 2)
+                                    legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
+                                    dev.off()
+                                }
 
                                 LW_table[which(years == year), 3] <- coef(mod)[[1]]
                                 LW_table[which(years == year), 4] <- coef(mod)[[2]]
@@ -278,11 +279,15 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                     } # years
 
                     LW_table_tot[[sex]] <- LW_table
-                    write.table(LW_table, paste(getwd(), "/output/LW/", sex, "/LW_", sspp, "_", sex, "_", "Clean_Weight", ".csv", sep = ""), sep = ";", row.names = FALSE)
+                    if (save) {
+                        write.table(LW_table, file.path(wd, "output", "LW", sex, paste0("LW_", sspp, "_", sex, "_Clean_Weight.csv")), sep = ";", row.names = FALSE)
+                    }
                 }
                 LW_table_final_clean <- do.call(rbind, LW_table_tot)
                 LW_table_final_clean$notes <- "Clean weight"
-                write.table(LW_table_final_clean, paste(getwd(), "/output/LW/LW_", sspp, "_", "Clean_Weight", ".csv", sep = ""), sep = ";", row.names = FALSE)
+                if (save) {
+                    write.table(LW_table_final_clean, file.path(wd, "output", "LW", paste0("LW_", sspp, "_Clean_Weight.csv")), sep = ";", row.names = FALSE)
+                }
 
                 if (exists("LW_table_final_brut") & exists("LW_table_final_clean")){
                     table_final <- rbind(LW_table_final_brut,LW_table_final_clean)
@@ -293,7 +298,9 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                 } else {
                     table_final <- NULL
                 }
-                write.table(table_final, paste(getwd(), "/output/LW/LW_", sspp, ".csv", sep = ""), sep = ";", row.names = FALSE)
+                if (save && !is.null(table_final)) {
+                    write.table(table_final, file.path(wd, "output", "LW", paste0("LW_", sspp, ".csv")), sep = ";", row.names = FALSE)
+                }
                 return(LW_table)
             } else {
                 message("Not enougth data for length-weight analysis")
@@ -308,16 +315,12 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
             sexes <- unique(data$SEX)
 
             ###########   LW directory creation ###########################
-            wd <- getwd()
-            setwd(paste(wd, ("output/"), sep = "/"))
-            dir_LW <- "LW"
-
-            if (file.exists(dir_LW)) {
-                setwd(wd)
-            } else {
-                dir.create(file.path(getwd(), dir_LW), showWarnings = FALSE)
-                setwd(wd)
+            if (save) {
+                if (!dir.exists(file.path(wd, "output", "LW"))) {
+                    dir.create(file.path(wd, "output", "LW"), showWarnings = FALSE, recursive = TRUE)
+                }
             }
+            
             sex="I"
             for (sex in sexes) {
                 years <- unique(data$YEAR)
@@ -334,20 +337,17 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                 for (year in years) {
 
                     ###########   sex directory creation ###########################
-                    setwd(paste(wd, ("output/LW/"), sep = "/"))
-                    dir_sex <- sex
-
-                    if (file.exists(dir_sex)) {
-                        setwd(wd)
-                    } else {
-                        dir.create(file.path(getwd(), dir_sex), showWarnings = FALSE)
-                        setwd(wd)
+                    if (save) {
+                        if (!dir.exists(file.path(wd, "output", "LW", sex))) {
+                            dir.create(file.path(wd, "output", "LW", sex), showWarnings = FALSE, recursive = TRUE)
+                        }
                     }
+                    
                     #################################################################
                     datay <- data[data$SEX == sex & data$YEAR == year & data$GENUS == genus & data$SPECIES == species, ]
 
                     # LC definition --------------------------------------------
-                    LC_range <- c(min(datay$LENGTH_CLASS), max(datay$LENGTH_CLASS))
+                    LC_range <- c(min(datay$LENGTH_CLASS, na.rm = TRUE), max(datay$LENGTH_CLASS, na.rm = TRUE))
 
                     class_code <- unique(datay[datay$GENUS != -1, "LENGTH_CLASSES_CODE"])
                     if (class_code == "m") {
@@ -377,11 +377,13 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                             prediction$X <- lc_list
                             prediction$pred <- predict(mod, newdata = prediction)
 
-                            jpeg(filename  = paste(getwd(), "/output/LW/", sex, "/", sspp, "-", sex, "-", year, "-LW.jpg", sep = ""), width = 20, height = 15, bg = "white", units = "cm", res = 200)
-                            plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
-                            lines(prediction$X, prediction$pred, col = "red", lwd = 2)
-                            legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
-                            dev.off()
+                            if (save) {
+                                jpeg(filename  = file.path(wd, "output", "LW", sex, paste0(sspp, "-", sex, "-", year, "-LW.jpg")), width = 20, height = 15, bg = "white", units = "cm", res = 200)
+                                plot(df, pch = 16, cex = .5, main = paste(sspp, sex, sep = " - "), xlab = "length (mm)", ylab = "weight (g)")
+                                lines(prediction$X, prediction$pred, col = "red", lwd = 2)
+                                legend("topleft", c(paste("a = ", round(coef(mod)[[1]], 6)), paste("b = ", round(coef(mod)[[2]], 4))))
+                                dev.off()
+                            }
 
                             LW_table[which(years == year), 3] <- coef(mod)[[1]]
                             LW_table[which(years == year), 4] <- coef(mod)[[2]]
@@ -399,10 +401,13 @@ LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10) {
                         warning(paste("Not enougth data to estimate the length-weigth parameters for ", sspp, " - sex = ", sex, "\n", sep = ""))
                     } # nrow di df > di n_records
                 } # years
-                write.table(LW_table, paste(getwd(), "/output/LW/", sex, "/LW_", sspp, "_", sex, "_", "Individual_Weight", ".csv", sep = ""), sep = ";", row.names = FALSE)
+                if (save) {
+                    write.table(LW_table, file.path(wd, "output", "LW", sex, paste0("LW_", sspp, "_", sex, "_Individual_Weight.csv")), sep = ";", row.names = FALSE)
+                }
             } # sexes
         } else {
             message("Not enougth data for length-weight analysis")
         }
     }
-} ### close function LW
+}
+ ### close function LW

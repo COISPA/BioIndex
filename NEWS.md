@@ -51,13 +51,30 @@ Added an embedded Shiny application to the package: run_BioIndex_app(). It provi
   __CRAN Submission Release__
   
   * **CRAN Policy Compliance**:
-    * Standardized directory handling: functions now default to `tempdir()` when `wd = NA` and `save = TRUE`, ensuring compliance with CRAN's file system policies regarding unauthorized write access.
-    * Refactored console output: replaced all `cat()` and `print()` calls with `message()` wrapped in `if (verbose)` checks to ensure a silent default behavior and eliminate side-effects.
-    * Improved state management: added `on.exit(par(oldpar))` to all functions modifying graphical parameters.
+    * Standardized directory handling: functions now default to `tempdir()` when `wd = NA`, ensuring compliance with CRAN's file system policies regarding unauthorized write access. Removed all `setwd()` calls from internal logic to use absolute paths (`file.path()`).
+    * Refactored console output: replaced all `cat()` and `print()` calls with `message()` wrapped in `if (verbose)` checks to ensure a silent default behavior.
+    * Improved state management: added `on.exit(par(oldpar))` and secured working directory restoration where applicable.
+    * Documentation updates: added missing `@return` tags (e.g., in `hauls_position()`) as requested by CRAN reviewers.
+    * Example Activation: unwrapped examples from `\donttest{}` in `aggregate_gsas()`, `merge_TATB()`, `merge_TATC()`, and `merge_TATBTC()` to allow automatic testing.
   * **Dependency Refinement**: Internalized data validation logic based on RoME (v0.2.3) to eliminate external dependencies on non-CRAN repositories.
   * **Bug Fixes and Stability**:
     * Fixed non-ASCII characters in `continent` dataset.
     * Refactored `class()` checks to use `inherits()` for robust type checking.
-    * Fixed documentation examples for `aggregate_gsas` and merge functions to ensure they run correctly with built-in datasets.
-    * Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
     * Added `globalVariables` declarations to resolve R CMD check notes.
+    * Standardized function signatures to consistently include `wd` and `save` parameters.
+    * **Enhanced Data Consistency**:
+        * Implemented explicit GSA and Country filtering in `BioIndex()` to ensure all downstream analysis functions use the correct subset of data and stratification metadata, preventing errors when multiple GSAs are present in input files.
+        * Added robust validation for depth range boundaries in `indices_ts()`, `sex_ratio()`, `MIW()`, `LFD()`, and other core functions. The package now provides clear error messages when the selected depth range does not match the strata defined for the GSA.
+        * Updated the embedded Shiny application to dynamically set depth range defaults (Depth lower/upper) based on the selected GSA and Country, preventing common user configuration errors.
+        * Improved Shiny UI: replaced numeric inputs for "Depth lower" and "Depth upper" with dynamic dropdown menus (select inputs) populated directly from the stratification table boundaries.
+        * Refined Shiny UI default logic: "Depth lines" default values are now intelligently extracted from the actual stratification cutoffs (selecting the two extremes and the most central cutoff) rather than using an arbitrary mathematical average, resulting in more meaningful default map contours.
+        * **Data Integration and Reproducibility**:
+            * Fixed a critical issue in `merge_TATC` and `merge_TATBTC` where decimal coordinates were not correctly assigned, causing failures in spatial aggregation routines (e.g., in `bubbleplot_RS_by_hauls`).
+            * Enhanced stability of merge functions to robustly handle empty data subsets, preventing `cbind` mismatches.
+            * Optimized example execution times: wrapped the heavy global workflow example `BioIndex()` in `\donttest{}` and subset individual mapping examples (`bubble_plot_by_haul_indexes()` and `hauls_position()`) to a single year (2016) to ensure swift execution times under CRAN checks.
+            * Standardized all documentation examples to utilize internal GSA 10 data, ensuring reliable execution and full compliance with CRAN's automated checking environment.
+        * **Graphics and UI Stability**:
+            * Eliminated all explicit `print()` calls for `ggplot2` objects within analytical functions, relying exclusively on `ggsave()` for output. This prevents fatal 'figure margins too large' and 'pin' errors when functions are executed via the Shiny app on small active graphics devices.
+            * Silenced rogue base R graphics rendering in functions like `Lquant()` that previously attempted to plot to the active screen device by default.
+            * Refined graphical parameter restoration logic: `on.exit(suppressWarnings(par(oldpar)))` now explicitly strips the `new` attribute from `oldpar`, preventing 'calling par(new=TRUE) with no plot' warnings after execution.
+            * Suppressed non-critical `ggplot2::stat_contour` warnings (such as 'Zero contours were generated') across spatial plotting functions to maintain a clean console output as per CRAN policies.

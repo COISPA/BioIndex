@@ -1,4 +1,4 @@
-#' Check dictionary (RoME)
+﻿#' Check dictionary (RoME)
 #' @description
 #' The function checks whether the values contained in specific fields are consistent with the allowed values of the dictionaries.
 #'

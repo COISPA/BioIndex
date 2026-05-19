@@ -33,11 +33,21 @@ indices_ts(
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
 }
 \value{
-A \code{data.frame} containing the calculated time series of abundance and biomass indices.
+A \code{list} of \code{ggplot} objects representing the time series of calculated indices.
 }
 \description{
 Computes time series of stratified abundance and biomass indices,
 serving as the primary tool for monitoring temporal trends in stock status.
+}
+\examples{
+data(TA)
+data(TB)
+# Create a merged dataset for GSA 10
+mTATB <- merge_TATB(TA[TA$AREA==10,], TB[TB$AREA==10,], "MERLMER")
+# Run indices_ts
+indices_ts(mTATB, GSA=10, country="all", depth_range=c(10,800),
+           strata_scheme=BioIndex::strata_scheme,
+           stratification=BioIndex::stratification, wd=tempdir(), save=FALSE)
 }
 \author{
 Walter Zupa \email{zupa@fondazionecoispa.org}

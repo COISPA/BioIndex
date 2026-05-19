@@ -1,4 +1,4 @@
-#' Estimation of abundance indices for females
+﻿#' Estimation of abundance indices for females
 #'
 #' @param mTATB data frame
 #' @param GSA reference GSA for the analysis
@@ -18,7 +18,8 @@
 index_ts_F <- function(mTATB, GSA, country_analysis, depth_range, strata_scheme, stratification, wd=NA, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
 
     MEAN_DEPTH <- strata <- value <- year <- NULL
@@ -61,7 +62,16 @@ index_ts_F <- function(mTATB, GSA, country_analysis, depth_range, strata_scheme,
     # depth_range <- data.frame(range = strsplit(depth_range, ",")); depth_range <- as.numeric(as.character(depth_range[,1]))
     if (depth_range[2] != 800) {depth_range[2] <- depth_range[2]}
     data <-  data[data$MEAN_DEPTH>depth_range[1] & data$MEAN_DEPTH<=depth_range[2],]
-    strata_range <- seq(which(depth[,"min"]==depth_range[1]),which(depth[,"max"]==depth_range[2]),1)
+    idx_from <- which(depth[,"min"] == depth_range[1])
+    idx_to   <- which(depth[,"max"] == depth_range[2])
+
+    if (length(idx_from) != 1 || length(idx_to) != 1) {
+        stop(paste0("Error: depth range [", depth_range[1], ", ", depth_range[2],
+                    "] does not match the strata boundaries defined for this GSA. ",
+                    "Available min depths: ", paste(sort(unique(depth$min)), collapse=", "),
+                    "; Available max depths: ", paste(sort(unique(depth$max)), collapse=", ")))
+    }
+    strata_range <- seq(idx_from, idx_to, 1)
     depth[depth$strata %in% strata_range, "bul"] <- T
     depth[!(depth$strata %in% strata_range), "bul"] <- F
 

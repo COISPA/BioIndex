@@ -37,3 +37,14 @@ Overlays survey haul data onto a standard spatial grid (e.g., GFCM grid),
 harmonizing biological information with a consistent geographic structure
 for standardized spatial analysis.
 }
+\examples{
+# Use internal data
+data(TA)
+data(TB)
+data(TC)
+# Create a merged dataset for GSA 10
+m <- merge_TATBTC(TA[TA$AREA==10,], TB[TB$AREA==10,], TC[TC$AREA==10,], species="MERLMER")
+mTATB <- m[[1]]
+mTATC <- m[[2]]
+# overlayGrid(mTATB, mTATC, GSA=10, save=FALSE)
+}

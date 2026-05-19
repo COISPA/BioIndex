@@ -3,7 +3,7 @@
 \docType{data}
 \name{med_bathy}
 \alias{med_bathy}
-\title{Mediterranean and Black Sea bathymetry (0–1000 m, bathy object)}
+\title{Mediterranean and Black Sea bathymetry (0â€“1000 m, bathy object)}
 \format{
 An object of class \code{bathy} (a matrix with longitude and latitude as axes, and depth in meters)
 }
@@ -26,8 +26,8 @@ The object can be used directly with functions from the \pkg{marmap} package, su
 
 The spatial extent includes:
 \itemize{
-  \item Longitude: from -6° to 42°
-  \item Latitude: from 30° to 47°
+  \item Longitude: from -6Â° to 42Â°
+  \item Latitude: from 30Â° to 47Â°
   \item Depth: from 0 to -1000 meters
 }
 Only marine cells within this depth range are retained. Land and deeper areas are set to \code{NA}.

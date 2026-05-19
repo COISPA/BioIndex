@@ -24,7 +24,7 @@ BioIndex is designed to support the standardized analysis of MEDITS trawl survey
 - Fixed non-ASCII characters in `continent` dataset.
 - Refactored `class()` checks to `inherits()` for robust type checking.
 - Resolved namespace conflict for the `extract()` function between `terra` and `magrittr`.
-- Wrap main function examples in `\dontrun{}` to ensure it is never executed during automated checks, avoiding failures related to internet connectivity (NOAA downloads) and execution time limits.
+- All package functions are fully exposed to automated checks with active, executable examples. However, the four spatial/cartographic functions (`BioIndex()`, `bubble_plot_by_haul_indexes()`, `hauls_position()`, and `bubbleplot_RS_by_hauls()`) are highly time-demanding due to ggplot2 bathymetric contour rendering. Repeated attempts to optimize their execution speed (by minimizing spatial datasets and limiting them to a single year) were not completely fruitful in keeping them below the strict checking thresholds (10s on Windows, 5s on Debian). For this reason, these four specific functions have been wrapped in `\donttest{}` blocks.
 - Optimized spatial datasets (continent, strata) to stay below the 5 MB limit.
 
 ## Misspelled words (Technical Acronyms)
@@ -33,4 +33,4 @@ The following words reported as potentially misspelled are technical acronyms or
 - GSAs
 - MEDITS
 - RDBFIS
-- RubIN
+- RUBIN

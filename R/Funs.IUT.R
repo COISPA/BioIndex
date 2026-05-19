@@ -1,9 +1,10 @@
-#' @importFrom stats predict AIC nls
+﻿#' @importFrom stats predict AIC nls
 #' @importFrom stats pnorm cor.test rnorm dchisq deviance df.residual na.exclude sd time
 #' @importFrom mgcv gam
 .ChangeYears.func<-function(Year, Indic ,Sd=NULL,alpha=0.05,species,B=199,ytext,CV=0.01,lastn=5,write=FALSE,speciesname,lastligne=FALSE) {
     oldpar <- par(no.readonly = TRUE)
-    on.exit(par(oldpar))
+    oldpar$new <- NULL
+    on.exit(suppressWarnings(par(oldpar)))
 
   if (FALSE) {
     Year=years
@@ -441,8 +442,6 @@ return(c(species,ytext,pchisq,Diagnos))
 		}
 	}
 }
-
-
 
 
 

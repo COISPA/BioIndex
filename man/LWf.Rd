@@ -4,12 +4,12 @@
 \alias{LWf}
 \title{Estimation of LW relationship}
 \usage{
-LWf(TE, sp, GEAR, GSA, country = NA, n_records = 10)
+LWf(TE, sp, GEAR, GSA, country = NA, n_records = 10, wd = NA, save = TRUE)
 }
 \arguments{
 \item{TE}{MEDITS or MEDITS-like TE table}
 
-\item{sp}{species rubin code (MEDITS format, e.g. "MERLMER")}
+\item{sp}{species RUBIN code (MEDITS format, e.g. "MERLMER")}
 
 \item{GEAR}{type of gear reported in the corresponding TA file}
 
@@ -18,6 +18,10 @@ LWf(TE, sp, GEAR, GSA, country = NA, n_records = 10)
 \item{country}{reference country}
 
 \item{n_records}{minimum number of records to perform the analysis}
+
+\item{wd}{path of the working directory}
+
+\item{save}{boolean. If TRUE the outputs are saved in the local folder}
 }
 \value{
 A \code{data.frame} containing the length-weight relationship parameters specifically for females.
