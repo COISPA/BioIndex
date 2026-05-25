@@ -1,4 +1,4 @@
-﻿#' Estimation of Mean Individual Weight (MIW) time series
+#' Estimation of Mean Individual Weight (MIW) time series
 #' @description
 #' Calculates the Mean Individual Weight (MIW) time series, providing a
 #' summary indicator of the average size within the captured population
@@ -205,109 +205,238 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
 
 
         if (analysis_stratum1 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s1 <- s1[!is.na(s1$TOTAL_NUMBER_IN_THE_HAUL ) & s1$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s1$mean_MIW <- (s1[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s1[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s1[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s1[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s1$SWEPT_AREA)
+            # res_table_cala2[i,2] <- s_MIW
+            # #se computation
+            # sq <- (s1$mean_MIW - s_MIW)^2
+            # sqA <- sq*s1$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s1[,1])-1)
+            # f1 <- s_a/area_s1
+            # se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
+            # sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
+
+            # [MODIFICATO]:
             s1 <- s1[!is.na(s1$TOTAL_NUMBER_IN_THE_HAUL ) & s1$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s1$mean_MIW <- (s1[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s1[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s1[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s1[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s1[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s1[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s1$SWEPT_AREA)
             res_table_cala2[i,2] <- s_MIW
-
-            #se computation
-            sq <- (s1$mean_MIW - s_MIW)^2
-            sqA <- sq*s1$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s1[,1])-1)
-            f1 <- s_a/area_s1
-            se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
-            sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
+            s1_clean <- s1[!is.na(s1$mean_MIW), ]
+            s_a_clean <- sum(s1_clean$SWEPT_AREA)
+            if (nrow(s1_clean) > 1) {
+                sq <- (s1_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s1_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s1_clean)-1)
+                f1 <- s_a_clean/area_s1
+                se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a_clean)* (1-f1)
+                sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f1))
+            } else {
+                se_table2[i,2] <- 0
+                sd_strata[i,2] <- 0
+            }
         } else {area_s1 = 0}
 
         if (analysis_stratum2 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s2 <- s2[!is.na(s2$TOTAL_NUMBER_IN_THE_HAUL ) & s2$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s2$mean_MIW <- (s2[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s2[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s2[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s2[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s2$SWEPT_AREA)
+            # res_table_cala2[i,3] <- s_MIW
+            # #se computation
+            # sq <- (s2$mean_MIW - s_MIW)^2
+            # sqA <- sq*s2$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s2[,1])-1)
+            # f2 <- s_a/area_s2
+            # se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
+            # sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+
+            # [MODIFICATO]:
             s2 <- s2[!is.na(s2$TOTAL_NUMBER_IN_THE_HAUL ) & s2$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s2$mean_MIW <- (s2[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s2[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s2[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s2[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s2[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s2[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s2$SWEPT_AREA)
             res_table_cala2[i,3] <- s_MIW
-
-            #se computation
-            sq <- (s2$mean_MIW - s_MIW)^2
-            sqA <- sq*s2$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s2[,1])-1)
-            f2 <- s_a/area_s2
-            se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
-            sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+            s2_clean <- s2[!is.na(s2$mean_MIW), ]
+            s_a_clean <- sum(s2_clean$SWEPT_AREA)
+            if (nrow(s2_clean) > 1) {
+                sq <- (s2_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s2_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s2_clean)-1)
+                f2 <- s_a_clean/area_s2
+                se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a_clean)* (1-f2)
+                sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f2))
+            } else {
+                se_table2[i,3] <- 0
+                sd_strata[i,3] <- 0
+            }
         } else {area_s2 = 0}
 
         if (analysis_stratum3 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s3 <- s3[!is.na(s3$TOTAL_NUMBER_IN_THE_HAUL ) & s3$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s3$mean_MIW <- (s3[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s3[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s3[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s3[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s3$SWEPT_AREA)
+            # res_table_cala2[i,4] <- s_MIW
+            # #se computation
+            # sq <- (s3$mean_MIW - s_MIW)^2
+            # sqA <- sq*s3$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s3[,1])-1)
+            # f3 <- s_a/area_s3
+            # se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
+            # sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+
+            # [MODIFICATO]:
             s3 <- s3[!is.na(s3$TOTAL_NUMBER_IN_THE_HAUL ) & s3$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s3$mean_MIW <- (s3[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s3[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s3[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s3[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s3[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s3[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s3$SWEPT_AREA)
             res_table_cala2[i,4] <- s_MIW
-
-            #se computation
-            sq <- (s3$mean_MIW - s_MIW)^2
-            sqA <- sq*s3$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s3[,1])-1)
-            f3 <- s_a/area_s3
-            se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
-            sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+            s3_clean <- s3[!is.na(s3$mean_MIW), ]
+            s_a_clean <- sum(s3_clean$SWEPT_AREA)
+            if (nrow(s3_clean) > 1) {
+                sq <- (s3_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s3_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s3_clean)-1)
+                f3 <- s_a_clean/area_s3
+                se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a_clean)* (1-f3)
+                sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f3))
+            } else {
+                se_table2[i,4] <- 0
+                sd_strata[i,4] <- 0
+            }
         } else {area_s3 = 0}
 
         if (analysis_stratum4 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s4 <- s4[!is.na(s4$TOTAL_NUMBER_IN_THE_HAUL ) & s4$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s4$mean_MIW <- (s4[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s4[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s4[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s4[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s4$SWEPT_AREA)
+            # res_table_cala2[i,5] <- s_MIW
+            # #se computation
+            # sq <- (s4$mean_MIW - s_MIW)^2
+            # sqA <- sq*s4$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s4[,1])-1)
+            # f4 <- s_a/area_s4
+            # se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
+            # sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+
+            # [MODIFICATO]:
             s4 <- s4[!is.na(s4$TOTAL_NUMBER_IN_THE_HAUL ) & s4$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s4$mean_MIW <- (s4[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s4[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s4[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s4[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s4[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s4[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s4$SWEPT_AREA)
             res_table_cala2[i,5] <- s_MIW
-
-            #se computation
-            sq <- (s4$mean_MIW - s_MIW)^2
-            sqA <- sq*s4$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s4[,1])-1)
-            f4 <- s_a/area_s4
-            se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
-            sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+            s4_clean <- s4[!is.na(s4$mean_MIW), ]
+            s_a_clean <- sum(s4_clean$SWEPT_AREA)
+            if (nrow(s4_clean) > 1) {
+                sq <- (s4_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s4_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s4_clean)-1)
+                f4 <- s_a_clean/area_s4
+                se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a_clean)* (1-f4)
+                sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f4))
+            } else {
+                se_table2[i,5] <- 0
+                sd_strata[i,5] <- 0
+            }
         } else {area_s4 = 0}
 
         if (analysis_stratum5 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s5 <- s5[!is.na(s5$TOTAL_NUMBER_IN_THE_HAUL ) & s5$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s5$mean_MIW <- (s5[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s5[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s5[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s5[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s5$SWEPT_AREA)
+            # res_table_cala2[i,6] <- s_MIW
+            # #se computation
+            # sq <- (s5$mean_MIW - s_MIW)^2
+            # sqA <- sq*s5$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s5[,1])-1)
+            # f5 <- s_a/area_s5
+            # se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
+            # sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+
+            # [MODIFICATO]:
             s5 <- s5[!is.na(s5$TOTAL_NUMBER_IN_THE_HAUL ) & s5$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s5$mean_MIW <- (s5[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s5[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s5[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s5[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s5[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s5[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s5$SWEPT_AREA)
             res_table_cala2[i,6] <- s_MIW
-
-            #se computation
-            sq <- (s5$mean_MIW - s_MIW)^2
-            sqA <- sq*s5$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s5[,1])-1)
-            f5 <- s_a/area_s5
-            se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
-            sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+            s5_clean <- s5[!is.na(s5$mean_MIW), ]
+            s_a_clean <- sum(s5_clean$SWEPT_AREA)
+            if (nrow(s5_clean) > 1) {
+                sq <- (s5_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s5_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s5_clean)-1)
+                f5 <- s_a_clean/area_s5
+                se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a_clean)* (1-f5)
+                sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f5))
+            } else {
+                se_table2[i,6] <- 0
+                sd_strata[i,6] <- 0
+            }
         } else {area_s5 = 0}
 
         if (analysis_stratum6 == T){
-            #index computation
+            # [ORIGINALE]:
+            # #index computation
+            # s6 <- s6[!is.na(s6$TOTAL_NUMBER_IN_THE_HAUL ) & s6$TOTAL_NUMBER_IN_THE_HAUL>0, ]
+            # s6$mean_MIW <- (s6[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s6[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
+            # s_MIW<- sum(s6[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s6[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s6$SWEPT_AREA)
+            # res_table_cala2[i,7] <- s_MIW
+            # #se computation
+            # sq <- (s6$mean_MIW - s_MIW)^2
+            # sqA <- sq*s6$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s6[,1])-1)
+            # f6 <- s_a/area_s6
+            # se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
+            # sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+
+            # [MODIFICATO]:
             s6 <- s6[!is.na(s6$TOTAL_NUMBER_IN_THE_HAUL ) & s6$TOTAL_NUMBER_IN_THE_HAUL>0, ]
             s6$mean_MIW <- (s6[ , "TOTAL_WEIGHT_IN_THE_HAUL" ]/1000) / s6[ , "TOTAL_NUMBER_IN_THE_HAUL" ]
-            s_MIW<- sum(s6[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s6[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            s_MIW <- sum(s6[ ,"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)/sum(s6[ ,"TOTAL_NUMBER_IN_THE_HAUL"])
+            if (is.nan(s_MIW)) s_MIW <- NA
             s_a <- sum(s6$SWEPT_AREA)
             res_table_cala2[i,7] <- s_MIW
-
-            #se computation
-            sq <- (s6$mean_MIW - s_MIW)^2
-            sqA <- sq*s6$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s6[,1])-1)
-            f6 <- s_a/area_s6
-            se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
-            sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+            s6_clean <- s6[!is.na(s6$mean_MIW), ]
+            s_a_clean <- sum(s6_clean$SWEPT_AREA)
+            if (nrow(s6_clean) > 1) {
+                sq <- (s6_clean$mean_MIW - s_MIW)^2
+                sqA <- sq*s6_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s6_clean)-1)
+                f6 <- s_a_clean/area_s6
+                se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a_clean)* (1-f6)
+                sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f6))
+            } else {
+                se_table2[i,7] <- 0
+                sd_strata[i,7] <- 0
+            }
         } else {area_s6 = 0}
 
-        sum_res_est <- c(res_table_cala2[i,2]*peso_s1,res_table_cala2[i,3]*peso_s2,res_table_cala2[i,4]*peso_s3,res_table_cala2[i,5]*peso_s4,res_table_cala2[i,6]*peso_s5,res_table_cala2[i,7]*peso_s6)
-        res_table_cala2[i, 8]<- sum(sum_res_est[!is.na(sum_res_est)])# /sum(area_s1,area_s2,area_s3,area_s4,area_s5)
+        sum_res_est <- c(res_table_cala2[i,2]*peso_s1, res_table_cala2[i,3]*peso_s2,
+                         res_table_cala2[i,4]*peso_s3, res_table_cala2[i,5]*peso_s4,
+                         res_table_cala2[i,6]*peso_s5, res_table_cala2[i,7]*peso_s6)
+        valid <- !is.na(sum_res_est) & !is.nan(sum_res_est)
+        res_table_cala2[i, 8] <- if (any(valid)) sum(sum_res_est[valid]) else NA
         colnames(res_table_cala2) <- c("year", "stratum 1","stratum 2", "stratum 3", "stratum 4", "stratum 5", "stratum 6", "Indices")
         se_table2[i, "sd"] <-sqrt(rowSums(se_table2[i, 2:7], na.rm = T))
     }
@@ -327,8 +456,9 @@ MIW <- function(mTATB, GSA, country="all", depth_range, strata_scheme, stratific
         row=1
         for (row in 1:length(year_range[,1])) {
             if (!is.na(sd_strata[row,col])) {
-                if (res_table_cala2[row,col]!=0){
-                    cv_strata[row,col] <- cv_strata[row,col]/res_table_cala2[row,col]
+                val <- res_table_cala2[row,col]
+                if (!is.na(val) && !is.nan(val) && val != 0){
+                    cv_strata[row,col] <- cv_strata[row,col]/val
                 } else {
                     cv_strata[row,col] <- 0
                 }

@@ -1,4 +1,4 @@
-﻿#' Spearman test
+#' Spearman test
 #'
 #' @param abundance data frame of abundance indices
 #' @param biomass data frame of biomass indices
@@ -6,6 +6,7 @@
 #' @param sspp reference species for the analysis
 #' @param wd path of working directory
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
+#' @param verbose boolean. If TRUE messages are prompted in the console
 #' @importFrom utils write.table
 #' @return A \code{data.frame} or \code{list} with the results of the Spearman rank correlation test.
 #' @examples
@@ -14,7 +15,7 @@
 #' spearman(abundance=abundance, biomass=biomass, years=c(2010,2020), 
 #'          sspp="MERLMER", wd=tempdir(), save=FALSE)
 #' @export
-spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE){
+spearman <- function(abundance=NA, biomass=NA, years, sspp=NA, wd=NA, save=TRUE, verbose=FALSE){
     if (is.na(wd)) { wd <- tempdir() }
 
     if (FALSE) {

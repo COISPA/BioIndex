@@ -1,10 +1,13 @@
-﻿#' Conversion of MEDITS format coordinates in decimal degrees format
+#' Conversion of MEDITS format coordinates in decimal degrees format
 #' @description
 #' Conversion of MEDITS format coordinates in decimal degrees format
 #'
 #' @param data data frame of the hauls data (TA, table A) in MEDITS format
 #'
 #' @return The function returns the data frame of the TA table with the coordinates expressed as decimal degrees
+#' @examples
+#' data(TA)
+#' MEDITS.to.dd(TA)
 #' @export
 MEDITS.to.dd<-function(data)  {
   lat_start=data$SHOOTING_LATITUDE

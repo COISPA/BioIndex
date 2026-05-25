@@ -46,5 +46,5 @@ data(TC)
 m <- merge_TATBTC(TA[TA$AREA==10,], TB[TB$AREA==10,], TC[TC$AREA==10,], species="MERLMER")
 mTATB <- m[[1]]
 mTATC <- m[[2]]
-# overlayGrid(mTATB, mTATC, GSA=10, save=FALSE)
+overlayGrid(mTATB, mTATC, GSA=10, save=FALSE)
 }

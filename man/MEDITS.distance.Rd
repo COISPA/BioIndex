@@ -19,3 +19,7 @@ The function returns the vector of the distances expressed in the selected measu
 \description{
 Estimation of haul distance
 }
+\examples{
+data(TA)
+MEDITS.distance(TA, unit = "m", verbose = FALSE)
+}

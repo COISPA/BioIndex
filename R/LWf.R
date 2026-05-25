@@ -12,7 +12,6 @@
 #' @importFrom stats lm predict coef coefficients nls
 #' @importFrom grDevices jpeg dev.off
 #' @return A \code{data.frame} containing the length-weight relationship parameters specifically for females.
-#' @export
 LWf <- function(TE, sp, GEAR, GSA, country=NA, n_records = 10, wd = NA, save = TRUE) {
     if (is.na(wd)) {
         wd <- tempdir()

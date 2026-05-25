@@ -14,7 +14,6 @@
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @return A \code{data.frame} containing the length-weight relationship parameters and statistics.
-#' @export
 #' @import ggplot2
 LW <- function(ta, te, sp, GSA, country = "all", nyears = NA, wd = NA, save = TRUE, verbose = FALSE) {
     if (is.na(wd)) {

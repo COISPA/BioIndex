@@ -10,7 +10,6 @@
 #' @param wd path of the working directory
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @return A \code{data.frame} representing the Age-Length Key for females.
-#' @export
 #' 
 
 ALKf <- function(te, sp, GEAR, GSA, country = NA, years = 5, wd = NA, save=TRUE) {

@@ -1,4 +1,4 @@
-﻿#' Check dictionary (RoME)
+#' Check dictionary (RoME)
 #' @description
 #' The function checks whether the values contained in specific fields are consistent with the allowed values of the dictionaries.
 #'
@@ -14,6 +14,9 @@
 #' It is provided within \code{BioIndex} to ensure the package remains
 #' functional and self-sufficient for data validation.
 #' @return \code{TRUE} if the validation passes, \code{FALSE} otherwise.
+#' @examples
+#' data(TA)
+#' check_dictionary(TA, Field = "COUNTRY", Values = c("ITA"), year = 2007)
 #' @export
 check_dictionary <- function(ResultData, Field, Values, year, wd=NA, suffix=NA, verbose=FALSE) {
 

@@ -15,3 +15,7 @@ The function returns the data frame of the TA table with the coordinates express
 \description{
 Conversion of MEDITS format coordinates in decimal degrees format
 }
+\examples{
+data(TA)
+MEDITS.to.dd(TA)
+}

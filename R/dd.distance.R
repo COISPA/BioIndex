@@ -1,4 +1,4 @@
-﻿#' Estimate hauls distances (decimal degrees)
+#' Estimate hauls distances (decimal degrees)
 #' @description
 #' Function to estimate the hauls length using TA (table A, hauls data) with coordinates in the decimal degrees format (dd.ddd). The distances could be returned expressed in meters, kilometers and nautical miles.
 #'
@@ -6,6 +6,10 @@
 #' @param unit string value indicating the measure unit of the distance. Allowed values: "m" for meters, "km" for kilometers and "NM" for nautical miles.
 #' @param verbose give verbose output reporting in the output the selected measure unit of the distance.
 #' @return The function returns the vector of the distances expressed in the selected measure unit.
+#' @examples
+#' data(TA)
+#' ta_dd <- MEDITS.to.dd(TA)
+#' dd.distance(ta_dd, unit = "km", verbose = FALSE)
 #' @export
 dd.distance<-function(data, unit = "m", verbose=TRUE)  {
   N1  <- (((data$SHOOTING_LATITUDE/2)+45)*pi )/180

@@ -1,9 +1,12 @@
-﻿#' Estimation of haul distance
+#' Estimation of haul distance
 #'
 #' @param data data frame containing the hauls data (TA, table A).
 #' @param unit string value indicating the measure unit of the distance. Allowed values: "m" for meters, "km" for kilometers and "NM" for nautical miles.
 #' @param verbose give verbose output reporting in the output the selected measure unit of the distance.
 #' @return The function returns the vector of the distances expressed in the selected measure unit.
+#' @examples
+#' data(TA)
+#' MEDITS.distance(TA, unit = "m", verbose = FALSE)
 #' @export
 MEDITS.distance<-function(data, unit = "m", verbose = TRUE)  {
   lat_start=data$SHOOTING_LATITUDE

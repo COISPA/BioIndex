@@ -1,4 +1,4 @@
-﻿#' Check date haul (RoME)
+#' Check date haul (RoME)
 #' @description
 #' Check if in TB, TC or TE the date by haul is the same of the one reported in TA.
 #'
@@ -12,6 +12,10 @@
 #' It is provided within \code{BioIndex} to ensure the package remains
 #' functional and self-sufficient for data validation.
 #' @return \code{TRUE} if the validation passes, \code{FALSE} otherwise.
+#' @examples
+#' data(TA)
+#' data(TB)
+#' check_date_haul(TA, TB, year = 2007)
 #' @export
 check_date_haul <- function(DataTA, Data, year, wd=NA, suffix=NA) {
 

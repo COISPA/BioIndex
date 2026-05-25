@@ -1,4 +1,4 @@
-﻿#' Estimation of abundance and biomass indices
+#' Estimation of abundance and biomass indices
 #' @description
 #' Computes time series of stratified abundance and biomass indices,
 #' serving as the primary tool for monitoring temporal trends in stock status.
@@ -241,91 +241,201 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
         if (analysis_stratum6 == T) {s6 <- data2[floor(data2$MEAN_DEPTH) > depth[6,2] & floor(data2$MEAN_DEPTH) <= depth[6,3], ]}
 
         if (analysis_stratum1 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s1[!is.na(s1$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s1$SWEPT_AREA)
+            # res_table_cala2[i,2] <- s_n/s_a
+            # mean_ind <- mean(s1[!is.na(s1$N_km2), "N_km2" ])
+            # sq <- (s1[!is.na(s1$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s1$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s1[,1])-1)
+            # f1 <- s_a/area_s1
+            # se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
+            # sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
+
+            # [MODIFICATO]:
             s_n <- sum(s1[!is.na(s1$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s1$SWEPT_AREA)
             res_table_cala2[i,2] <- s_n/s_a
-
-            mean_ind <- mean(s1[!is.na(s1$N_km2), "N_km2" ])
-            sq <- (s1[!is.na(s1$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s1$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s1[,1])-1)
-            f1 <- s_a/area_s1
-            se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
-            sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
+            s1_clean <- s1[!is.na(s1$N_km2), ]
+            s_a_clean <- sum(s1_clean$SWEPT_AREA)
+            if (nrow(s1_clean) > 1) {
+                mean_ind <- mean(s1_clean$N_km2)
+                sq <- (s1_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s1_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s1_clean)-1)
+                f1 <- s_a_clean/area_s1
+                se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a_clean)* (1-f1)
+                sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f1))
+            } else {
+                se_table2[i,2] <- 0
+                sd_strata[i,2] <- 0
+            }
         } else {area_s1 = 0}
 
         if (analysis_stratum2 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s2[!is.na(s2$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s2$SWEPT_AREA)
+            # res_table_cala2[i,3] <- s_n/s_a
+            # mean_ind <- mean(s2[!is.na(s2$N_km2), "N_km2" ])
+            # sq <- (s2[!is.na(s2$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s2$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s2[,1])-1)
+            # f2 <- s_a/area_s2
+            # se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
+            # sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+
+            # [MODIFICATO]:
             s_n <- sum(s2[!is.na(s2$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s2$SWEPT_AREA)
             res_table_cala2[i,3] <- s_n/s_a
-
-            mean_ind <- mean(s2[!is.na(s2$N_km2), "N_km2" ])
-            sq <- (s2[!is.na(s2$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s2$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s2[,1])-1)
-            f2 <- s_a/area_s2
-            se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
-            sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+            s2_clean <- s2[!is.na(s2$N_km2), ]
+            s_a_clean <- sum(s2_clean$SWEPT_AREA)
+            if (nrow(s2_clean) > 1) {
+                mean_ind <- mean(s2_clean$N_km2)
+                sq <- (s2_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s2_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s2_clean)-1)
+                f2 <- s_a_clean/area_s2
+                se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a_clean)* (1-f2)
+                sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f2))
+            } else {
+                se_table2[i,3] <- 0
+                sd_strata[i,3] <- 0
+            }
         } else {area_s2 = 0}
 
         if (analysis_stratum3 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s3[!is.na(s3$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s3$SWEPT_AREA)
+            # res_table_cala2[i,4] <- s_n/s_a
+            # mean_ind <- mean(s3[!is.na(s3$N_km2), "N_km2" ])
+            # sq <- (s3[!is.na(s3$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s3$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s3[,1])-1)
+            # f3 <- s_a/area_s3
+            # se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
+            # sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+
+            # [MODIFICATO]:
             s_n <- sum(s3[!is.na(s3$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s3$SWEPT_AREA)
             res_table_cala2[i,4] <- s_n/s_a
-
-            mean_ind <- mean(s3[!is.na(s3$N_km2), "N_km2" ])
-            sq <- (s3[!is.na(s3$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s3$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s3[,1])-1)
-            f3 <- s_a/area_s3
-            se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
-            sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+            s3_clean <- s3[!is.na(s3$N_km2), ]
+            s_a_clean <- sum(s3_clean$SWEPT_AREA)
+            if (nrow(s3_clean) > 1) {
+                mean_ind <- mean(s3_clean$N_km2)
+                sq <- (s3_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s3_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s3_clean)-1)
+                f3 <- s_a_clean/area_s3
+                se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a_clean)* (1-f3)
+                sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f3))
+            } else {
+                se_table2[i,4] <- 0
+                sd_strata[i,4] <- 0
+            }
         } else {area_s3 = 0}
 
         if (analysis_stratum4 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s4[!is.na(s4$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s4$SWEPT_AREA)
+            # res_table_cala2[i,5] <- s_n/s_a
+            # mean_ind <- mean(s4[!is.na(s4$N_km2), "N_km2" ])
+            # sq <- (s4[!is.na(s4$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s4$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s4[,1])-1)
+            # f4 <- s_a/area_s4
+            # se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
+            # sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+
+            # [MODIFICATO]:
             s_n <- sum(s4[!is.na(s4$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s4$SWEPT_AREA)
             res_table_cala2[i,5] <- s_n/s_a
-
-            mean_ind <- mean(s4[!is.na(s4$N_km2), "N_km2" ])
-            sq <- (s4[!is.na(s4$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s4$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s4[,1])-1)
-            f4 <- s_a/area_s4
-            se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
-            sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+            s4_clean <- s4[!is.na(s4$N_km2), ]
+            s_a_clean <- sum(s4_clean$SWEPT_AREA)
+            if (nrow(s4_clean) > 1) {
+                mean_ind <- mean(s4_clean$N_km2)
+                sq <- (s4_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s4_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s4_clean)-1)
+                f4 <- s_a_clean/area_s4
+                se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a_clean)* (1-f4)
+                sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f4))
+            } else {
+                se_table2[i,5] <- 0
+                sd_strata[i,5] <- 0
+            }
         } else {area_s4 = 0}
 
         if (analysis_stratum5 == T){
-            #index computation
+            # [ORIGINALE]:
+            # s_n <- sum(s5[!is.na(s5$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s5$SWEPT_AREA)
+            # res_table_cala2[i,6] <- s_n/s_a
+            # mean_ind <- mean(s5[!is.na(s5$N_km2), "N_km2" ])
+            # sq <- (s5[!is.na(s5$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s5$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s5[,1])-1)
+            # f5 <- s_a/area_s5
+            # se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
+            # sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+
+            # [MODIFICATO]:
             s_n <- sum(s5[!is.na(s5$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s5$SWEPT_AREA)
             res_table_cala2[i,6] <- s_n/s_a
-
-            #se computation
-            mean_ind <- mean(s5[!is.na(s5$N_km2), "N_km2" ])
-            sq <- (s5[!is.na(s5$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s5$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s5[,1])-1)
-            f5 <- s_a/area_s5
-            se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
-            sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+            s5_clean <- s5[!is.na(s5$N_km2), ]
+            s_a_clean <- sum(s5_clean$SWEPT_AREA)
+            if (nrow(s5_clean) > 1) {
+                mean_ind <- mean(s5_clean$N_km2)
+                sq <- (s5_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s5_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s5_clean)-1)
+                f5 <- s_a_clean/area_s5
+                se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a_clean)* (1-f5)
+                sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f5))
+            } else {
+                se_table2[i,6] <- 0
+                sd_strata[i,6] <- 0
+            }
         } else {area_s5 = 0}
 
         if (analysis_stratum6 == T){
-            #index computation
+            # [ORIGINALE]:
+            # s_n <- sum(s6[!is.na(s6$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
+            # s_a <- sum(s6$SWEPT_AREA)
+            # res_table_cala2[i,7] <- s_n/s_a
+            # mean_ind <- mean(s6[!is.na(s6$N_km2), "N_km2" ])
+            # sq <- (s6[!is.na(s6$N_km2),"N_km2"] - mean_ind)^2
+            # sqA <- sq*s6$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s6[,1])-1)
+            # f6 <- s_a/area_s6
+            # se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
+            # sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+
+            # [MODIFICATO]:
             s_n <- sum(s6[!is.na(s6$TOTAL_NUMBER_IN_THE_HAUL),"TOTAL_NUMBER_IN_THE_HAUL"])
             s_a <- sum(s6$SWEPT_AREA)
             res_table_cala2[i,7] <- s_n/s_a
-
-            #se computation
-            mean_ind <- mean(s6[!is.na(s6$N_km2), "N_km2" ])
-            sq <- (s6[!is.na(s6$N_km2),"N_km2"] - mean_ind)^2
-            sqA <- sq*s6$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s6[,1])-1)
-            f6 <- s_a/area_s6
-            se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
-            sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+            s6_clean <- s6[!is.na(s6$N_km2), ]
+            s_a_clean <- sum(s6_clean$SWEPT_AREA)
+            if (nrow(s6_clean) > 1) {
+                mean_ind <- mean(s6_clean$N_km2)
+                sq <- (s6_clean$N_km2 - mean_ind)^2
+                sqA <- sq*s6_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s6_clean)-1)
+                f6 <- s_a_clean/area_s6
+                se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a_clean)* (1-f6)
+                sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f6))
+            } else {
+                se_table2[i,7] <- 0
+                sd_strata[i,7] <- 0
+            }
         } else {area_s6 = 0}
 
         # source(paste(wd, "/scripts/Index_estimation_cala.R", sep=""), encoding = 'UTF-8')
@@ -353,8 +463,9 @@ indices_ts <- function(mTATB, GSA, country="all", depth_range, strata_scheme, st
             row=1
             for (row in 1:length(year_range[,1])) {
                 if (!is.na(sd_strata[row,col])) {
-                    if (res_table_cala2[row,col]!=0){
-                        cv_strata[row,col] <- cv_strata[row,col]/res_table_cala2[row,col]
+                    val <- res_table_cala2[row,col]
+                    if (!is.na(val) && !is.nan(val) && val != 0){
+                        cv_strata[row,col] <- cv_strata[row,col]/val
                     } else {
                         cv_strata[row,col] <- 0
                     }
@@ -555,92 +666,201 @@ timeseries_abundance <- timeseries
         if (analysis_stratum6 == T) {s6 <- data2[data2$MEAN_DEPTH > depth[6,2] & data2$MEAN_DEPTH <= depth[6,3], ]}
 
         if (analysis_stratum1 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s1[!is.na(s1$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s1$SWEPT_AREA)
+            # res_table_cala2[i,2] <- s_n/s_a
+            # mean_ind <- mean(s1[!is.na(s1$kg_km2), "kg_km2" ])
+            # sq <- (s1[!is.na(s1$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s1$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s1[,1])-1)
+            # f1 <- s_a/area_s1
+            # se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
+            # sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
+
+            # [MODIFICATO]:
             s_n <- sum(s1[!is.na(s1$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s1$SWEPT_AREA)
             res_table_cala2[i,2] <- s_n/s_a
-
-            mean_ind <- mean(s1[!is.na(s1$kg_km2), "kg_km2" ])
-            sq <- (s1[!is.na(s1$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s1$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s1[,1])-1)
-            f1 <- s_a/area_s1
-            se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a)* (1-f1)
-            sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a)* (1-f1))
-
+            s1_clean <- s1[!is.na(s1$kg_km2), ]
+            s_a_clean <- sum(s1_clean$SWEPT_AREA)
+            if (nrow(s1_clean) > 1) {
+                mean_ind <- mean(s1_clean$kg_km2)
+                sq <- (s1_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s1_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s1_clean)-1)
+                f1 <- s_a_clean/area_s1
+                se_table2[i,2] <- (((peso_s1)^2 * sum_sqA)/ s_a_clean)* (1-f1)
+                sd_strata[i,2] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f1))
+            } else {
+                se_table2[i,2] <- 0
+                sd_strata[i,2] <- 0
+            }
         } else {area_s1 = 0}
 
         if (analysis_stratum2 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s2[!is.na(s2$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s2$SWEPT_AREA)
+            # res_table_cala2[i,3] <- s_n/s_a
+            # mean_ind <- mean(s2[!is.na(s2$kg_km2), "kg_km2" ])
+            # sq <- (s2[!is.na(s2$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s2$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s2[,1])-1)
+            # f2 <- s_a/area_s2
+            # se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
+            # sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+
+            # [MODIFICATO]:
             s_n <- sum(s2[!is.na(s2$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s2$SWEPT_AREA)
             res_table_cala2[i,3] <- s_n/s_a
-
-            mean_ind <- mean(s2[!is.na(s2$kg_km2), "kg_km2" ])
-            sq <- (s2[!is.na(s2$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s2$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s2[,1])-1)
-            f2 <- s_a/area_s2
-            se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a)* (1-f2)
-            sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a)* (1-f2))
+            s2_clean <- s2[!is.na(s2$kg_km2), ]
+            s_a_clean <- sum(s2_clean$SWEPT_AREA)
+            if (nrow(s2_clean) > 1) {
+                mean_ind <- mean(s2_clean$kg_km2)
+                sq <- (s2_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s2_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s2_clean)-1)
+                f2 <- s_a_clean/area_s2
+                se_table2[i,3] <- (((peso_s2)^2 * sum_sqA)/ s_a_clean)* (1-f2)
+                sd_strata[i,3] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f2))
+            } else {
+                se_table2[i,3] <- 0
+                sd_strata[i,3] <- 0
+            }
         } else {area_s2 = 0}
 
         if (analysis_stratum3 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s3[!is.na(s3$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s3$SWEPT_AREA)
+            # res_table_cala2[i,4] <- s_n/s_a
+            # mean_ind <- mean(s3[!is.na(s3$kg_km2), "kg_km2" ])
+            # sq <- (s3[!is.na(s3$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s3$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s3[,1])-1)
+            # f3 <- s_a/area_s3
+            # se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
+            # sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+
+            # [MODIFICATO]:
             s_n <- sum(s3[!is.na(s3$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s3$SWEPT_AREA)
             res_table_cala2[i,4] <- s_n/s_a
-
-            mean_ind <- mean(s3[!is.na(s3$kg_km2), "kg_km2" ])
-            sq <- (s3[!is.na(s3$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s3$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s3[,1])-1)
-            f3 <- s_a/area_s3
-            se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a)* (1-f3)
-            sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a)* (1-f3))
+            s3_clean <- s3[!is.na(s3$kg_km2), ]
+            s_a_clean <- sum(s3_clean$SWEPT_AREA)
+            if (nrow(s3_clean) > 1) {
+                mean_ind <- mean(s3_clean$kg_km2)
+                sq <- (s3_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s3_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s3_clean)-1)
+                f3 <- s_a_clean/area_s3
+                se_table2[i,4] <- (((peso_s3)^2 * sum_sqA)/ s_a_clean)* (1-f3)
+                sd_strata[i,4] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f3))
+            } else {
+                se_table2[i,4] <- 0
+                sd_strata[i,4] <- 0
+            }
         } else {area_s3 = 0}
 
         if (analysis_stratum4 == T){
+            # [ORIGINALE]:
+            # s_n <- sum(s4[!is.na(s4$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s4$SWEPT_AREA)
+            # res_table_cala2[i,5] <- s_n/s_a
+            # mean_ind <- mean(s4[!is.na(s4$kg_km2), "kg_km2" ])
+            # sq <- (s4[!is.na(s4$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s4$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s4[,1])-1)
+            # f4 <- s_a/area_s4
+            # se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
+            # sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+
+            # [MODIFICATO]:
             s_n <- sum(s4[!is.na(s4$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s4$SWEPT_AREA)
             res_table_cala2[i,5] <- s_n/s_a
-
-            mean_ind <- mean(s4[!is.na(s4$kg_km2), "kg_km2" ])
-            sq <- (s4[!is.na(s4$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s4$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s4[,1])-1)
-            f4 <- s_a/area_s4
-            se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a)* (1-f4)
-            sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a)* (1-f4))
+            s4_clean <- s4[!is.na(s4$kg_km2), ]
+            s_a_clean <- sum(s4_clean$SWEPT_AREA)
+            if (nrow(s4_clean) > 1) {
+                mean_ind <- mean(s4_clean$kg_km2)
+                sq <- (s4_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s4_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s4_clean)-1)
+                f4 <- s_a_clean/area_s4
+                se_table2[i,5] <- (((peso_s4)^2 * sum_sqA)/ s_a_clean)* (1-f4)
+                sd_strata[i,5] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f4))
+            } else {
+                se_table2[i,5] <- 0
+                sd_strata[i,5] <- 0
+            }
         } else {area_s4 = 0}
 
         if (analysis_stratum5 == T){
-            #index computation
+            # [ORIGINALE]:
+            # s_n <- sum(s5[!is.na(s5$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s5$SWEPT_AREA)
+            # res_table_cala2[i,6] <- s_n/s_a
+            # mean_ind <- mean(s5[!is.na(s5$kg_km2), "kg_km2" ])
+            # sq <- (s5[!is.na(s5$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s5$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s5[,1])-1)
+            # f5 <- s_a/area_s5
+            # se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
+            # sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+
+            # [MODIFICATO]:
             s_n <- sum(s5[!is.na(s5$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s5$SWEPT_AREA)
             res_table_cala2[i,6] <- s_n/s_a
-
-            #se computation
-            mean_ind <- mean(s5[!is.na(s5$kg_km2), "kg_km2" ])
-            sq <- (s5[!is.na(s5$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s5$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s5[,1])-1)
-            f5 <- s_a/area_s5
-            se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a)* (1-f5)
-            sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a)* (1-f5))
+            s5_clean <- s5[!is.na(s5$kg_km2), ]
+            s_a_clean <- sum(s5_clean$SWEPT_AREA)
+            if (nrow(s5_clean) > 1) {
+                mean_ind <- mean(s5_clean$kg_km2)
+                sq <- (s5_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s5_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s5_clean)-1)
+                f5 <- s_a_clean/area_s5
+                se_table2[i,6] <- (((peso_s5)^2 * sum_sqA)/ s_a_clean)* (1-f5)
+                sd_strata[i,6] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f5))
+            } else {
+                se_table2[i,6] <- 0
+                sd_strata[i,6] <- 0
+            }
         } else {area_s5 = 0}
 
         if (analysis_stratum6 == T){
-            #index computation
+            # [ORIGINALE]:
+            # s_n <- sum(s6[!is.na(s6$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
+            # s_a <- sum(s6$SWEPT_AREA)
+            # res_table_cala2[i,7] <- s_n/s_a
+            # mean_ind <- mean(s6[!is.na(s6$kg_km2), "kg_km2" ])
+            # sq <- (s6[!is.na(s6$kg_km2),"kg_km2"] - mean_ind)^2
+            # sqA <- sq*s6$SWEPT_AREA
+            # sum_sqA <- sum(sqA)/(length(s6[,1])-1)
+            # f6 <- s_a/area_s6
+            # se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
+            # sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+
+            # [MODIFICATO]:
             s_n <- sum(s6[!is.na(s6$TOTAL_WEIGHT_IN_THE_HAUL),"TOTAL_WEIGHT_IN_THE_HAUL"]/1000)
             s_a <- sum(s6$SWEPT_AREA)
             res_table_cala2[i,7] <- s_n/s_a
-
-            #se computation
-            mean_ind <- mean(s6[!is.na(s6$kg_km2), "kg_km2" ])
-            sq <- (s6[!is.na(s6$kg_km2),"kg_km2"] - mean_ind)^2
-            sqA <- sq*s6$SWEPT_AREA
-            sum_sqA <- sum(sqA)/(length(s6[,1])-1)
-            f6 <- s_a/area_s6
-            se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a)* (1-f6)
-            sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a)* (1-f6))
+            s6_clean <- s6[!is.na(s6$kg_km2), ]
+            s_a_clean <- sum(s6_clean$SWEPT_AREA)
+            if (nrow(s6_clean) > 1) {
+                mean_ind <- mean(s6_clean$kg_km2)
+                sq <- (s6_clean$kg_km2 - mean_ind)^2
+                sqA <- sq*s6_clean$SWEPT_AREA
+                sum_sqA <- sum(sqA)/(nrow(s6_clean)-1)
+                f6 <- s_a_clean/area_s6
+                se_table2[i,7] <- (((peso_s6)^2 * sum_sqA)/ s_a_clean)* (1-f6)
+                sd_strata[i,7] <- sqrt( ((sum_sqA)/ s_a_clean)* (1-f6))
+            } else {
+                se_table2[i,7] <- 0
+                sd_strata[i,7] <- 0
+            }
         } else {area_s6 = 0}
 
 
@@ -665,8 +885,9 @@ timeseries_abundance <- timeseries
             row=1
             for (row in 1:length(year_range[,1])) {
                 if (!is.na(sd_strata[row,col])) {
-                    if (res_table_cala2[row,col]!=0){
-                        cv_strata[row,col] <- cv_strata[row,col]/res_table_cala2[row,col]
+                    val <- res_table_cala2[row,col]
+                    if (!is.na(val) && !is.nan(val) && val != 0){
+                        cv_strata[row,col] <- cv_strata[row,col]/val
                     } else {
                         cv_strata[row,col] <- 0
                     }

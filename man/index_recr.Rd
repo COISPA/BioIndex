@@ -43,3 +43,13 @@ Estimates specific abundance indices for the recruitment phase (using the
 user-defined cutoff value), allowing for the assessment of reproductive
 success and the prediction of future stock productivity.
 }
+\examples{
+data(TA)
+data(TB)
+data(TC)
+data(stratification)
+m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+                  species = "MERLMER", country = "all", verbose = FALSE)
+index_recr(m[[1]], m[[2]], GSA = 10, country = "all", depth_range = c(10, 800),
+           cutoff = 200, stratification = stratification, save = FALSE)
+}

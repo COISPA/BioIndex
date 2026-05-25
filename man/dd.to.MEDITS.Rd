@@ -15,3 +15,8 @@ The function returns the data frame of the TA (table A) reporting the coordinate
 \description{
 Conversion of decimal degrees coordinates in MEDITS format
 }
+\examples{
+data(TA)
+ta_dd <- MEDITS.to.dd(TA)
+dd.to.MEDITS(ta_dd)
+}

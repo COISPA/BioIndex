@@ -43,3 +43,13 @@ Calculates abundance and biomass indices focused on the adult fraction
 (spawners, using the user-defined cutoff value), an essential indicator
 for evaluating the self-renewal capacity of the population.
 }
+\examples{
+data(TA)
+data(TB)
+data(TC)
+data(stratification)
+m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+                  species = "MERLMER", country = "all", verbose = FALSE)
+index_spawn(m[[1]], m[[2]], GSA = 10, country = "all", depth_range = c(10, 800),
+            cutoff = 200, stratification = stratification, save = FALSE)
+}

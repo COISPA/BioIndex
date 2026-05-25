@@ -1,4 +1,4 @@
-﻿#' @importFrom stats predict AIC nls
+#' @importFrom stats predict AIC nls
 #' @importFrom stats pnorm cor.test rnorm dchisq deviance df.residual na.exclude sd time
 #' @importFrom mgcv gam
 .ChangeYears.func<-function(Year, Indic ,Sd=NULL,alpha=0.05,species,B=199,ytext,CV=0.01,lastn=5,write=FALSE,speciesname,lastligne=FALSE) {
@@ -23,6 +23,8 @@
     }
 
     utils::globalVariables(c("lab_y", "AGE", "LENGTH", "LENGTH_CLASS", "med_bathy", "strata"))
+
+
 
 
 #searches for change in second derivative of index

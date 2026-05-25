@@ -35,7 +35,6 @@
   * `index_recr()` documentation modified to specify the mm units required for recruits cutoff threshold (according to outcomes of RDBFIS II second training).
   * `index_spawn()` documentation modified to specify the mm units required for spawners cutoff threshold (according to outcomes of RDBFIS II second training).
 
-
 # BioIndex v0.6.01
   __Fixes for RBDFIS III__
   * `index_on_grid()` modified to auto select the bathymetry contour polygon to be used in the plots.
@@ -50,6 +49,13 @@ Added an embedded Shiny application to the package: run_BioIndex_app(). It provi
 # BioIndex v0.6.4
   __CRAN Submission Release__
   
+  * **Robustness and Bug Fixes**:
+    * Fixed stratum variance and abundance/biomass calculations in `indices_ts.R`, `index_recr.r`, `index_spawn.r`, `index_ts_F.r`, `index_ts_M.r`, and `MIW.r` to robustly filter `NA` values, handle `NA`/`NaN` in `cv_strata` calculations, and prevent division by zero in GSAs with a single haul.
+    * Corrected the sex ratio variance calculation in `sex_ratio.r` by removing the incorrect square root from the variance formula.
+    * Added automated directory creation for the output folder in `Lquant.r` before saving files.
+    * Corrected `@return` documentation in `bubbleplot_RS_by_hauls()` to describe the returned list of plots, initialized them to `NULL`, and returned them correctly.
+    * Refactored `convert_coordinates.r` to safely skip `NA` coordinate records and avoid subscripted assignments error.
+  
   * **CRAN Policy Compliance**:
     * Standardized directory handling: functions now default to `tempdir()` when `wd = NA`, ensuring compliance with CRAN's file system policies regarding unauthorized write access. Removed all `setwd()` calls from internal logic to use absolute paths (`file.path()`).
     * Refactored console output: replaced all `cat()` and `print()` calls with `message()` wrapped in `if (verbose)` checks to ensure a silent default behavior.
@@ -62,6 +68,9 @@ Added an embedded Shiny application to the package: run_BioIndex_app(). It provi
     * Refactored `class()` checks to use `inherits()` for robust type checking.
     * Added `globalVariables` declarations to resolve R CMD check notes.
     * Standardized function signatures to consistently include `wd` and `save` parameters.
+    * Fixed function signature parameter mismatches:
+      * Added missing `GSA` (default 10) and `wd` (default NA) arguments to the `IUT()` function signature.
+      * Added missing `verbose` (default FALSE) argument to the `spearman()` function signature.
     * **Enhanced Data Consistency**:
         * Implemented explicit GSA and Country filtering in `BioIndex()` to ensure all downstream analysis functions use the correct subset of data and stratification metadata, preventing errors when multiple GSAs are present in input files.
         * Added robust validation for depth range boundaries in `indices_ts()`, `sex_ratio()`, `MIW()`, `LFD()`, and other core functions. The package now provides clear error messages when the selected depth range does not match the strata defined for the GSA.

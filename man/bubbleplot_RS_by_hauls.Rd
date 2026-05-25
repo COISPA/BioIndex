@@ -39,7 +39,7 @@ bubbleplot_RS_by_hauls(
 \item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
 \value{
-A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
+A \code{list} containing two \code{ggplot} objects: the bubble plot of recruits (\code{pr}) and spawners (\code{ps}) abundance indices.
 }
 \description{
 The function generates bubbleplots of abundance indices for recruits and spawners

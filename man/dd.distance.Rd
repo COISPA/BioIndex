@@ -19,3 +19,8 @@ The function returns the vector of the distances expressed in the selected measu
 \description{
 Function to estimate the hauls length using TA (table A, hauls data) with coordinates in the decimal degrees format (dd.ddd). The distances could be returned expressed in meters, kilometers and nautical miles.
 }
+\examples{
+data(TA)
+ta_dd <- MEDITS.to.dd(TA)
+dd.distance(ta_dd, unit = "km", verbose = FALSE)
+}

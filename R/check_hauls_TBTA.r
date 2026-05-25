@@ -1,4 +1,4 @@
-﻿#' Check hauls TB TA (RoME)
+#' Check hauls TB TA (RoME)
 #' @description
 #' Check if all the hauls in TB are in TA.
 #'
@@ -12,6 +12,10 @@
 #' It is provided within \code{BioIndex} to ensure the package remains
 #' functional and self-sufficient for data validation.
 #' @return \code{TRUE} if the validation passes, \code{FALSE} otherwise.
+#' @examples
+#' data(TA)
+#' data(TB)
+#' check_hauls_TBTA(TA, TB, year = 2007)
 #' @export
 check_hauls_TBTA <- function(DataTA, DataTB, year, wd=NA, suffix=NA) {
 

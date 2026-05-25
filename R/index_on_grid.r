@@ -1,4 +1,4 @@
-﻿#' Generating maps of indexes
+#' Generating maps of indexes
 #' @description
 #' Generates density and biomass maps based on the spatial grid,
 #' allowing for the visual identification of resource concentration areas
@@ -12,13 +12,22 @@
 #' @param verbose boolean. If TRUE messages are promted in the console
 #' @param save boolean. If TRUE the results are stored in the working directory
 #' @return A \code{ggplot} object displaying the generated map of indices on the spatial grid.
+#' @examples
+#' data(TA)
+#' data(TB)
+#' data(TC)
+#' m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+#'                   species = "MERLMER", country = "all", verbose = FALSE)
+#' mTATBsp <- overlayGrid(m[[1]], m[[2]], GSA = 10, save = FALSE, verbose = FALSE)[[1]]
+#' map_range <- c(9, 15, 39, 42)
+#' index_on_grid(mTATBsp, stratum = "10,800", map_range = map_range, threshold = 5,
+#'               save = FALSE, verbose = FALSE)
 #' @export
-#' @importFrom ggplot2 ggplot scale_fill_manual geom_polygon coord_sf labs xlab ylab map_data
+#' @importFrom ggplot2 ggplot scale_fill_manual geom_polygon coord_sf labs xlab ylab map_data ggsave
 #' @importFrom stringr str_split
 #' @importFrom tidyterra geom_spatvector
 #' @importFrom dplyr arrange
 #' @importFrom stats quantile
-
 index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, verbose = FALSE, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
   if (FALSE) {
@@ -385,14 +394,11 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
    xlab("longitude")+
    ylab("latitude")
 
- # print(p1) # rimosso per policy CRAN
- if(verbose) message("Plot of abundance on grid successfully created.")
- if (save){
-   jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-   # print(p1) # rimosso per policy CRAN
-   dev.off()
-   if(verbose) message("Plot of abundance on grid successfully saved")
- }
+  if(verbose) message("Plot of abundance on grid successfully created.")
+  if (save){
+    ggplot2::ggsave(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE.jpg", sep = ""), plot=p1, width=25, height=25, bg="white", units="cm", dpi=200)
+    if(verbose) message("Plot of abundance on grid successfully saved")
+  }
   #----------------------------------------
   # Saving maps of the inverse of CV of ABUNDANCE index
   #----------------------------------------
@@ -494,12 +500,9 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  # print(p2) # rimosso per policy CRAN
   if(verbose) message("Plot of abundance inverse CV on grid successfully created.")
   if(save){
-    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    # print(p2) # rimosso per policy CRAN
-    dev.off()
+    ggplot2::ggsave(filename=paste(wd, "/output/",sspp," - GFCM GRID ABUNDANCE Inverse CV.jpg", sep = ""), plot=p2, width=25, height=25, bg="white", units="cm", dpi=200)
     if(verbose) message("Plot of abundance inverse CV on grid successfully saved.")
   }
 
@@ -621,12 +624,9 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  # print(p3) # rimosso per policy CRAN
   if(verbose) message("Plot of biomass on grid successfully created.")
   if(save){
-    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    # print(p3) # rimosso per policy CRAN
-    dev.off()
+    ggplot2::ggsave(filename=paste(wd, "/output/",sspp," - GFCM GRID BIOMASS.jpg", sep = ""), plot=p3, width=25, height=25, bg="white", units="cm", dpi=200)
     if(verbose) message("Plot of biomass on grid successfully saved")
   }
 
@@ -749,12 +749,9 @@ index_on_grid <- function(mTATBsp, stratum, wd=NA, map_range, threshold = 30, ve
     xlab("longitude")+
     ylab("latitude")
 
-  # print(p4) # rimosso per policy CRAN
   if(verbose) message("Plot of MIW on grid successfully created.")
   if(save){
-    jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-    # print(p4) # rimosso per policy CRAN
-    dev.off()
+    ggplot2::ggsave(filename=paste(wd, "/output/",sspp," - GFCM GRID MIW.jpg", sep = ""), plot=p4, width=25, height=25, bg="white", units="cm", dpi=200)
     if(verbose) message("Plot of MIW on grid successfully saved.")
   }
 

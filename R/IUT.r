@@ -1,4 +1,4 @@
-﻿
+
 
 #' Interception Union Tets
 #'
@@ -6,15 +6,20 @@
 #' @param biomass dataframe of biomass time series as produced by indices_ts function
 #' @param species reference species for the analysis (MEDITS code)
 #' @param lastn number of recent years for diagnosis of change
+#' @param GSA reference GSA for the analysis (default is 10)
+#' @param wd working directory (default is NA, uses tempdir())
 #' @param save boolean. If TRUE results are saved in the output folder
 #' @importFrom utils write.table
 #' @importFrom grDevices jpeg dev.copy dev.off
 #' @return A \code{data.frame} containing the Indicator of Unfished Trends (IUT) results.
-#' @export
 #' @import mgcv
-
-IUT <- function(abundance, biomass, species, lastn=5, save=TRUE) {
+IUT <- function(abundance, biomass, species, lastn=5, GSA=10, wd=NA, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
+    if (save) {
+        if (!dir.exists(file.path(wd, "output"))) {
+            dir.create(file.path(wd, "output"), showWarnings = FALSE, recursive = TRUE)
+        }
+    }
     oldpar <- par(no.readonly = TRUE)
     oldpar$new <- NULL
     on.exit(suppressWarnings(par(oldpar)))

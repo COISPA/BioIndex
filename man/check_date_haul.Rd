@@ -28,3 +28,8 @@ This function is an internal routine based on \strong{RoME version 0.2.3}.
 It is provided within \code{BioIndex} to ensure the package remains
 functional and self-sufficient for data validation.
 }
+\examples{
+data(TA)
+data(TB)
+check_date_haul(TA, TB, year = 2007)
+}

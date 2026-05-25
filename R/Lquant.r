@@ -1,4 +1,4 @@
-﻿#' Estimation of L50 and L95
+#' Estimation of L50 and L95
 #'
 #' @param lfd data frame of combined LFD
 #' @param wd working directory
@@ -7,10 +7,6 @@
 #' @param save boolean. If TRUE the plot is saved in the user defined working directory (wd)
 #' @param verbose boolean. If TRUE messages are reported in the console
 #' @return A \code{data.frame} containing the length quantiles (e.g., L95) time series.
-#' @export Lquant
-
-
-
 Lquant <- function(lfd, wd=NA, sspp, GSA, save=TRUE, verbose=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
     oldpar <- par(no.readonly = TRUE)
@@ -72,7 +68,13 @@ for (i in c(2:ncol(Dati))){
 }
 table[,1]=c("50th perc.","SD 50th perc.","CV 50th perc.","95th perc.","SD 95th perc.","CV 95th perc.")
 colnames(table)=c("Indices", years_tab)
+# [ORIGINALE]:
+# if (save){
+# write.table(table,paste(wd, "/output/",sspp,"_GSA",GSA,"_L50_L95_RSS.csv", sep=""),sep=";",row.names=F)
+# }
+# [MODIFICATO]:
 if (save){
+dir.create(file.path(wd, "output"), showWarnings = FALSE, recursive = TRUE)
 write.table(table,paste(wd, "/output/",sspp,"_GSA",GSA,"_L50_L95_RSS.csv", sep=""),sep=";",row.names=F)
 }
 
@@ -89,11 +91,13 @@ for (i in 1:ncol(t)){
  t[,i] <- as.numeric(t[,i])
 }
 #plot
-rL50 <- range(t$`50th perc.`)
-r1 <- (rL50[2]-rL50[1])*20/100
+rL50 <- range(t$`50th perc.`, na.rm = TRUE)
+if (!all(is.finite(rL50))) rL50 <- c(0, 1)
+r1   <- (rL50[2]-rL50[1])*20/100
 rL50[2] <- rL50[2]+r1
-rL95 <- range(t$`95th perc.`)
-r2 <- (rL95[2]-rL95[1])*20/100
+rL95 <- range(t$`95th perc.`, na.rm = TRUE)
+if (!all(is.finite(rL95))) rL95 <- c(0, 1)
+r2   <- (rL95[2]-rL95[1])*20/100
 rL95[2] <- rL95[2]+r2
 
 # plot(t[,1],  t[,2], type="b", col="black", pch=16, xlab="year", ylab="L50 (mm)", ylim=rL50) # rimosso per policy CRAN

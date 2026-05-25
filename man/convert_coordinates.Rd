@@ -15,3 +15,7 @@ the function return the same data frame with the coordinates converted in the de
 \description{
 The function returns the data frame of the TA table with the coordinates expressed as decimal degrees.
 }
+\examples{
+data(TA)
+convert_coordinates(TA)
+}

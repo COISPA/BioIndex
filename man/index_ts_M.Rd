@@ -38,3 +38,15 @@ A \code{data.frame} containing the time series of indices specifically for males
 \description{
 Estimation of abundance indices for males
 }
+\examples{
+data(TA)
+data(TB)
+data(TC)
+data(strata_scheme)
+data(stratification)
+m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+                  species = "MERLMER", country = "all", verbose = FALSE)
+strata_scheme_g10 <- strata_scheme[strata_scheme$GSA == 10 & strata_scheme$COUNTRY == "ITA", ]
+index_ts_M(m[[1]], GSA = 10, country_analysis = "all", depth_range = c(10, 800),
+           strata_scheme = strata_scheme_g10, stratification = stratification, save = FALSE)
+}

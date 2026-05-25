@@ -1,4 +1,4 @@
-﻿#' Sex ratio
+#' Sex ratio
 #' @description
 #' Assesses the proportion of sexes within the population, providing
 #' critical information on demographic structure, reproductive potential,
@@ -257,9 +257,13 @@ sex_ratio <- function(mTATB, GSA, country, depth_range, stratas, stratification,
         colnames(res_table_calaFM) <- c("year", "stratum 1","stratum 2", "stratum 3", "stratum 4", "stratum 5", "stratum 6", "Indices_FM")
         SR$year[i] <- res_table_calaF$year[i]
         SR$Indices_F[i] <- res_table_calaF$Indices_F[i]
-        SR$Indices_FM[i] <- res_table_calaFM$Indices_FM[i]
+        SR$Indices_FM[i] <- res_table_calaFM[i,8]
         SR$sr[i] <- SR$Indices_F[i] / SR$Indices_FM[i]
-        SR$variance[i] <- sqrt(SR$sr[i]*(1-SR$sr[i]))/res_table_calaFM[i,8]
+        # [ORIGINALE]:
+        # SR$variance[i] <- sqrt(SR$sr[i]*(1-SR$sr[i]))/res_table_calaFM[i,8]
+
+        # [MODIFICATO]:
+        SR$variance[i] <- (SR$sr[i]*(1-SR$sr[i]))/res_table_calaFM[i,8]
     }
 
     timeseries <- SR

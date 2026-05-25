@@ -4,7 +4,15 @@
 \alias{spearman}
 \title{Spearman test}
 \usage{
-spearman(abundance = NA, biomass = NA, years, sspp = NA, wd = NA, save = TRUE)
+spearman(
+  abundance = NA,
+  biomass = NA,
+  years,
+  sspp = NA,
+  wd = NA,
+  save = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{abundance}{data frame of abundance indices}
@@ -18,6 +26,8 @@ spearman(abundance = NA, biomass = NA, years, sspp = NA, wd = NA, save = TRUE)
 \item{wd}{path of working directory}
 
 \item{save}{boolean. If TRUE the plot is saved in the user defined working directory (wd)}
+
+\item{verbose}{boolean. If TRUE messages are prompted in the console}
 }
 \value{
 A \code{data.frame} or \code{list} with the results of the Spearman rank correlation test.

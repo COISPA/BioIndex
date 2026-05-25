@@ -1,4 +1,4 @@
-﻿#' Check numeric range (RoME)
+#' Check numeric range (RoME)
 #' @description
 #' The function checks whether the values contained in specific fields are consistent with the allowed ranges.
 #'
@@ -14,6 +14,9 @@
 #' It is provided within \code{BioIndex} to ensure the package remains
 #' functional and self-sufficient for data validation.
 #' @return \code{TRUE} if the validation passes, \code{FALSE} otherwise.
+#' @examples
+#' data(TA)
+#' check_numeric_range(TA, Field = "HAUL_DURATION", Values = c(10, 120), year = 2007)
 #' @export
 check_numeric_range <- function(ResultData, Field, Values, year, wd=NA, suffix=NA, verbose=FALSE) {
 

@@ -4,7 +4,7 @@
 \alias{IUT}
 \title{Interception Union Tets}
 \usage{
-IUT(abundance, biomass, species, lastn = 5, save = TRUE)
+IUT(abundance, biomass, species, lastn = 5, GSA = 10, wd = NA, save = TRUE)
 }
 \arguments{
 \item{abundance}{dataframe of abundance time series as produced by indices_ts function}
@@ -14,6 +14,10 @@ IUT(abundance, biomass, species, lastn = 5, save = TRUE)
 \item{species}{reference species for the analysis (MEDITS code)}
 
 \item{lastn}{number of recent years for diagnosis of change}
+
+\item{GSA}{reference GSA for the analysis (default is 10)}
+
+\item{wd}{working directory (default is NA, uses tempdir())}
 
 \item{save}{boolean. If TRUE results are saved in the output folder}
 }

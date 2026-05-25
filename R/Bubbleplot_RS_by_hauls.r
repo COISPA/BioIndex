@@ -15,7 +15,10 @@
 #' @param wd working directory
 #' @param save boolean. If TRUE the outputs are saved in the local folder
 #' @param verbose boolean. If TRUE messages are prompted in the console
-#' @return A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
+# [ORIGINALE]:
+# #' @return A \code{ggplot} object representing the bubble plot of sex ratio by hauls.
+# [MODIFICATO]:
+#' @return A \code{list} containing two \code{ggplot} objects: the bubble plot of recruits (\code{pr}) and spawners (\code{ps}) abundance indices.
 #' @examples
 #' \donttest{
 #' # Create a merged dataset for GSA 10
@@ -28,6 +31,9 @@
 #' @importFrom ggplot2 coord_sf geom_polygon scale_x_continuous scale_y_continuous geom_contour geom_point scale_size coord_map ggtitle theme ggsave element_blank element_rect element_text map_data aes labs
 #' @importFrom stats aggregate
 bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, depths = c(50, 200, 800), res=NA, buffer=0.1,wd=NA, save=TRUE, verbose = FALSE) {
+    # [MODIFICATO]:
+    pr <- NULL
+    ps <- NULL
     if (is.na(wd)) { wd <- tempdir() }
   if (FALSE) {
     thresh_rec <- 20
@@ -254,4 +260,6 @@ bubbleplot_RS_by_hauls <- function(mTATC, map_range, thresh_rec, thresh_spaw, de
       message("Bubble plots - indices of spawners skipped")
     }
   }
+  # [MODIFICATO]:
+  return(list(pr, ps))
 }

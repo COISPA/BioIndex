@@ -1,4 +1,4 @@
-﻿#' Plot sex ratio spatial distribution
+#' Plot sex ratio spatial distribution
 #'
 #' @description
 #' This function calculates and plots the spatial distribution of sex ratio (F / (F + M)) over the GFCM grid for a given species. It uses data from merged MEDITS datasets (TA, TB, TC), previously spatialized with `overlayGrid()`. The function filters hauls by total abundance threshold and depth range, calculates sex ratio per grid cell, and plots the output using color-coded categories based on quantiles. The result is a choropleth map of sex ratio patterns, useful to highlight spatial differences in sex structure. Raw sex ratio estimates per grid cell can also be exported.
@@ -21,8 +21,17 @@
 #' @importFrom ggplot2 ggsave
 #' @importFrom dplyr arrange
 #' @importFrom ggplot2 map_data
+#' @examples
+#' data(TA)
+#' data(TB)
+#' data(TC)
+#' m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+#'                   species = "MERLMER", country = "all", verbose = FALSE)
+#' mTATBsp <- overlayGrid(m[[1]], m[[2]], GSA = 10, save = FALSE, verbose = FALSE)[[1]]
+#' map_range <- c(9, 15, 39, 42)
+#' sex_ratio_on_grid(mTATBsp, depth = "10,800", map_range = map_range, threshold = 5,
+#'                   save = FALSE, verbose = FALSE)
 #' @export
-
 sex_ratio_on_grid <- function(mTATBsp, depth, wd=NA, map_range,threshold=30,verbose=FALSE, save=TRUE) {
     if (is.na(wd)) { wd <- tempdir() }
 
@@ -299,12 +308,9 @@ sex_ratio_on_grid <- function(mTATBsp, depth, wd=NA, map_range,threshold=30,verb
 
 
 
-            # print(p1) # rimosso per policy CRAN
             if (verbose) message("plot of sex ratio by grid cell successfully created")
             if (save){
-                jpeg(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), width=25, height=25, bg="white", units="cm",res=200)
-                # print(p1) # rimosso per policy CRAN
-                dev.off()
+                ggplot2::ggsave(filename=paste(wd, "/output/",sspp," - GFCM GRID Sex Ratio.jpg", sep = ""), plot=p1, width=25, height=25, bg="white", units="cm", dpi=200)
                 if (verbose) message("Plot of sex ratio by grid cell successfully saved.")
             }
 

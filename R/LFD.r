@@ -1,4 +1,4 @@
-﻿#' Length Frequency Distribution (LFD) Estimation and Plotting
+#' Length Frequency Distribution (LFD) Estimation and Plotting
 #'
 #' This function estimates and plots the length frequency distribution (LFD) by year and by stratum,
 #' based on merged biological and haul data from MEDITS surveys. It computes raised numbers,
@@ -300,6 +300,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
             min_lc <- min(m[m$STRATUM == "ALL.STRATA", "LC"])
             max_lc <- max(m[m$STRATUM == "ALL.STRATA", "LC"])
             max_freq <- max(m[m$STRATUM == "ALL.STRATA", "Abundance"])
+            if (!is.finite(max_freq) || max_freq == 0) max_freq <- 1
 
             p <- ggplot(data=m[m$STRATUM == "ALL.STRATA", ], aes(x=LC, y=Abundance, group=YEAR, colour=YEAR)) +
                 geom_line() +
@@ -319,6 +320,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
             min_lc <- min(m[m$STRATUM == "ALL.STRATA", "LC"])
             max_lc <- max(m[m$STRATUM == "ALL.STRATA", "LC"])
             max_freq <- max(m[m$STRATUM == "ALL.STRATA", "Abundance"])
+            if (!is.finite(max_freq) || max_freq == 0) max_freq <- 1
 
             p <- ggplot(data=m[m$STRATUM == "ALL.STRATA", ], aes(x=LC, y=Abundance, group=YEAR, colour=YEAR)) +
                 geom_line() +
@@ -344,6 +346,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
             min_lc <- min(m[m$STRATUM != "ALL.STRATA", "LC"])
             max_lc <- max(m[m$STRATUM != "ALL.STRATA", "LC"])
             max_freq <- max(m[m$STRATUM != "ALL.STRATA", "Abundance"])
+            if (!is.finite(max_freq) || max_freq == 0) max_freq <- 1
 
             p2 <- ggplot(data=m[m$STRATUM != "ALL.STRATA", ], aes(x=LC, y=Abundance, group=YEAR, colour=YEAR)) +
                 geom_line(linewidth=0.3) +
@@ -364,6 +367,7 @@ LFD <- function(mTATC, sex="all", GSA, country="all", depth_range, strata_scheme
             min_lc <- min(m[m$STRATUM != "ALL.STRATA", "LC"])
             max_lc <- max(m[m$STRATUM != "ALL.STRATA", "LC"])
             max_freq <- max(m[m$STRATUM != "ALL.STRATA", "Abundance"])
+            if (!is.finite(max_freq) || max_freq == 0) max_freq <- 1
 
             p2 <- ggplot(data=m[m$STRATUM != "ALL.STRATA", ], aes(x=LC, y=Abundance, group=YEAR, colour=YEAR)) +
                 geom_line(linewidth=0.3) +

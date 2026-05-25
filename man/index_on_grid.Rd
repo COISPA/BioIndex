@@ -37,3 +37,14 @@ Generates density and biomass maps based on the spatial grid,
 allowing for the visual identification of resource concentration areas
 or potential biological hotspots.
 }
+\examples{
+data(TA)
+data(TB)
+data(TC)
+m <- merge_TATBTC(TA[TA$AREA == 10, ], TB[TB$AREA == 10, ], TC[TC$AREA == 10, ],
+                  species = "MERLMER", country = "all", verbose = FALSE)
+mTATBsp <- overlayGrid(m[[1]], m[[2]], GSA = 10, save = FALSE, verbose = FALSE)[[1]]
+map_range <- c(9, 15, 39, 42)
+index_on_grid(mTATBsp, stratum = "10,800", map_range = map_range, threshold = 5,
+              save = FALSE, verbose = FALSE)
+}

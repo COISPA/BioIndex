@@ -1,7 +1,11 @@
-﻿#' Conversion of decimal degrees coordinates in MEDITS format
+#' Conversion of decimal degrees coordinates in MEDITS format
 #' @description Conversion of decimal degrees coordinates in MEDITS format
 #' @param data data frame of the hauls data (TA, table A) in MEDITS format
 #' @return The function returns the data frame of the TA (table A) reporting the coordinates in MEDITS format.
+#' @examples
+#' data(TA)
+#' ta_dd <- MEDITS.to.dd(TA)
+#' dd.to.MEDITS(ta_dd)
 #' @export
 dd.to.MEDITS <- function(data)  {
 
